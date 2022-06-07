@@ -1,0 +1,10 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    },
+    "eslint.validate": [
+        "javascript",
+        "typescript"
+    ],
+    "jest.jestCommandLine": "yarn env-cmd -f .env.test jest --runInBand"
+}
