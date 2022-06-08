@@ -99,6 +99,7 @@ model User {
   Tenant         Tenant?        @relation(fields: [tenantId], references: [id])
   Password       UserPassword?
   Tokens         RefreshToken[]
+  Invite         UserInvite?
 }
 
 model UserPassword {
@@ -122,4 +123,13 @@ model RefreshToken {
   // Relation fields
   userId String
   User   User   @relation(fields: [userId], references: [id])
+}
+
+model UserInvite {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String   @unique
+  User      User     @relation(fields: [userId], references: [id])
 }
