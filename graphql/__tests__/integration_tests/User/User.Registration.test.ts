@@ -29,7 +29,6 @@ describe('User Registration', () => {
 
   afterEach(async () => {
     await prisma.userPassword.deleteMany({where: {}});
-    await prisma.profile.deleteMany({where: {}});
     await prisma.user.deleteMany({where: {}});
   });
 

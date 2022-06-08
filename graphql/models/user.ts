@@ -13,7 +13,6 @@ export const Users = objectType({
     t.field(NexusPrisma.User.name);
     t.field(NexusPrisma.User.avatar);
     t.field(NexusPrisma.User.email);
-    t.field(NexusPrisma.User.Profile);
   },
 });
 

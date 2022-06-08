@@ -19,13 +19,6 @@ type Mutation {
   userLogin(email: String!, password: String!): AuthPayload
 }
 
-type Profile {
-  User: User!
-  bio: String
-  id: ID!
-  user: User
-}
-
 type Query {
   user(userId: String!): User
 }
@@ -38,7 +31,6 @@ type RefreshToken {
 }
 
 type User {
-  Profile: Profile
   avatar: String
   email: String
   id: ID!

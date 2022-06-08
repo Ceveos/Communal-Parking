@@ -1,7 +1,7 @@
 import * as Prisma from '@prisma/client';
 import { ClearDatabase, prisma } from 'db';
 import { Context } from 'graphql/context';
-import { CreateJWTForUser, CreateRefreshTokenForUser, CreateUser, GetUserByRefreshToken, UpdateRefreshToken, UserParam, ValidateUserCredentials } from 'graphql/models';
+import { CreateJWTForUser, CreateRefreshTokenForUser, CreateUser, GetUserByRefreshToken, UserParam } from 'graphql/models';
 import { UserToken } from 'graphql/models/userToken';
 import { verify } from 'jsonwebtoken';
 
