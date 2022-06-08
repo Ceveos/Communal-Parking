@@ -60,10 +60,6 @@ export interface NexusGenObjects {
     user?: NexusGenRootTypes['User'] | null; // User
   }
   Mutation: {};
-  Profile: { // root type
-    bio?: string | null; // String
-    id: string; // ID!
-  }
   Query: {};
   RefreshToken: { // root type
     expiration: NexusGenScalars['DateTime']; // DateTime!
@@ -98,12 +94,6 @@ export interface NexusGenFieldTypes {
     signupUser: NexusGenRootTypes['User'] | null; // User
     userLogin: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
   }
-  Profile: { // field return type
-    User: NexusGenRootTypes['User']; // User!
-    bio: string | null; // String
-    id: string; // ID!
-    user: NexusGenRootTypes['User'] | null; // User
-  }
   Query: { // field return type
     user: NexusGenRootTypes['User'] | null; // User
   }
@@ -114,7 +104,6 @@ export interface NexusGenFieldTypes {
     valid: boolean; // Boolean!
   }
   User: { // field return type
-    Profile: NexusGenRootTypes['Profile'] | null; // Profile
     avatar: string | null; // String
     email: string | null; // String
     id: string; // ID!
@@ -132,12 +121,6 @@ export interface NexusGenFieldTypeNames {
     signupUser: 'User'
     userLogin: 'AuthPayload'
   }
-  Profile: { // field return type name
-    User: 'User'
-    bio: 'String'
-    id: 'ID'
-    user: 'User'
-  }
   Query: { // field return type name
     user: 'User'
   }
@@ -148,7 +131,6 @@ export interface NexusGenFieldTypeNames {
     valid: 'Boolean'
   }
   User: { // field return type name
-    Profile: 'Profile'
     avatar: 'String'
     email: 'String'
     id: 'ID'
