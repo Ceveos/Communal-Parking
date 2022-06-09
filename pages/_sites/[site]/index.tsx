@@ -19,12 +19,11 @@ export default function Index({ stringifiedData }: IndexProps) {
 
   if (router.isFallback) return <Loader />;
 
-  const data = JSON.parse(stringifiedData) as Prisma.Community;
+  const community = JSON.parse(stringifiedData) as Prisma.Community;
 
-  console.log(data);
   return (
     <>
-    You are browsing {data.name}
+    You are browsing {community.name}
     </>
   );
 }

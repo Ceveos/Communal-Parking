@@ -1,7 +1,6 @@
 import { Context, userIdentifier } from 'graphql/context';
-import { allow, not, shield } from 'graphql-shield';
 import { createRateLimitRule } from 'graphql-rate-limit';
-import { isAuthenticatedUser } from './rules/isAuthenticatedUser';
+import { shield } from 'graphql-shield';
 
 const rateLimitRule = createRateLimitRule({ identifyContext: (ctx: Context) => userIdentifier(ctx) });
 
