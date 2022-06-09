@@ -6,7 +6,7 @@ import type { NextRequest } from 'next/server';
 // If not custom, we can read the subdomain to know what community they're meant to be.
 const nonCustomizedDomains = [
   'localhost:3000',
-  process.env['VERCEL_URL'],
+  'communalparking.com',
   process.env['DOMAIN'],
 ];
 
@@ -35,7 +35,7 @@ export default async function middleware(req: NextRequest) {
   if (!pathname.includes('.') && !pathname.startsWith('/api')) {
     // If a vercel deployment url is provided, we should process the request
     // a bit different to allow testing of the whole site
-    if (hostname === process.env['VERCEL_URL']) {
+    if (hostname.endsWith('vercel.app')) {
       if (!pathname.startsWith('/_sites')) {
         url.pathname = `/home${pathname}`;
         return NextResponse.rewrite(url);
@@ -45,7 +45,7 @@ export default async function middleware(req: NextRequest) {
     }
 
     // If not a customized domain, look at the currentHost
-    if (nonCustomizedDomains.some(x => x?.indexOf(hostname) !== -1)){
+    if (nonCustomizedDomains.some(x => hostname.endsWith(x!))){
       if (currentHost === 'www' || currentHost === '') {
         url.pathname = `/home${pathname}`;
       } else {
