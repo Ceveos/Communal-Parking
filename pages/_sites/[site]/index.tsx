@@ -29,7 +29,7 @@ export default function Index({ stringifiedData }: IndexProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps<IndexProps, PathProps> = async ({ params, req, res }) => {
+export const getServerSideProps: GetServerSideProps<IndexProps, PathProps> = async ({ params, res }) => {
   if (!params) throw new Error('No path parameters found');
 
   res.setHeader(
@@ -38,18 +38,34 @@ export const getServerSideProps: GetServerSideProps<IndexProps, PathProps> = asy
   );
 
   const { site } = params;
+  let communityData;
 
-  const data = (await prisma.community.findUnique({
-    where: {
-      subdomain: site,
-    }
-  })) as Prisma.Community;
+  // If we have a period, it's a customized domain
+  if (site.indexOf('.') !== -1) {
+    const domainData = (await prisma.customDomain.findUnique({
+      where: {
+        domain: site
+      },
+      include: {
+        Community: true
+      }
+    }));
 
-  if (!data) return { notFound: true };
+    communityData = domainData?.Community;
+  } else {
+    // Otherwise, it's a community slug
+    communityData = (await prisma.community.findUnique({
+      where: {
+        subdomain: site,
+      }
+    }));
+  }
+
+  if (!communityData) return { notFound: true };
 
   return {
     props: {
-      stringifiedData: JSON.stringify(data),
+      stringifiedData: JSON.stringify(communityData),
     }
   };
 };
