@@ -2,6 +2,17 @@
 CREATE TYPE "Role" AS ENUM ('USER', 'MODERATOR', 'ADMIN');
 
 -- CreateTable
+CREATE TABLE "CustomDomain" (
+    "id" TEXT NOT NULL,
+    "domain" TEXT NOT NULL,
+    "communityId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "CustomDomain_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Community" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -124,6 +135,9 @@ CREATE TABLE "UserInvite" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "CustomDomain_domain_key" ON "CustomDomain"("domain");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Community_subdomain_key" ON "Community"("subdomain");
 
 -- CreateIndex
@@ -146,6 +160,9 @@ CREATE UNIQUE INDEX "UserInvite_token_key" ON "UserInvite"("token");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserInvite_userId_key" ON "UserInvite"("userId");
+
+-- AddForeignKey
+ALTER TABLE "CustomDomain" ADD CONSTRAINT "CustomDomain_communityId_fkey" FOREIGN KEY ("communityId") REFERENCES "Community"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "House" ADD CONSTRAINT "House_communityId_fkey" FOREIGN KEY ("communityId") REFERENCES "Community"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

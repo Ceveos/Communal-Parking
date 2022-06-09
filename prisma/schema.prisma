@@ -20,15 +20,25 @@ enum Role {
   ADMIN
 }
 
+model CustomDomain {
+  id          String    @id @default(uuid())
+  domain      String    @unique
+  communityId String
+  Community   Community @relation(fields: [communityId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+}
+
 model Community {
-  id            String        @id @default(uuid())
+  id            String         @id @default(uuid())
   name          String
-  subdomain     String        @unique
+  subdomain     String         @unique
   parkingSpaces Int
+  CustomDomains CustomDomain[]
   Houses        House[]
   Reservations  Reservation[]
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @default(now())
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now())
 }
 
 model House {

@@ -2,12 +2,15 @@ import { NextResponse } from 'next/server';
 
 import type { NextRequest } from 'next/server';
 
-const homepageHosts = [
+// If a domain is custom, we need to look up what community they are.
+// If not custom, we can read the subdomain to know what community they're meant to be.
+const nonCustomizedDomains = [
   'localhost:3000',
-  process.env['VERCEL_URL']
+  process.env['VERCEL_URL'],
+  process.env['DOMAIN'],
 ];
 
-export default function middleware(req: NextRequest) {
+export default async function middleware(req: NextRequest) {
   // Clone the request url
   const url = req.nextUrl.clone();
 
@@ -15,7 +18,6 @@ export default function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Get hostname of request (e.g. demo.communalparking.com, demo.localhost:3000)
-  // get rid of beta prefix to allow for beta versions of the site
   const hostname = req.headers.get('host');
 
   if (!hostname)
@@ -27,20 +29,22 @@ export default function middleware(req: NextRequest) {
   // Gets the primary subdomain of the host
   // ladera.communalparking.com -> ladera
   // ladera.beta.communalparking.com -> ladera
+  // ladera.localhost:3000 -> ladera
   const currentHost = hostname.match(/(\w+)(?=\..+(:\d+|\.\w+))/g)?.[0] ?? '';
 
-  if (pathname.startsWith('/_sites'))
-    return new Response(null, {
-      status: 404,
-    });
-
   if (!pathname.includes('.') && !pathname.startsWith('/api')) {
-    if (homepageHosts.includes(hostname)){
-      url.pathname = `/home${pathname}`;
+    // If not a customized domain, look at the currentHost
+    if (nonCustomizedDomains.some(x => x?.indexOf(hostname) !== -1)){
+      if (currentHost === 'www' || currentHost === '') {
+        url.pathname = `/home${pathname}`;
+      } else {
+        url.pathname = `/_sites/${currentHost}${pathname}`;;
+      }
       return NextResponse.rewrite(url);
     }
 
-    url.pathname = `/_sites/${currentHost}${pathname}`;
+    // If custom domain, pass hostname to the _sites path
+    url.pathname = `/_sites/${hostname}${pathname}`;
     return NextResponse.rewrite(url);
   }
 }
