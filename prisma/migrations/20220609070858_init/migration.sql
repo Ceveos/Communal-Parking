@@ -5,6 +5,7 @@ CREATE TYPE "Role" AS ENUM ('USER', 'MODERATOR', 'ADMIN');
 CREATE TABLE "Community" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "subdomain" TEXT NOT NULL,
     "parkingSpaces" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -61,7 +62,8 @@ CREATE TABLE "Tenant" (
 -- CreateTable
 CREATE TABLE "Reservation" (
     "id" TEXT NOT NULL,
-    "date" TIMESTAMP(3) NOT NULL,
+    "reservedFrom" TIMESTAMP(3) NOT NULL,
+    "reservedTo" TIMESTAMP(3) NOT NULL,
     "communityId" TEXT NOT NULL,
     "vehicleId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -120,6 +122,9 @@ CREATE TABLE "UserInvite" (
 
     CONSTRAINT "UserInvite_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Community_subdomain_key" ON "Community"("subdomain");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "House_unit_key" ON "House"("unit");
