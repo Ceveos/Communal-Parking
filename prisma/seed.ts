@@ -9,6 +9,13 @@ async function main() {
       role: 'ADMIN'
     },
   });
+  await prisma.community.create({
+    data: {
+      name: 'Ladera',
+      parkingSpaces: 10,
+      subdomain: 'ladera',
+    }
+  });
 }
 
 main()
