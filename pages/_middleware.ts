@@ -35,7 +35,7 @@ export default async function middleware(req: NextRequest) {
   if (!pathname.includes('.') && !pathname.startsWith('/api')) {
     // If a vercel deployment url is provided, we should process the request
     // a bit different to allow testing of the whole site
-    if (hostname.endsWith('vercel.app')) {
+    if (hostname.endsWith('vercel.app') || hostname === 'localhost:3000') {
       if (!pathname.startsWith('/_sites')) {
         url.pathname = `/home${pathname}`;
         return NextResponse.rewrite(url);
