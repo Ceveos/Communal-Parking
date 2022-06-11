@@ -1,4 +1,6 @@
 export interface UserToken {
     userId: string
-    email?: string
+    email: string
+    firstName: string
+    lastName: string
 }

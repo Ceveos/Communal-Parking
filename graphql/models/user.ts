@@ -10,9 +10,8 @@ export const Users = objectType({
   description: NexusPrisma.User.$description,
   definition(t) {
     t.nonNull.field(NexusPrisma.User.id);
-    t.field(NexusPrisma.User.name);
-    t.field(NexusPrisma.User.avatar);
-    t.field(NexusPrisma.User.email);
+    t.nonNull.field(NexusPrisma.User.email);
+    t.field(NexusPrisma.User.Tenant);
   },
 });
 

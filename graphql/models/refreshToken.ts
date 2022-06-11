@@ -97,7 +97,9 @@ export function CreateJWTForUser(user: Prisma.User): string {
 
   const token: UserToken = {
     userId: user.id,
-    email: user.email ?? undefined,
+    email: user.email!,
+    firstName: user.email!,
+    lastName: user.email!,
   };
 
   return sign(token, JWT_SECRET, {

@@ -2,6 +2,7 @@ import * as Prisma from '@prisma/client';
 import { prisma } from 'db';
 import { useRouter } from 'next/router';
 
+import DashboardLayout from 'layouts/dashboard';
 import Loader from 'components/sites/Loader';
 import type { GetServerSideProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
@@ -12,20 +13,6 @@ interface PathProps extends ParsedUrlQuery {
 
 interface IndexProps {
   stringifiedData: string;
-}
-
-export default function Index({ stringifiedData }: IndexProps) {
-  const router = useRouter();
-
-  if (router.isFallback) return <Loader />;
-
-  const community = JSON.parse(stringifiedData) as Prisma.Community;
-
-  return (
-    <>
-    You are browsing {community.name}
-    </>
-  );
 }
 
 export const getServerSideProps: GetServerSideProps<IndexProps, PathProps> = async ({ params, res }) => {
@@ -68,3 +55,18 @@ export const getServerSideProps: GetServerSideProps<IndexProps, PathProps> = asy
     }
   };
 };
+
+export default function Index({ stringifiedData }: IndexProps) {
+  const router = useRouter();
+
+  if (router.isFallback) return <Loader />;
+
+  const community = JSON.parse(stringifiedData) as Prisma.Community;
+
+  return (
+    <DashboardLayout community={community}>
+      {/* <DashboardSection title={community.name}>
+      </DashboardSection> */}
+    </DashboardLayout>
+  );
+}
