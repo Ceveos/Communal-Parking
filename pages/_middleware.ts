@@ -46,7 +46,7 @@ export default async function middleware(req: NextRequest) {
 
     // If not a customized domain, look at the currentHost
     if (nonCustomizedDomains.some(x => hostname.endsWith(x!))){
-      if (currentHost === 'www' || currentHost === '') {
+      if (['www', '', 'beta'].some(x => x === currentHost)) {
         url.pathname = `/home${pathname}`;
       } else {
         url.pathname = `/_sites/${currentHost}${pathname}`;;
