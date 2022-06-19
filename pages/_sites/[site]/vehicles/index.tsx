@@ -33,12 +33,12 @@ const positions = [
   },
 ];
 
-export default function Index(props: IndexProps) {
+export default function Index({ communityData: stringifiedData }: IndexProps) {
   const router = useRouter();
 
   if (router.isFallback) return <Loader />;
   console.log(router);
-  const community = JSON.parse(props.communityData) as Prisma.Community;
+  const community = JSON.parse(stringifiedData) as Prisma.Community;
 
   return (
     <MainSiteDashboardLayout community={community}>
@@ -46,13 +46,13 @@ export default function Index(props: IndexProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           {/* Replace with your content */}
           <div className="pb-5 border-b border-gray-200 sm:flex sm:items-center sm:justify-between">
-            <h1 className="text-lg leading-6 font-medium text-gray-900">Parking</h1>
+            <h1 className="text-lg leading-6 font-medium text-gray-900">Vehicles</h1>
             <div className="mt-3 sm:mt-0 sm:ml-4">
               <button
                 type="button"
                 className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-          Reserve a spot
+          Register new vehicle
               </button>
             </div>
           </div>
@@ -123,7 +123,6 @@ interface PathProps extends ParsedUrlQuery {
 interface IndexProps {
   communityData: string;
 }
-
 export const getStaticProps: GetStaticProps<IndexProps, PathProps> = async ({params}) => {
   if (!params) throw new Error('No path parameters found');
 
@@ -167,44 +166,3 @@ export const getStaticPaths: GetStaticPaths<PathProps> = async () => {
     fallback: true
   };
 };
-
-// export const getServerSideProps: GetServerSideProps<IndexProps, PathProps> = async ({ params, res }) => {
-//   if (!params) throw new Error('No path parameters found');
-
-//   res.setHeader(
-//     'Cache-Control',
-//     'public, s-maxage=10, stale-while-revalidate=59'
-//   );
-
-//   const { site } = params;
-//   let communityData;
-
-//   // If we have a period, it's a customized domain
-//   if (site.indexOf('.') !== -1) {
-//     const domainData = (await prisma.customDomain.findUnique({
-//       where: {
-//         domain: site
-//       },
-//       include: {
-//         Community: true
-//       }
-//     }));
-
-//     communityData = domainData?.Community;
-//   } else {
-//     // Otherwise, it's a community slug
-//     communityData = (await prisma.community.findUnique({
-//       where: {
-//         subdomain: site,
-//       }
-//     }));
-//   }
-
-//   if (!communityData) return { notFound: true };
-
-//   return {
-//     props: {
-//       stringifiedData: JSON.stringify(communityData),
-//     }
-//   };
-// };

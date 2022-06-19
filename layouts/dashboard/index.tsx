@@ -2,40 +2,34 @@
 import * as Prisma from '@prisma/client';
 import {
   ChevronDownIcon,
-  ClockIcon,
-  CollectionIcon,
-  HomeIcon,
   MenuAlt2Icon,
   XIcon,
 } from '@heroicons/react/outline';
 import { Dialog, Menu, Transition } from '@headlessui/react';
-import { Fragment, useContext, useState } from 'react';
-import { SearchIcon } from '@heroicons/react/solid';
-import UserContext from 'context/UserContext';
+import { Fragment, SVGProps, useState } from 'react';
+import { SearchIcon} from '@heroicons/react/solid';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import MainSiteDashboardLayout from './mainSiteDashboard';
 import classNames from 'lib/classNames';
 
-const navigation = [
-  { name: 'Home', href: '#', icon: HomeIcon, current: true },
-  { name: 'Vehicles', href: '#', icon: CollectionIcon, current: false },
-  { name: 'Reservations', href: '#', icon: ClockIcon, current: false },
-];
-const userNavigation = [
-  { name: 'Sign out', href: '#' },
-];
-
-/* This example requires Tailwind CSS v2.0+ */
-const stats = [
-  { name: 'Spots available', stat: '16' },
-  { name: 'Next Available Slot', stat: '8pm' },
-  { name: 'Spots available tomorrow', stat: '3 slots' },
-];
+export interface SidebarLink {
+  name: string;
+  // eslint-disable-next-line no-unused-vars
+  icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+  href: string;
+  route: string;
+}
 
 interface DashboardLayoutProps {
   community: Prisma.Community;
+  sidebar: SidebarLink[];
+
   children?: React.ReactNode;
 }
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ community, children }) => {
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({ community, children, sidebar }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const router = useRouter();
   // const { user } = useContext(UserContext);
 
   return (
@@ -93,26 +87,27 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ community, children }
                       </div>
                       <div className="mt-5 flex-1 h-0 overflow-y-auto">
                         <nav className="px-2 space-y-1">
-                          {navigation.map((item) => (
-                            <a
+                          {sidebar.map((item) => (
+                            <Link
                               key={item.name}
                               href={item.href}
-                              className={classNames(
-                                item.current
+                            >
+                              <a className={classNames(
+                                router.route === item.route
                                   ? 'bg-gray-900 text-white'
                                   : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                 'group flex items-center px-2 py-2 text-base font-medium rounded-md'
-                              )}
-                            >
-                              <item.icon
-                                className={classNames(
-                                  item.current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
-                                  'mr-4 flex-shrink-0 h-6 w-6'
-                                )}
-                                aria-hidden="true"
-                              />
-                              {item.name}
-                            </a>
+                              )}>
+                                <item.icon
+                                  className={classNames(
+                                    router.route === item.route ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
+                                    'mr-4 flex-shrink-0 h-6 w-6'
+                                  )}
+                                  aria-hidden="true"
+                                />
+                                {item.name}
+                              </a>
+                            </Link>
                           ))}
                         </nav>
                       </div>
@@ -134,24 +129,25 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ community, children }
                 </div>
                 <div className="flex-1 flex flex-col overflow-y-auto">
                   <nav className="flex-1 px-2 py-4 space-y-1">
-                    {navigation.map((item) => (
-                      <a
+                    {sidebar.map((item) => (
+                      <Link
                         key={item.name}
                         href={item.href}
-                        className={classNames(
-                          item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                          'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
-                        )}
                       >
-                        <item.icon
-                          className={classNames(
-                            item.current ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
-                            'mr-3 flex-shrink-0 h-6 w-6'
-                          )}
-                          aria-hidden="true"
-                        />
-                        {item.name}
-                      </a>
+                        <a className={classNames(
+                          router.route === item.route ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                          'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
+                        )}>
+                          <item.icon
+                            className={classNames(
+                              router.route === item.route ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-300',
+                              'mr-3 flex-shrink-0 h-6 w-6'
+                            )}
+                            aria-hidden="true"
+                          />
+                          {item.name}
+                        </a>
+                      </Link>
                     ))}
                   </nav>
                 </div>
@@ -215,18 +211,19 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ community, children }
                         leaveTo="transform opacity-0 scale-95"
                       >
                         <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                          {userNavigation.map((item) => (
+                          {sidebar.map((item) => (
                             <Menu.Item key={item.name}>
                               {({ active }) => (
-                                <a
+                                <Link
                                   href={item.href}
-                                  className={classNames(
+                                >
+                                  <a className={classNames(
                                     active ? 'bg-gray-100' : '',
                                     'block px-4 py-2 text-sm text-gray-700'
-                                  )}
-                                >
-                                  {item.name}
-                                </a>
+                                  )}>
+                                    {item.name}
+                                  </a>
+                                </Link>
                               )}
                             </Menu.Item>
                           ))}
@@ -236,35 +233,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ community, children }
                   </div>
                 </div>
               </div>
-
               <main className="flex-1">
-                <div className="py-6">
-                  <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-                    {/* Replace with your content */}
-                    <div className="pb-5 border-b border-gray-200 sm:flex sm:items-center sm:justify-between">
-                      <h1 className="text-lg leading-6 font-medium text-gray-900">Parking</h1>
-                      <div className="mt-3 sm:mt-0 sm:ml-4">
-                        <button
-                          type="button"
-                          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-          Reserve a spot
-                        </button>
-                      </div>
-                    </div>
-                    <div>
-                      <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-                        {stats.map((item) => (
-                          <div key={item.name} className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
-                            <dt className="text-sm font-medium text-gray-500 truncate">{item.name}</dt>
-                            <dd className="mt-1 text-3xl font-semibold text-gray-900">{item.stat}</dd>
-                          </div>
-                        ))}
-                      </dl>
-                    </div>
-                    {/* /End replace */}
-                  </div>
-                </div>
+                {children}
               </main>
             </div>
           </div>
@@ -275,3 +245,4 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ community, children }
 };
 
 export default DashboardLayout;
+export { MainSiteDashboardLayout };
