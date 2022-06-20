@@ -34,7 +34,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ community, children, 
 
   return (
     <>
-      <div className='bg-gray-100'>
+      <div className='bg-th-background'>
         <div className="min-h-screen">
           <div>
             <Transition.Root show={sidebarOpen} as={Fragment}>

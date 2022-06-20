@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --background: theme('colors.gray.100');
+  --background-secondary: theme('colors.white');
+
+  --primary: theme('colors.gray.50');
+  --primary-selected: theme('colors.gray.50');
+  --primary-text: theme('colors.gray.50');
+  --primary-text-hover: theme('colors.gray.50');
+
+  --secondary: theme('colors.gray.50');
+  --secondary-selected: theme('colors.gray.50');
+  --secondary-text: theme('colors.gray.50');
+  --secondary-text-hover: theme('colors.gray.50');
+}
+
+[data-theme='dark'] {
+  --background: theme('colors.black');
+  --background-secondary: theme('colors.gray.800');
+
+  --accent-dark: theme('colors.fuchsia.900');
+  --accent-medium: theme('colors.fuchsia.700');
+  --accent-light: theme('colors.fuchsia.500');
+
+  --primary-dark: theme('colors.gray.300');
+  --primary-medium: theme('colors.gray.200');
+  --primary-light: theme('colors.gray.100');
+}
