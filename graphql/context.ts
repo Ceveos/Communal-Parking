@@ -1,7 +1,7 @@
 import { AuthenticationError } from 'apollo-server-micro';
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 import { IncomingMessage, ServerResponse } from 'http';
-import { JsonWebTokenError, NotBeforeError, TokenExpiredError, sign, verify } from 'jsonwebtoken';
+import { JsonWebTokenError, NotBeforeError, TokenExpiredError, verify } from 'jsonwebtoken';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import { UserToken } from './models/userToken';

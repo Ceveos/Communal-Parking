@@ -89,7 +89,7 @@ const handler: NextApiHandler = async (req, res) => {
   const apolloServerHandler = await getApolloServerHandler();
 
   if (req.method === 'OPTIONS') {
-    res.end();
+    res.status(200).end();
     return;
   }
   // await runMiddleware(req, res, cors());
@@ -98,5 +98,7 @@ const handler: NextApiHandler = async (req, res) => {
 
 export default cors({
   allowCredentials: true,
+  allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['X-CSRF-Token', 'X-Requested-With', 'Accept', 'Accept-Version', 'Content-Length', 'Content-MD5', 'Content-Type', 'Date', 'X-Api-Version'],
   origin: 'https://studio.apollographql.com'
 })(handler as any);

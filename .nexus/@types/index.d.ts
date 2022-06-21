@@ -59,6 +59,16 @@ export interface NexusGenObjects {
     token: string; // String!
     user?: NexusGenRootTypes['User'] | null; // User
   }
+  Community: { // root type
+    id: string; // ID!
+    parkingSpaces: number; // Int!
+    subdomain: string; // String!
+  }
+  House: { // root type
+    id: string; // ID!
+    unit: string; // String!
+  }
+  HousesOnVehicles: {};
   Mutation: {};
   Query: {};
   RefreshToken: { // root type
@@ -66,10 +76,23 @@ export interface NexusGenObjects {
     hash: string; // String!
     valid: boolean; // Boolean!
   }
-  User: { // root type
-    avatar?: string | null; // String
-    email?: string | null; // String
+  Reservation: { // root type
     id: string; // ID!
+    reservedFrom: NexusGenScalars['DateTime']; // DateTime!
+    reservedTo: NexusGenScalars['DateTime']; // DateTime!
+  }
+  Tenant: { // root type
+    firstName: string; // String!
+    id: string; // ID!
+    lastName: string; // String!
+  }
+  User: { // root type
+    email: string; // String!
+    id: string; // ID!
+  }
+  Vehicle: { // root type
+    id: string; // ID!
+    licensePlate: string; // String!
     name: string; // String!
   }
 }
@@ -89,6 +112,24 @@ export interface NexusGenFieldTypes {
     token: string; // String!
     user: NexusGenRootTypes['User'] | null; // User
   }
+  Community: { // field return type
+    Houses: NexusGenRootTypes['House'][]; // [House!]!
+    Reservations: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
+    id: string; // ID!
+    parkingSpaces: number; // Int!
+    subdomain: string; // String!
+  }
+  House: { // field return type
+    Community: NexusGenRootTypes['Community']; // Community!
+    Tenants: NexusGenRootTypes['Tenant'][]; // [Tenant!]!
+    Vehicles: NexusGenRootTypes['HousesOnVehicles'][]; // [HousesOnVehicles!]!
+    id: string; // ID!
+    unit: string; // String!
+  }
+  HousesOnVehicles: { // field return type
+    House: NexusGenRootTypes['House']; // House!
+    Vehicle: NexusGenRootTypes['Vehicle']; // Vehicle!
+  }
   Mutation: { // field return type
     refreshJwt: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
     signupUser: NexusGenRootTypes['User'] | null; // User
@@ -103,10 +144,30 @@ export interface NexusGenFieldTypes {
     hash: string; // String!
     valid: boolean; // Boolean!
   }
-  User: { // field return type
-    avatar: string | null; // String
-    email: string | null; // String
+  Reservation: { // field return type
+    Community: NexusGenRootTypes['Community']; // Community!
+    Vehicle: NexusGenRootTypes['Vehicle']; // Vehicle!
     id: string; // ID!
+    reservedFrom: NexusGenScalars['DateTime']; // DateTime!
+    reservedTo: NexusGenScalars['DateTime']; // DateTime!
+  }
+  Tenant: { // field return type
+    House: NexusGenRootTypes['House'] | null; // House
+    User: NexusGenRootTypes['User'] | null; // User
+    firstName: string; // String!
+    id: string; // ID!
+    lastName: string; // String!
+  }
+  User: { // field return type
+    Tenant: NexusGenRootTypes['Tenant'] | null; // Tenant
+    email: string; // String!
+    id: string; // ID!
+  }
+  Vehicle: { // field return type
+    Houses: NexusGenRootTypes['HousesOnVehicles'][]; // [HousesOnVehicles!]!
+    Reservations: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
+    id: string; // ID!
+    licensePlate: string; // String!
     name: string; // String!
   }
 }
@@ -115,6 +176,24 @@ export interface NexusGenFieldTypeNames {
   AuthPayload: { // field return type name
     token: 'String'
     user: 'User'
+  }
+  Community: { // field return type name
+    Houses: 'House'
+    Reservations: 'Reservation'
+    id: 'ID'
+    parkingSpaces: 'Int'
+    subdomain: 'String'
+  }
+  House: { // field return type name
+    Community: 'Community'
+    Tenants: 'Tenant'
+    Vehicles: 'HousesOnVehicles'
+    id: 'ID'
+    unit: 'String'
+  }
+  HousesOnVehicles: { // field return type name
+    House: 'House'
+    Vehicle: 'Vehicle'
   }
   Mutation: { // field return type name
     refreshJwt: 'AuthPayload'
@@ -130,10 +209,30 @@ export interface NexusGenFieldTypeNames {
     hash: 'String'
     valid: 'Boolean'
   }
+  Reservation: { // field return type name
+    Community: 'Community'
+    Vehicle: 'Vehicle'
+    id: 'ID'
+    reservedFrom: 'DateTime'
+    reservedTo: 'DateTime'
+  }
+  Tenant: { // field return type name
+    House: 'House'
+    User: 'User'
+    firstName: 'String'
+    id: 'ID'
+    lastName: 'String'
+  }
   User: { // field return type name
-    avatar: 'String'
+    Tenant: 'Tenant'
     email: 'String'
     id: 'ID'
+  }
+  Vehicle: { // field return type name
+    Houses: 'HousesOnVehicles'
+    Reservations: 'Reservation'
+    id: 'ID'
+    licensePlate: 'String'
     name: 'String'
   }
 }

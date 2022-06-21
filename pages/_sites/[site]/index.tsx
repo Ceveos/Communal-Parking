@@ -2,40 +2,73 @@ import * as Prisma from '@prisma/client';
 import { prisma } from 'db';
 import { useRouter } from 'next/router';
 
+import { MainSiteDashboardLayout } from 'layouts/dashboard';
+import DashboardSection from 'components/dashboard/section';
 import Loader from 'components/sites/Loader';
-import type { GetServerSideProps } from 'next';
+import ReservationsTable, { Reservation } from 'components/dashboard/reservationTable';
+import Stats, { Stat } from 'components/dashboard/stats';
+import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
+
+const stats: Stat[] = [
+  { name: 'Availability', stat: '8/10' }
+];
+
+const reservations: Reservation[] = [
+  {
+    id: 1,
+    title: 'Tesla Model 3',
+    type: 'Valid',
+    location: 'Unit J5',
+    department: 'BQV9911',
+    closeDate: '2020-01-07',
+    closeDateFull: 'January 7, 2020',
+  },
+  {
+    id: 2,
+    title: 'Ford Fiesta',
+    type: 'Valid',
+    location: 'Unit J5',
+    department: 'BDB5128',
+    closeDate: '2020-01-07',
+    closeDateFull: 'January 7, 2020',
+  },
+];
 
 interface PathProps extends ParsedUrlQuery {
   site: string;
 }
 
 interface IndexProps {
-  stringifiedData: string;
+  communityData: string;
 }
 
-export default function Index({ stringifiedData }: IndexProps) {
+export default function Index(props: IndexProps) {
   const router = useRouter();
 
   if (router.isFallback) return <Loader />;
+  console.log(router);
+  const community = JSON.parse(props.communityData) as Prisma.Community;
 
-  const data = JSON.parse(stringifiedData) as Prisma.Community;
-
-  console.log(data);
   return (
-    <>
-    You are browsing {data.name}
-    </>
+    <MainSiteDashboardLayout community={community}>
+      <DashboardSection
+        title='Parking'
+        buttonText='Reserve a spot'
+        href='#'
+      >
+        {/* Stats */}
+        <Stats stats={stats} />
+
+        {/* Table */}
+        <ReservationsTable reservations={reservations} loading={false} />
+      </DashboardSection>
+    </MainSiteDashboardLayout>
   );
 }
 
-export const getServerSideProps: GetServerSideProps<IndexProps, PathProps> = async ({ params, res }) => {
+export const getStaticProps: GetStaticProps<IndexProps, PathProps> = async ({params}) => {
   if (!params) throw new Error('No path parameters found');
-
-  res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59'
-  );
 
   const { site } = params;
   let communityData;
@@ -65,7 +98,15 @@ export const getServerSideProps: GetServerSideProps<IndexProps, PathProps> = asy
 
   return {
     props: {
-      stringifiedData: JSON.stringify(communityData),
-    }
+      communityData: JSON.stringify(communityData),
+    },
+    revalidate: 10,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths<PathProps> = async () => {
+  return {
+    paths: [],
+    fallback: true
   };
 };
