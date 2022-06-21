@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors');
+
 module.exports = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx}',
@@ -7,15 +9,31 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'th-background': 'var(--background)',
-        'th-background-secondary': 'var(--background-secondary)',
-        'th-foreground': 'var(--foreground)',
-        'th-primary-dark': 'var(--primary-dark)',
-        'th-primary-medium': 'var(--primary-medium)',
-        'th-primary-light': 'var(--primary-light)',
-        'th-accent-dark': 'var(--accent-dark)',
-        'th-accent-medium': 'var(--accent-medium)',
-        'th-accent-light': 'var(--accent-light)',
+        primary: {
+          ...colors.slate,
+          dark: {
+            ...colors.neutral,
+          },
+        },
+        accent: {
+          ...colors.blue,
+          dark: {
+            ...colors.blue
+          }
+        },
+
+        /* Theme colors */
+        th: {
+          background: {
+            DEFAULT: colors.gray[100],
+            dark: colors.neutral[900]
+          },
+
+          foreground: {
+            DEFAULT: colors.white,
+            dark: colors.neutral[800],
+          },
+        },
       },
     },
   },
