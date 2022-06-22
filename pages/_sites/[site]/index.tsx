@@ -36,12 +36,15 @@ export default function Index(props: IndexProps) {
 
   useEffect(() => {
     if (props.communityData !== undefined && community === undefined) {
-      console.log(props.communityData);
+      // Community Data is passed in from the server.
+      // However, it is not always defined here due to SSR. So ensure it's defined before parsing.
       setCommunity(JSON.parse(props.communityData));
     }
   }, [props.communityData, community]);
 
   useEffect(() => {
+    // We can only query for reservations when community is defined
+    // (only on client, post-SSR)
     if (community) {
       getCurrentReservations({
         variables: {
@@ -52,15 +55,12 @@ export default function Index(props: IndexProps) {
   }, [community, getCurrentReservations]);
 
   useEffect(() => {
-    console.log({loading, data, error});
-  }, [loading, data, error]);
-
-  useEffect(() => {
     if (community && data?.getCurrentReservations) {
       setParkingStat(`${community.parkingSpaces - data.getCurrentReservations.length}/${community.parkingSpaces}`);
     }
   }, [community, data]);
 
+  // isFallback is true when page is not cached (thus no community data)
   if (router.isFallback || community === undefined) return <Loader />;
 
   return (
