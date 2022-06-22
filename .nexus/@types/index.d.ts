@@ -136,6 +136,7 @@ export interface NexusGenFieldTypes {
     userLogin: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
   }
   Query: { // field return type
+    getCurrentReservations: Array<NexusGenRootTypes['Reservation'] | null> | null; // [Reservation]
     user: NexusGenRootTypes['User'] | null; // User
   }
   RefreshToken: { // field return type
@@ -146,6 +147,8 @@ export interface NexusGenFieldTypes {
   }
   Reservation: { // field return type
     Community: NexusGenRootTypes['Community']; // Community!
+    House: NexusGenRootTypes['House']; // House!
+    Tenant: NexusGenRootTypes['Tenant'] | null; // Tenant
     Vehicle: NexusGenRootTypes['Vehicle']; // Vehicle!
     id: string; // ID!
     reservedFrom: NexusGenScalars['DateTime']; // DateTime!
@@ -201,6 +204,7 @@ export interface NexusGenFieldTypeNames {
     userLogin: 'AuthPayload'
   }
   Query: { // field return type name
+    getCurrentReservations: 'Reservation'
     user: 'User'
   }
   RefreshToken: { // field return type name
@@ -211,6 +215,8 @@ export interface NexusGenFieldTypeNames {
   }
   Reservation: { // field return type name
     Community: 'Community'
+    House: 'House'
+    Tenant: 'Tenant'
     Vehicle: 'Vehicle'
     id: 'ID'
     reservedFrom: 'DateTime'
@@ -251,6 +257,9 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    getCurrentReservations: { // args
+      communityId: string; // String!
+    }
     user: { // args
       userId: string; // String!
     }

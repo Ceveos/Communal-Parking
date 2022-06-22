@@ -42,15 +42,16 @@ model Community {
 }
 
 model House {
-  id          String             @id @default(uuid())
-  unit        String             @unique
-  description String
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-  communityId String
-  Community   Community          @relation(fields: [communityId], references: [id])
-  Tenants     Tenant[]
-  Vehicles    HousesOnVehicles[]
+  id           String             @id @default(uuid())
+  unit         String             @unique
+  description  String?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  communityId  String
+  Community    Community          @relation(fields: [communityId], references: [id])
+  Tenants      Tenant[]
+  Vehicles     HousesOnVehicles[]
+  Reservations Reservation[]
 }
 
 model Vehicle {
@@ -76,20 +77,25 @@ model HousesOnVehicles {
 }
 
 model Tenant {
-  id        String   @id @default(uuid())
-  firstName String
-  lastName  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  houseId   String?
-  House     House?   @relation(fields: [houseId], references: [id])
-  User      User?
+  id           String        @id @default(uuid())
+  firstName    String
+  lastName     String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  houseId      String?
+  House        House?        @relation(fields: [houseId], references: [id])
+  User         User?
+  Reservations Reservation[]
 }
 
 model Reservation {
   id           String    @id @default(uuid())
   reservedFrom DateTime
   reservedTo   DateTime
+  tenantId     String
+  Tenant       Tenant?   @relation(fields: [tenantId], references: [id])
+  houseId      String
+  House        House     @relation(fields: [houseId], references: [id])
   communityId  String
   Community    Community @relation(fields: [communityId], references: [id])
   vehicleId    String

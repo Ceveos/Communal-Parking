@@ -41,6 +41,7 @@ type Mutation {
 }
 
 type Query {
+  getCurrentReservations(communityId: String!): [Reservation]
   user(userId: String!): User
 }
 
@@ -53,6 +54,8 @@ type RefreshToken {
 
 type Reservation {
   Community: Community!
+  House: House!
+  Tenant: Tenant
   Vehicle: Vehicle!
   id: ID!
   reservedFrom: DateTime!

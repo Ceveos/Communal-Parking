@@ -1,39 +1,45 @@
-import * as Prisma from '@prisma/client';
-import { prisma } from 'db';
-import { useRouter } from 'next/router';
-
 import { MainSiteDashboardLayout } from 'layouts/dashboard';
+import { Prisma } from '@prisma/client';
+import { gql } from 'apollo-server-micro';
+import { prisma } from 'db';
+import { useEffect, useState } from 'react';
+import { useLazyQuery } from '@apollo/client';
+import { useRouter } from 'next/router';
 import DashboardSection from 'components/dashboard/section';
 import Loader from 'components/sites/Loader';
-import ReservationsTable, { Reservation } from 'components/dashboard/reservationTable';
-import Stats, { Stat } from 'components/dashboard/stats';
+import ReservationsTable, { ReservationWithAllInfo } from 'components/dashboard/reservationTable';
+import Stat from 'components/dashboard/stat';
+import Stats from 'components/dashboard/stats';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 
-const stats: Stat[] = [
-  { name: 'Availability', stat: '8/10' }
-];
+interface GetCurrentReservationsData {
+  getCurrentReservations: ReservationWithAllInfo[];
+}
+interface GetCurrentReservationsVars {
+  communityId: String;
+}
 
-const reservations: Reservation[] = [
-  {
-    id: 1,
-    title: 'Tesla Model 3',
-    type: 'Valid',
-    location: 'Unit J5',
-    department: 'BQV9911',
-    closeDate: '2020-01-07',
-    closeDateFull: 'January 7, 2020',
-  },
-  {
-    id: 2,
-    title: 'Ford Fiesta',
-    type: 'Valid',
-    location: 'Unit J5',
-    department: 'BDB5128',
-    closeDate: '2020-01-07',
-    closeDateFull: 'January 7, 2020',
-  },
-];
+const GET_CURRENT_RESERVATIONS_QUERY = gql`
+  query GetCurrentReservations($communityId: String!) {
+    getCurrentReservations(communityId: $communityId) {
+      id
+      reservedFrom
+      reservedTo
+      Vehicle {
+        licensePlate
+        name
+      }
+      House {
+        unit
+      }
+      Tenant {
+        firstName
+        lastName
+      }
+    }
+  }
+`;
 
 interface PathProps extends ParsedUrlQuery {
   site: string;
@@ -43,12 +49,52 @@ interface IndexProps {
   communityData: string;
 }
 
+const communityInclude = Prisma.validator<Prisma.CommunityInclude>()({});
+
+export type Community = Prisma.CommunityGetPayload<{
+  include: typeof communityInclude;
+}>;
+
 export default function Index(props: IndexProps) {
   const router = useRouter();
+  const [community, setCommunity] = useState<Community>();
+  const [parkingStat, setParkingStat] = useState<string>();
+  const [getCurrentReservations, { loading, error, data }] =
+    useLazyQuery<GetCurrentReservationsData,GetCurrentReservationsVars>(
+      GET_CURRENT_RESERVATIONS_QUERY, {
+        fetchPolicy: 'network-only',
+        nextFetchPolicy: 'network-only'
+      });
+
+  useEffect(() => {
+    if (props.communityData !== undefined && community === undefined) {
+      console.log(props.communityData);
+      setCommunity(JSON.parse(props.communityData));
+    }
+  }, [props.communityData, community]);
+
+  useEffect(() => {
+    if (community) {
+      getCurrentReservations({
+        variables: {
+          communityId: community.id
+        }
+      });
+    }
+  }, [community, getCurrentReservations]);
+
+  useEffect(() => {
+    console.log({loading, data, error});
+  }, [loading, data, error]);
+
+  useEffect(() => {
+    if (community && data?.getCurrentReservations) {
+      setParkingStat(`${community.parkingSpaces - data.getCurrentReservations.length}/${community.parkingSpaces}`);
+    }
+  }, [community, data]);
 
   if (router.isFallback) return <Loader />;
-  console.log(router);
-  const community = JSON.parse(props.communityData) as Prisma.Community;
+  if (community === undefined) return null;
 
   return (
     <MainSiteDashboardLayout community={community}>
@@ -58,10 +104,12 @@ export default function Index(props: IndexProps) {
         href='#'
       >
         {/* Stats */}
-        <Stats stats={stats} />
+        <Stats>
+          <Stat header='Availability' body={parkingStat} />
+        </Stats>
 
         {/* Table */}
-        <ReservationsTable reservations={reservations} loading={false} />
+        <ReservationsTable reservations={data?.getCurrentReservations} loading={loading} />
       </DashboardSection>
     </MainSiteDashboardLayout>
   );
