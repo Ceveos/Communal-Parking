@@ -1,45 +1,17 @@
+import { GET_CURRENT_RESERVATIONS_QUERY, GetCurrentReservationsData, GetCurrentReservationsVars } from 'lib/queries/reservation';
 import { MainSiteDashboardLayout } from 'layouts/dashboard';
 import { Prisma } from '@prisma/client';
-import { gql } from 'apollo-server-micro';
 import { prisma } from 'db';
 import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import DashboardSection from 'components/dashboard/section';
 import Loader from 'components/sites/Loader';
-import ReservationsTable, { ReservationWithAllInfo } from 'components/dashboard/reservationTable';
+import ReservationsTable from 'components/dashboard/reservationTable';
 import Stat from 'components/dashboard/stat';
 import Stats from 'components/dashboard/stats';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
-
-interface GetCurrentReservationsData {
-  getCurrentReservations: ReservationWithAllInfo[];
-}
-interface GetCurrentReservationsVars {
-  communityId: String;
-}
-
-const GET_CURRENT_RESERVATIONS_QUERY = gql`
-  query GetCurrentReservations($communityId: String!) {
-    getCurrentReservations(communityId: $communityId) {
-      id
-      reservedFrom
-      reservedTo
-      Vehicle {
-        licensePlate
-        name
-      }
-      House {
-        unit
-      }
-      Tenant {
-        firstName
-        lastName
-      }
-    }
-  }
-`;
 
 interface PathProps extends ParsedUrlQuery {
   site: string;
@@ -49,11 +21,7 @@ interface IndexProps {
   communityData: string;
 }
 
-const communityInclude = Prisma.validator<Prisma.CommunityInclude>()({});
-
-export type Community = Prisma.CommunityGetPayload<{
-  include: typeof communityInclude;
-}>;
+export type Community = Prisma.CommunityGetPayload<{}>;
 
 export default function Index(props: IndexProps) {
   const router = useRouter();
@@ -93,8 +61,7 @@ export default function Index(props: IndexProps) {
     }
   }, [community, data]);
 
-  if (router.isFallback) return <Loader />;
-  if (community === undefined) return null;
+  if (router.isFallback || community === undefined) return <Loader />;
 
   return (
     <MainSiteDashboardLayout community={community}>
