@@ -21,11 +21,9 @@ interface IndexProps {
   communityData: string;
 }
 
-export type Community = Prisma.CommunityGetPayload<{}>;
-
 export default function Index(props: IndexProps) {
   const router = useRouter();
-  const [community, setCommunity] = useState<Community>();
+  const [community, setCommunity] = useState<Prisma.CommunityGetPayload<{}>>();
   const [parkingStat, setParkingStat] = useState<string>();
   const [getCurrentReservations, { loading, error, data }] =
     useLazyQuery<GetCurrentReservationsData,GetCurrentReservationsVars>(

@@ -1,6 +1,5 @@
-
-import * as Prisma from '@prisma/client';
 import { ClockIcon, CollectionIcon, HomeIcon } from '@heroicons/react/solid';
+import { Prisma } from '@prisma/client';
 import { SidebarLink } from 'components/dashboard/sidebar';
 import DashboardLayout from '.';
 
@@ -11,9 +10,10 @@ const sidebar: SidebarLink[] = [
 ];
 
 interface MainSiteDashboardLayoutProps {
-  community: Prisma.Community;
+  community: Prisma.CommunityGetPayload<{}>;
   children?: React.ReactNode;
 }
+
 const MainSiteDashboardLayout: React.FC<MainSiteDashboardLayoutProps> = ({ community, children }) => {
   return <DashboardLayout community={community} sidebarMenuItems={sidebar}>{children}</DashboardLayout>;
 };
