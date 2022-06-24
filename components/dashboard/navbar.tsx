@@ -2,11 +2,12 @@ import {
   ChevronDownIcon,
   MenuAlt2Icon,
 } from '@heroicons/react/outline';
-import { Fragment } from 'react';
+import { Fragment, useContext } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { SearchIcon} from '@heroicons/react/solid';
 import { SidebarLink } from './sidebar';
 import Link from 'next/link';
+import UserContext from 'context/UserContext';
 import classNames from 'lib/classNames';
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
 }
 
 const Navbar: React.FC<Props> = ({menuItems, setSidebarOpen}) => {
+  const { user, loaded } = useContext(UserContext);
 
   return (<>
     <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white dark:bg-primary-dark-900 dark:border-b-2 dark:border-primary-dark-800 shadow">

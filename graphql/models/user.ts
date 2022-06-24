@@ -10,12 +10,15 @@ export const Users = objectType({
   description: NexusPrisma.User.$description,
   definition(t) {
     t.nonNull.field(NexusPrisma.User.id);
+    t.field(NexusPrisma.User.House);
+    t.nonNull.field(NexusPrisma.User.firstName);
+    t.nonNull.field(NexusPrisma.User.lastName);
     t.nonNull.field(NexusPrisma.User.email);
-    t.field(NexusPrisma.User.Tenant);
+    t.nonNull.field(NexusPrisma.User.emailConfirmed);
   },
 });
 
-export type UserParam = Pick<Prisma.User, 'avatar' | 'email' | 'name'>
+export type UserParam = Pick<Prisma.User, 'avatar' | 'email' | 'firstName' | 'lastName'>
 
 export async function GetUserByEmail(ctx: Context, email: string): Promise<Prisma.User | null> {
   return await ctx.prisma.user.findUnique({

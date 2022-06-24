@@ -8,16 +8,18 @@ import LoginInvalidError from 'graphql/utils/errors/auth/loginInvalid';
 export const createUser = mutationField('signupUser', {
   type: 'User',
   args: {
-    name: stringArg(),
+    firstName: nonNull(stringArg()),
+    lastName: nonNull(stringArg()),
     email: nonNull(stringArg()),
     password: nonNull(stringArg()),
     avatar: stringArg(),
   },
-  resolve: async (_, { name, email, password, avatar }, ctx) => {
+  resolve: async (_, { firstName, lastName, email, password, avatar }, ctx) => {
     const userParam: UserParam = {
       avatar: avatar ?? null,
       email,
-      name: name ?? email
+      firstName,
+      lastName
     };
 
     return await CreateUser(ctx, userParam, password);

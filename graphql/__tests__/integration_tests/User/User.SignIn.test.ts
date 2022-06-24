@@ -13,7 +13,8 @@ const ctx: Context = {
   token: null
 };
 const userParam: UserParam = {
-  name: 'test',
+  firstName: 'test',
+  lastName: 'test2',
   email: 'test@email.com',
   avatar: null
 };

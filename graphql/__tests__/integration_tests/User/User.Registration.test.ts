@@ -9,12 +9,14 @@ const ctx: Context = {
   token: null
 };
 const userParam: UserParam = {
-  name: 'test',
+  firstName: 'test',
+  lastName: 'lastname',
   email: 'test@email.com',
   avatar: null
 };
 const anotherUserParam: UserParam = {
-  name: 'test 2',
+  firstName: 'test 2',
+  lastName: 'lastname',
   email: 'test2@email.com',
   avatar: null
 };
@@ -28,7 +30,7 @@ describe('User Registration', () => {
   });
 
   afterEach(async () => {
-    await prisma.userPassword.deleteMany({where: {}});
+    await prisma.password.deleteMany({where: {}});
     await prisma.user.deleteMany({where: {}});
   });
 

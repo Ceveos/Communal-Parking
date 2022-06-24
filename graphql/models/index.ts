@@ -5,6 +5,5 @@ export * from './house';
 export * from './housesOnVehicles';
 export * from './refreshToken';
 export * from './reservation';
-export * from './tenant';
 export * from './user';
 export * from './vehicle';

@@ -28,7 +28,7 @@ CREATE TABLE "Community" (
 CREATE TABLE "House" (
     "id" TEXT NOT NULL,
     "unit" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    "description" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "communityId" TEXT NOT NULL,
@@ -59,54 +59,30 @@ CREATE TABLE "HousesOnVehicles" (
 );
 
 -- CreateTable
-CREATE TABLE "Tenant" (
-    "id" TEXT NOT NULL,
-    "firstName" TEXT NOT NULL,
-    "lastName" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "houseId" TEXT,
-
-    CONSTRAINT "Tenant_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Reservation" (
-    "id" TEXT NOT NULL,
-    "reservedFrom" TIMESTAMP(3) NOT NULL,
-    "reservedTo" TIMESTAMP(3) NOT NULL,
-    "communityId" TEXT NOT NULL,
-    "vehicleId" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Reservation_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
     "avatar" TEXT,
-    "email" TEXT,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
     "emailConfirmed" BOOLEAN NOT NULL DEFAULT false,
     "role" "Role" NOT NULL DEFAULT E'USER',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "tenantId" TEXT,
+    "houseId" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "UserPassword" (
+CREATE TABLE "Password" (
     "id" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "forceChange" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "UserPassword_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Password_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -134,6 +110,21 @@ CREATE TABLE "UserInvite" (
     CONSTRAINT "UserInvite_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Reservation" (
+    "id" TEXT NOT NULL,
+    "reservedFrom" TIMESTAMP(3) NOT NULL,
+    "reservedTo" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT NOT NULL,
+    "houseId" TEXT NOT NULL,
+    "communityId" TEXT NOT NULL,
+    "vehicleId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Reservation_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "CustomDomain_domain_key" ON "CustomDomain"("domain");
 
@@ -148,9 +139,6 @@ CREATE UNIQUE INDEX "Vehicle_licensePlate_key" ON "Vehicle"("licensePlate");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_tenantId_key" ON "User"("tenantId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "RefreshToken_hash_key" ON "RefreshToken"("hash");
@@ -174,22 +162,25 @@ ALTER TABLE "HousesOnVehicles" ADD CONSTRAINT "HousesOnVehicles_houseId_fkey" FO
 ALTER TABLE "HousesOnVehicles" ADD CONSTRAINT "HousesOnVehicles_vehicleId_fkey" FOREIGN KEY ("vehicleId") REFERENCES "Vehicle"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Tenant" ADD CONSTRAINT "Tenant_houseId_fkey" FOREIGN KEY ("houseId") REFERENCES "House"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "User" ADD CONSTRAINT "User_houseId_fkey" FOREIGN KEY ("houseId") REFERENCES "House"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Reservation" ADD CONSTRAINT "Reservation_communityId_fkey" FOREIGN KEY ("communityId") REFERENCES "Community"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Reservation" ADD CONSTRAINT "Reservation_vehicleId_fkey" FOREIGN KEY ("vehicleId") REFERENCES "Vehicle"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "User" ADD CONSTRAINT "User_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "UserPassword" ADD CONSTRAINT "UserPassword_id_fkey" FOREIGN KEY ("id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Password" ADD CONSTRAINT "Password_id_fkey" FOREIGN KEY ("id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "RefreshToken" ADD CONSTRAINT "RefreshToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UserInvite" ADD CONSTRAINT "UserInvite_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Reservation" ADD CONSTRAINT "Reservation_communityId_fkey" FOREIGN KEY ("communityId") REFERENCES "Community"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Reservation" ADD CONSTRAINT "Reservation_houseId_fkey" FOREIGN KEY ("houseId") REFERENCES "House"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Reservation" ADD CONSTRAINT "Reservation_vehicleId_fkey" FOREIGN KEY ("vehicleId") REFERENCES "Vehicle"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Reservation" ADD CONSTRAINT "Reservation_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
