@@ -69,24 +69,16 @@ export interface NexusGenObjects {
     unit: string; // String!
   }
   HousesOnVehicles: {};
-  Mutation: {};
   Query: {};
-  RefreshToken: { // root type
-    expiration: NexusGenScalars['DateTime']; // DateTime!
-    hash: string; // String!
-    valid: boolean; // Boolean!
-  }
   Reservation: { // root type
     id: string; // ID!
     reservedFrom: NexusGenScalars['DateTime']; // DateTime!
     reservedTo: NexusGenScalars['DateTime']; // DateTime!
   }
   User: { // root type
-    email: string; // String!
-    emailConfirmed: boolean; // Boolean!
-    firstName: string; // String!
+    email?: string | null; // String
     id: string; // ID!
-    lastName: string; // String!
+    name?: string | null; // String
   }
   Vehicle: { // root type
     id: string; // ID!
@@ -128,20 +120,9 @@ export interface NexusGenFieldTypes {
     House: NexusGenRootTypes['House']; // House!
     Vehicle: NexusGenRootTypes['Vehicle']; // Vehicle!
   }
-  Mutation: { // field return type
-    refreshJwt: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
-    signupUser: NexusGenRootTypes['User'] | null; // User
-    userLogin: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
-  }
   Query: { // field return type
     getCurrentReservations: Array<NexusGenRootTypes['Reservation'] | null> | null; // [Reservation]
     user: NexusGenRootTypes['User'] | null; // User
-  }
-  RefreshToken: { // field return type
-    User: NexusGenRootTypes['User']; // User!
-    expiration: NexusGenScalars['DateTime']; // DateTime!
-    hash: string; // String!
-    valid: boolean; // Boolean!
   }
   Reservation: { // field return type
     Community: NexusGenRootTypes['Community']; // Community!
@@ -154,11 +135,10 @@ export interface NexusGenFieldTypes {
   }
   User: { // field return type
     House: NexusGenRootTypes['House'] | null; // House
-    email: string; // String!
-    emailConfirmed: boolean; // Boolean!
-    firstName: string; // String!
+    Reservations: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
+    email: string | null; // String
     id: string; // ID!
-    lastName: string; // String!
+    name: string | null; // String
   }
   Vehicle: { // field return type
     Houses: NexusGenRootTypes['HousesOnVehicles'][]; // [HousesOnVehicles!]!
@@ -192,20 +172,9 @@ export interface NexusGenFieldTypeNames {
     House: 'House'
     Vehicle: 'Vehicle'
   }
-  Mutation: { // field return type name
-    refreshJwt: 'AuthPayload'
-    signupUser: 'User'
-    userLogin: 'AuthPayload'
-  }
   Query: { // field return type name
     getCurrentReservations: 'Reservation'
     user: 'User'
-  }
-  RefreshToken: { // field return type name
-    User: 'User'
-    expiration: 'DateTime'
-    hash: 'String'
-    valid: 'Boolean'
   }
   Reservation: { // field return type name
     Community: 'Community'
@@ -218,11 +187,10 @@ export interface NexusGenFieldTypeNames {
   }
   User: { // field return type name
     House: 'House'
+    Reservations: 'Reservation'
     email: 'String'
-    emailConfirmed: 'Boolean'
-    firstName: 'String'
     id: 'ID'
-    lastName: 'String'
+    name: 'String'
   }
   Vehicle: { // field return type name
     Houses: 'HousesOnVehicles'
@@ -234,19 +202,6 @@ export interface NexusGenFieldTypeNames {
 }
 
 export interface NexusGenArgTypes {
-  Mutation: {
-    signupUser: { // args
-      avatar?: string | null; // String
-      email: string; // String!
-      firstName: string; // String!
-      lastName: string; // String!
-      password: string; // String!
-    }
-    userLogin: { // args
-      email: string; // String!
-      password: string; // String!
-    }
-  }
   Query: {
     getCurrentReservations: { // args
       communityId: string; // String!

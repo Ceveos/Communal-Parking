@@ -2,12 +2,12 @@ import {
   ChevronDownIcon,
   MenuAlt2Icon,
 } from '@heroicons/react/outline';
-import { Fragment, useContext } from 'react';
+import { Fragment, useEffect } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { SearchIcon} from '@heroicons/react/solid';
 import { SidebarLink } from './sidebar';
+import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
-import UserContext from 'context/UserContext';
 import classNames from 'lib/classNames';
 
 interface Props {
@@ -17,7 +17,11 @@ interface Props {
 }
 
 const Navbar: React.FC<Props> = ({menuItems, setSidebarOpen}) => {
-  const { user, loaded } = useContext(UserContext);
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    console.log(`Session: ${session}`);
+  }, [session]);
 
   return (<>
     <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white dark:bg-primary-dark-900 dark:border-b-2 dark:border-primary-dark-800 shadow">
@@ -55,56 +59,71 @@ const Navbar: React.FC<Props> = ({menuItems, setSidebarOpen}) => {
         </div>
         <div className="ml-4 flex items-center md:ml-6">
           {/* Profile dropdown */}
-          <Menu as="div" className="ml-3 relative">
-            <div>
-              <Menu.Button className="max-w-xs bg-white dark:bg-primary-dark-900 rounded-full flex items-center text-sm
+          {!session && (
+            <button
+              type="button"
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium
+                   text-white bg-accent-600 hover:bg-accent-700
+                   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500
+                   dark:text-white dark:bg-accent-dark-900 dark:hover:bg-accent-dark-800
+                   dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-offset-2 dark:focus:ring-accent-dark-700"
+              onClick={() => signIn()}
+            >
+              Sign in
+            </button>
+          )}
+          {session && (
+            <Menu as="div" className="ml-3 relative">
+              <div>
+                <Menu.Button className="max-w-xs bg-white dark:bg-primary-dark-900 rounded-full flex items-center text-sm
               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500
               dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-offset-2 dark:focus:ring-accent-dark-500
               lg:p-2 lg:rounded-md lg:hover:bg-gray-50 dark:lg:hover:bg-primary-dark-800">
-                <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-gray-500">
-                  <span className="text-sm font-medium leading-none text-white">AC</span>
-                </span>
+                  <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-gray-500">
+                    <span className="text-sm font-medium leading-none text-white">AC</span>
+                  </span>
 
-                <span className="hidden ml-3 text-gray-700 dark:text-white text-sm font-medium md:block">
-                  <span className="sr-only">Open user menu for </span>Alex Casasola
-                </span>
-                <ChevronDownIcon
-                  className="hidden flex-shrink-0 ml-1 h-5 w-5 text-gray-400 md:block"
-                  aria-hidden="true"
-                />
-              </Menu.Button>
-            </div>
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-100"
-              enterFrom="transform opacity-0 scale-95"
-              enterTo="transform opacity-100 scale-100"
-              leave="transition ease-in duration-75"
-              leaveFrom="transform opacity-100 scale-100"
-              leaveTo="transform opacity-0 scale-95"
-            >
-              <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1
+                  <span className="hidden ml-3 text-gray-700 dark:text-white text-sm font-medium md:block">
+                    <span className="sr-only">Open user menu for </span>Alex Casasola
+                  </span>
+                  <ChevronDownIcon
+                    className="hidden flex-shrink-0 ml-1 h-5 w-5 text-gray-400 md:block"
+                    aria-hidden="true"
+                  />
+                </Menu.Button>
+              </div>
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-100"
+                enterFrom="transform opacity-0 scale-95"
+                enterTo="transform opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="transform opacity-100 scale-100"
+                leaveTo="transform opacity-0 scale-95"
+              >
+                <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1
               bg-white ring-1 ring-black ring-opacity-5 focus:outline-none
               dark:bg-primary-dark-900 dark:ring-1 dark:ring-primary-dark-800 dark:ring-opacity-75 dark:focus:outline-none">
-                {menuItems.map((item) => (
-                  <Menu.Item key={item.name}>
-                    {({ active }) => (
-                      <Link
-                        href={item.href}
-                      >
-                        <a className={classNames(
-                          active ? 'bg-gray-100 dark:bg-primary-dark-700' : '',
-                          'hover:bg-gray-100 dark:hover:bg-primary-dark-700 block px-4 py-2 text-sm text-gray-700 dark:text-primary-dark-200'
-                        )}>
-                          {item.name}
-                        </a>
-                      </Link>
-                    )}
-                  </Menu.Item>
-                ))}
-              </Menu.Items>
-            </Transition>
-          </Menu>
+                  {menuItems.map((item) => (
+                    <Menu.Item key={item.name}>
+                      {({ active }) => (
+                        <Link
+                          href={item.href}
+                        >
+                          <a className={classNames(
+                            active ? 'bg-gray-100 dark:bg-primary-dark-700' : '',
+                            'hover:bg-gray-100 dark:hover:bg-primary-dark-700 block px-4 py-2 text-sm text-gray-700 dark:text-primary-dark-200'
+                          )}>
+                            {item.name}
+                          </a>
+                        </Link>
+                      )}
+                    </Menu.Item>
+                  ))}
+                </Menu.Items>
+              </Transition>
+            </Menu>
+          )}
         </div>
       </div>
     </div>

@@ -21,10 +21,9 @@ async function main() {
   });
   const user = await prisma.user.create({
     data: {
-      firstName: 'Alex',
-      lastName: 'Casasola',
+      name: 'Alex',
       email: 'alex@casasola.dev',
-      emailConfirmed: true,
+      emailVerified: new Date(),
       role: 'ADMIN',
       House: {
         connect: {

@@ -34,22 +34,9 @@ type HousesOnVehicles {
   Vehicle: Vehicle!
 }
 
-type Mutation {
-  refreshJwt: AuthPayload
-  signupUser(avatar: String, email: String!, firstName: String!, lastName: String!, password: String!): User
-  userLogin(email: String!, password: String!): AuthPayload
-}
-
 type Query {
   getCurrentReservations(communityId: String!): [Reservation]
   user(userId: String!): User
-}
-
-type RefreshToken {
-  User: User!
-  expiration: DateTime!
-  hash: String!
-  valid: Boolean!
 }
 
 type Reservation {
@@ -64,11 +51,10 @@ type Reservation {
 
 type User {
   House: House
-  email: String!
-  emailConfirmed: Boolean!
-  firstName: String!
+  Reservations: [Reservation!]!
+  email: String
   id: ID!
-  lastName: String!
+  name: String
 }
 
 type Vehicle {
