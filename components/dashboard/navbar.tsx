@@ -20,7 +20,7 @@ const Navbar: React.FC<Props> = ({menuItems, setSidebarOpen}) => {
   const { data: session } = useSession();
 
   useEffect(() => {
-    console.log(`Session: ${session}`);
+    console.log('Session:', session);
   }, [session]);
 
   return (<>

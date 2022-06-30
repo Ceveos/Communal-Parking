@@ -7,6 +7,8 @@ const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith('https://') ?? fal
 const cookiePrefix = useSecureCookies ? '__Secure-' : '';
 const hostName = new URL(process.env.NEXTAUTH_URL ?? '').hostname;
 
+console.log(`Hostnamne: ${hostName}`);
+
 export default NextAuth({
   debug: true,
   adapter: PrismaAdapter(prisma),
@@ -87,8 +89,8 @@ export default NextAuth({
     async redirect({ url, baseUrl }) {
       console.log(`Redirect: URL: ${url}; Base URL: ${baseUrl}`);
       // Allows relative callback URLs
-      if (url.startsWith('/')) return `${baseUrl}${url}`;
-      return url;
+      if (url.startsWith('/')) return Promise.resolve(`${baseUrl}${url}`);
+      return Promise.resolve(url);
     }
   },
 });

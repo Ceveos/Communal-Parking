@@ -7,6 +7,7 @@ import type { NextRequest } from 'next/server';
 const nonCustomizedDomains = [
   'localhost:3000',
   'communalparking.com',
+  'communalparking.test:3000',
   process.env['DOMAIN'],
 ];
 

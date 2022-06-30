@@ -2,7 +2,7 @@
   "name": "fullstack-boilerplate",
   "private": true,
   "scripts": {
-    "dev": "yarn prisma && next dev",
+    "dev": "yarn prisma && next dev --hostname communalparking.test",
     "build": "yarn prisma && next build",
     "build:only": "yarn generate && next build",
     "start": "yarn prisma && next start",
