@@ -23,9 +23,8 @@ export const GET_CURRENT_RESERVATIONS_QUERY = gql`
       House {
         unit
       }
-      Tenant {
-        firstName
-        lastName
+      User {
+        name
       }
     }
   }
@@ -47,10 +46,9 @@ const reservation = Prisma.validator<Prisma.ReservationArgs>()({
         unit: true
       }
     },
-    Tenant: {
+    User: {
       select: {
-        firstName: true,
-        lastName: true
+        name: true,
       }
     },
   }

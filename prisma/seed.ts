@@ -2,13 +2,6 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  const user = await prisma.user.create({
-    data: {
-      name: 'Alex',
-      email: 'alex@casasola.dev',
-      role: 'ADMIN'
-    },
-  });
   const community = await prisma.community.create({
     data: {
       name: 'Ladera',
@@ -26,18 +19,15 @@ async function main() {
       }
     }
   });
-  const tenant = await prisma.tenant.create({
+  const user = await prisma.user.create({
     data: {
-      firstName: 'Alex',
-      lastName: 'Casasola',
+      name: 'Alex',
+      email: 'alex@casasola.dev',
+      emailVerified: new Date(),
+      role: 'ADMIN',
       House: {
         connect: {
           id: house.id
-        }
-      },
-      User: {
-        connect: {
-          id: user.id
         }
       }
     }
@@ -86,9 +76,9 @@ async function main() {
           id: vehicle.id
         }
       },
-      Tenant: {
+      User: {
         connect: {
-          id: tenant.id
+          id: user.id
         }
       }
     }

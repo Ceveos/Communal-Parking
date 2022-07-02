@@ -23,7 +23,7 @@ scalar DateTime
 
 type House {
   Community: Community!
-  Tenants: [Tenant!]!
+  Users: [User!]!
   Vehicles: [HousesOnVehicles!]!
   id: ID!
   unit: String!
@@ -32,53 +32,38 @@ type House {
 type HousesOnVehicles {
   House: House!
   Vehicle: Vehicle!
-}
-
-type Mutation {
-  refreshJwt: AuthPayload
-  signupUser(avatar: String, email: String!, name: String, password: String!): User
-  userLogin(email: String!, password: String!): AuthPayload
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Query {
   getCurrentReservations(communityId: String!): [Reservation]
+  getVehicles(houseId: String!): [HousesOnVehicles]
   user(userId: String!): User
-}
-
-type RefreshToken {
-  User: User!
-  expiration: DateTime!
-  hash: String!
-  valid: Boolean!
 }
 
 type Reservation {
   Community: Community!
   House: House!
-  Tenant: Tenant
+  User: User
   Vehicle: Vehicle!
   id: ID!
   reservedFrom: DateTime!
   reservedTo: DateTime!
 }
 
-type Tenant {
-  House: House
-  User: User
-  firstName: String!
-  id: ID!
-  lastName: String!
-}
-
 type User {
-  Tenant: Tenant
-  email: String!
+  House: House
+  Reservations: [Reservation!]!
+  email: String
   id: ID!
+  name: String
 }
 
 type Vehicle {
   Houses: [HousesOnVehicles!]!
   Reservations: [Reservation!]!
+  description: String
   id: ID!
   licensePlate: String!
   name: String!

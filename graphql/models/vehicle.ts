@@ -1,5 +1,4 @@
 import * as NexusPrisma from 'nexus-prisma';
-import * as Prisma from '@prisma/client';
 import { objectType } from 'nexus';
 
 export const Vehicles = objectType({
@@ -10,6 +9,7 @@ export const Vehicles = objectType({
     t.field(NexusPrisma.Vehicle.Houses);
     t.field(NexusPrisma.Vehicle.Reservations);
     t.nonNull.field(NexusPrisma.Vehicle.licensePlate);
+    t.field(NexusPrisma.Vehicle.description);
     t.field(NexusPrisma.Vehicle.name);
   },
 });

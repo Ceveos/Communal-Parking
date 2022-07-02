@@ -1,23 +1,20 @@
-import { AuthenticationError } from 'apollo-server-micro';
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
-import { IncomingMessage, ServerResponse } from 'http';
-import { JsonWebTokenError, NotBeforeError, TokenExpiredError, verify } from 'jsonwebtoken';
+import { JWT, getToken } from 'next-auth/jwt';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
-import { UserToken } from './models/userToken';
-import { assert } from './utils/assert';
+import { getSession } from 'next-auth/react';
 import { prisma } from 'db';
 
 export type Context = {
-  req: IncomingMessage;
-  res: ServerResponse;
+  req: NextApiRequest;
+  res: NextApiResponse;
   prisma: PrismaClient;
-  token: UserToken | null;
+  token: JWT | null;
 }
 
 export type MockContext = {
   prisma: DeepMockProxy<PrismaClient>;
-  token: UserToken | null;
+  // token: UserToken | null;
 }
 
 export const tokens = {
@@ -37,8 +34,8 @@ export function getIpAddress(ctx: Context): string {
 export function userIdentifier(ctx: Context): string {
   const ip = getIpAddress(ctx);
 
-  console.log(`IP Address: ${ip} | user id: ${ctx.token?.userId}`);
-  return ctx.token?.userId ?? ip;
+  console.log(`IP Address: ${ip} | user id: ${ctx.token?.id}}`);
+  return ctx.token?.id ?? ip;
 }
 
 export interface Token {
@@ -55,50 +52,22 @@ interface IncomingContext {
 export const createMockContext = (): MockContext => {
   return {
     prisma: mockDeep<PrismaClient>(),
-    token: null
+    // token: null
   };
 };
 
-export const createContext = (ctx: IncomingContext): Context => {
-  const { JWT_SECRET } = process.env;
-  const { req } = ctx;
-  const authorization = req?.headers?.authorization ?? '';
+export const createContext = async (ctx: IncomingContext): Promise<Context> => {
+  // console.log('Here 1');
+  // const userSession = await getSession({ ctx });
+  const userToken = await getToken({req: ctx.req});
 
-  assert(JWT_SECRET, 'Missing JWT_SECRET environment variable');
+  // console.log('Creating context for:');
+  // console.log(userSession);
+  // console.log(userToken);
 
-  // console.log(req.cookies);
-
-  // console.log(`Authorization: ${authorization}`);
-
-  const tokenStr = authorization.replace('Bearer ', '');
-  let token: UserToken | null = null;
-
-  try {
-    if (tokenStr) {
-      token = verify(tokenStr, JWT_SECRET) as UserToken;
-    }
-  } catch (error) {
-    if (error instanceof TokenExpiredError) {
-      throw new AuthenticationError('Token is expired');
-    }
-    else if (error instanceof JsonWebTokenError) {
-      throw new AuthenticationError('Error parsing token');
-    }
-    else if (error instanceof NotBeforeError) {
-      throw new AuthenticationError('Token not yet valid');
-    } else {
-      throw new AuthenticationError('Unknown authentication error');
-    }
-  }
-
-  // const verifiedToken = verify(token, JWT_SECRET) as Token
-
-  // if (!verifiedToken.userId && verifiedToken.type !== tokens.access.name)
-  // userId = -1
-  // else userId = verifiedToken.userId
   return {
     ...ctx,
     prisma,
-    token
+    token: userToken
   };
 };

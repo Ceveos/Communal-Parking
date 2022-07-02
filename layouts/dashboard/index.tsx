@@ -30,7 +30,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ community, children, 
 
             <div className="md:pl-64 flex flex-col">
               <Navbar
-                menuItems={sidebarMenuItems}
                 setSidebarOpen={setSidebarOpen}
               />
               <main className="flex-1">

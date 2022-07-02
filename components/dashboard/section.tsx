@@ -11,7 +11,7 @@ export const DashboardSectionButton: React.FC<ButtonProps> = ({ buttonText, href
         href={href}
         passHref
       >
-        <button
+        <a
           type="button"
           className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium
           text-white bg-accent-600 hover:bg-accent-700
@@ -20,7 +20,7 @@ export const DashboardSectionButton: React.FC<ButtonProps> = ({ buttonText, href
           dark:focus:outline-none dark:focus:ring-2 dark:focus:ring-offset-2 dark:focus:ring-accent-dark-700"
         >
           {buttonText}
-        </button>
+        </a>
       </Link>
     </div>
   );

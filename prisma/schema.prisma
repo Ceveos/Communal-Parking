@@ -21,7 +21,7 @@ enum Role {
 }
 
 model CustomDomain {
-  id          String    @id @default(uuid())
+  id          String    @id @default(cuid())
   domain      String    @unique
   communityId String
   Community   Community @relation(fields: [communityId], references: [id])
@@ -30,7 +30,7 @@ model CustomDomain {
 }
 
 model Community {
-  id            String         @id @default(uuid())
+  id            String         @id @default(cuid())
   name          String
   subdomain     String         @unique
   parkingSpaces Int
@@ -42,20 +42,20 @@ model Community {
 }
 
 model House {
-  id           String             @id @default(uuid())
+  id           String             @id @default(cuid())
   unit         String             @unique
   description  String?
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
   communityId  String
   Community    Community          @relation(fields: [communityId], references: [id])
-  Tenants      Tenant[]
+  Users        User[]
   Vehicles     HousesOnVehicles[]
   Reservations Reservation[]
 }
 
 model Vehicle {
-  id           String             @id @default(uuid())
+  id           String             @id @default(cuid())
   name         String
   description  String?
   licensePlate String             @unique
@@ -76,24 +76,12 @@ model HousesOnVehicles {
   @@id([houseId, vehicleId])
 }
 
-model Tenant {
-  id           String        @id @default(uuid())
-  firstName    String
-  lastName     String
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  houseId      String?
-  House        House?        @relation(fields: [houseId], references: [id])
-  User         User?
-  Reservations Reservation[]
-}
-
 model Reservation {
-  id           String    @id @default(uuid())
+  id           String    @id @default(cuid())
   reservedFrom DateTime
   reservedTo   DateTime
-  tenantId     String
-  Tenant       Tenant?   @relation(fields: [tenantId], references: [id])
+  userId       String
+  User         User?     @relation(fields: [userId], references: [id])
   houseId      String
   House        House     @relation(fields: [houseId], references: [id])
   communityId  String
@@ -104,50 +92,53 @@ model Reservation {
   updatedAt    DateTime  @updatedAt
 }
 
+// Next-Auth stuff
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model User {
-  id             String         @id @default(uuid())
-  name           String
-  avatar         String?
-  email          String         @unique
-  emailConfirmed Boolean        @default(false)
-  role           Role           @default(USER)
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  tenantId       String?        @unique
-  Tenant         Tenant?        @relation(fields: [tenantId], references: [id])
-  Password       UserPassword?
-  Tokens         RefreshToken[]
-  Invite         UserInvite?
+  id            String        @id @default(cuid())
+  name          String?
+  email         String?       @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role          @default(USER)
+  houseId       String?
+  House         House?        @relation(fields: [houseId], references: [id])
+  Reservations  Reservation[]
+  accounts      Account[]
+  sessions      Session[]
 }
 
-model UserPassword {
-  id          String   @id
-  password    String
-  forceChange Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  User        User     @relation(fields: [id], references: [id])
-}
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
-model RefreshToken {
-  id         Int      @id @default(autoincrement())
-  label      String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  hash       String   @unique
-  valid      Boolean  @default(true)
-  expiration DateTime
-
-  // Relation fields
-  userId String
-  User   User   @relation(fields: [userId], references: [id])
-}
-
-model UserInvite {
-  id        String   @id @default(uuid())
-  token     String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String   @unique
-  User      User     @relation(fields: [userId], references: [id])
+  @@unique([identifier, token])
 }

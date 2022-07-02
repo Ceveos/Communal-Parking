@@ -68,29 +68,23 @@ export interface NexusGenObjects {
     id: string; // ID!
     unit: string; // String!
   }
-  HousesOnVehicles: {};
-  Mutation: {};
-  Query: {};
-  RefreshToken: { // root type
-    expiration: NexusGenScalars['DateTime']; // DateTime!
-    hash: string; // String!
-    valid: boolean; // Boolean!
+  HousesOnVehicles: { // root type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
+  Query: {};
   Reservation: { // root type
     id: string; // ID!
     reservedFrom: NexusGenScalars['DateTime']; // DateTime!
     reservedTo: NexusGenScalars['DateTime']; // DateTime!
   }
-  Tenant: { // root type
-    firstName: string; // String!
-    id: string; // ID!
-    lastName: string; // String!
-  }
   User: { // root type
-    email: string; // String!
+    email?: string | null; // String
     id: string; // ID!
+    name?: string | null; // String
   }
   Vehicle: { // root type
+    description?: string | null; // String
     id: string; // ID!
     licensePlate: string; // String!
     name: string; // String!
@@ -121,7 +115,7 @@ export interface NexusGenFieldTypes {
   }
   House: { // field return type
     Community: NexusGenRootTypes['Community']; // Community!
-    Tenants: NexusGenRootTypes['Tenant'][]; // [Tenant!]!
+    Users: NexusGenRootTypes['User'][]; // [User!]!
     Vehicles: NexusGenRootTypes['HousesOnVehicles'][]; // [HousesOnVehicles!]!
     id: string; // ID!
     unit: string; // String!
@@ -129,46 +123,34 @@ export interface NexusGenFieldTypes {
   HousesOnVehicles: { // field return type
     House: NexusGenRootTypes['House']; // House!
     Vehicle: NexusGenRootTypes['Vehicle']; // Vehicle!
-  }
-  Mutation: { // field return type
-    refreshJwt: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
-    signupUser: NexusGenRootTypes['User'] | null; // User
-    userLogin: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   Query: { // field return type
     getCurrentReservations: Array<NexusGenRootTypes['Reservation'] | null> | null; // [Reservation]
+    getVehicles: Array<NexusGenRootTypes['HousesOnVehicles'] | null> | null; // [HousesOnVehicles]
     user: NexusGenRootTypes['User'] | null; // User
-  }
-  RefreshToken: { // field return type
-    User: NexusGenRootTypes['User']; // User!
-    expiration: NexusGenScalars['DateTime']; // DateTime!
-    hash: string; // String!
-    valid: boolean; // Boolean!
   }
   Reservation: { // field return type
     Community: NexusGenRootTypes['Community']; // Community!
     House: NexusGenRootTypes['House']; // House!
-    Tenant: NexusGenRootTypes['Tenant'] | null; // Tenant
+    User: NexusGenRootTypes['User'] | null; // User
     Vehicle: NexusGenRootTypes['Vehicle']; // Vehicle!
     id: string; // ID!
     reservedFrom: NexusGenScalars['DateTime']; // DateTime!
     reservedTo: NexusGenScalars['DateTime']; // DateTime!
   }
-  Tenant: { // field return type
-    House: NexusGenRootTypes['House'] | null; // House
-    User: NexusGenRootTypes['User'] | null; // User
-    firstName: string; // String!
-    id: string; // ID!
-    lastName: string; // String!
-  }
   User: { // field return type
-    Tenant: NexusGenRootTypes['Tenant'] | null; // Tenant
-    email: string; // String!
+    House: NexusGenRootTypes['House'] | null; // House
+    Reservations: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
+    email: string | null; // String
     id: string; // ID!
+    name: string | null; // String
   }
   Vehicle: { // field return type
     Houses: NexusGenRootTypes['HousesOnVehicles'][]; // [HousesOnVehicles!]!
     Reservations: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
+    description: string | null; // String
     id: string; // ID!
     licensePlate: string; // String!
     name: string; // String!
@@ -189,7 +171,7 @@ export interface NexusGenFieldTypeNames {
   }
   House: { // field return type name
     Community: 'Community'
-    Tenants: 'Tenant'
+    Users: 'User'
     Vehicles: 'HousesOnVehicles'
     id: 'ID'
     unit: 'String'
@@ -197,46 +179,34 @@ export interface NexusGenFieldTypeNames {
   HousesOnVehicles: { // field return type name
     House: 'House'
     Vehicle: 'Vehicle'
-  }
-  Mutation: { // field return type name
-    refreshJwt: 'AuthPayload'
-    signupUser: 'User'
-    userLogin: 'AuthPayload'
+    createdAt: 'DateTime'
+    updatedAt: 'DateTime'
   }
   Query: { // field return type name
     getCurrentReservations: 'Reservation'
+    getVehicles: 'HousesOnVehicles'
     user: 'User'
-  }
-  RefreshToken: { // field return type name
-    User: 'User'
-    expiration: 'DateTime'
-    hash: 'String'
-    valid: 'Boolean'
   }
   Reservation: { // field return type name
     Community: 'Community'
     House: 'House'
-    Tenant: 'Tenant'
+    User: 'User'
     Vehicle: 'Vehicle'
     id: 'ID'
     reservedFrom: 'DateTime'
     reservedTo: 'DateTime'
   }
-  Tenant: { // field return type name
-    House: 'House'
-    User: 'User'
-    firstName: 'String'
-    id: 'ID'
-    lastName: 'String'
-  }
   User: { // field return type name
-    Tenant: 'Tenant'
+    House: 'House'
+    Reservations: 'Reservation'
     email: 'String'
     id: 'ID'
+    name: 'String'
   }
   Vehicle: { // field return type name
     Houses: 'HousesOnVehicles'
     Reservations: 'Reservation'
+    description: 'String'
     id: 'ID'
     licensePlate: 'String'
     name: 'String'
@@ -244,21 +214,12 @@ export interface NexusGenFieldTypeNames {
 }
 
 export interface NexusGenArgTypes {
-  Mutation: {
-    signupUser: { // args
-      avatar?: string | null; // String
-      email: string; // String!
-      name?: string | null; // String
-      password: string; // String!
-    }
-    userLogin: { // args
-      email: string; // String!
-      password: string; // String!
-    }
-  }
   Query: {
     getCurrentReservations: { // args
       communityId: string; // String!
+    }
+    getVehicles: { // args
+      houseId: string; // String!
     }
     user: { // args
       userId: string; // String!

@@ -1,0 +1,98 @@
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { prisma } from 'db';
+import EmailProvider from 'next-auth/providers/email';;
+import NextAuth from 'next-auth';
+
+const useSecureCookies = process.env.NEXTAUTH_URL?.startsWith('https://') ?? false;
+const cookiePrefix = useSecureCookies ? '__Secure-' : '';
+const hostName = new URL(process.env.NEXTAUTH_URL ?? '').hostname;
+
+console.log(`Hostnamne: ${hostName}`);
+
+export default NextAuth({
+  debug: true,
+  adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: 'jwt'
+  },
+  cookies: {
+    sessionToken: {
+      name: `${cookiePrefix}next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: useSecureCookies,
+        domain: hostName == 'localhost' ? hostName : '.' + hostName
+      }
+    },
+    callbackUrl: {
+      name: `${cookiePrefix}next-auth.callback-url`,
+      options: {
+        sameSite: 'lax',
+        path: '/',
+        secure: useSecureCookies,
+        domain: hostName == 'localhost' ? hostName : '.' + hostName
+      }
+    },
+    csrfToken: {
+      name: 'next-auth.csrf-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: useSecureCookies,
+        domain: hostName == 'localhost' ? hostName : '.' + hostName
+      }
+    },
+  },
+  providers: [
+    EmailProvider({
+      server: process.env.EMAIL_SERVER,
+      from: process.env.EMAIL_FROM,
+      // maxAge: 24 * 60 * 60, // How long email links are valid for (default 24h)
+    })
+  ],
+  callbacks: {
+    // async signIn({ user, account, profile, email, credentials }) {
+    //   const isAllowedToSignIn = true;
+
+    //   if (email.verificationRequest) {
+    //     // Check db to see if allowed to sign in
+    //     prisma.user.count({
+    //       where: {
+    //         email: user.email
+    //       }
+    //     })
+    //   }
+
+    //   if (isAllowedToSignIn) {
+    //     return true;
+    //   } else {
+    //     // Return false to display a default error message
+    //     return false;
+    //     // Or you can return a URL to redirect to:
+    //     // return '/unauthorized'
+    //   }
+    // },
+    jwt({token, user}) {
+      token.role = user?.role ?? token.role;
+      token.id = user?.id ?? token.id;
+      token.houseId = user?.houseId ?? token.houseId;
+      token.name = token.name ?? token.email ?? 'User';
+      return token;
+    },
+    session({ session, token }) {
+      session.user.id = token.id ?? session.user.id;
+      session.user.role = token.role ?? session.user.role;
+      session.user.houseId = token.houseId ?? session.user.houseId;
+      session.user.name = token.name ?? session.user.name ?? session.user.email ?? 'User';
+      return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // Allows relative callback URLs
+      if (url.startsWith('/')) return Promise.resolve(`${baseUrl}${url}`);
+      return Promise.resolve(url);
+    }
+  },
+});
