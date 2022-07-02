@@ -75,18 +75,32 @@ export default NextAuth({
     //     // return '/unauthorized'
     //   }
     // },
-    jwt({token, user}) {
-      token.role = user?.role ?? token.role;
-      token.id = user?.id ?? token.id;
-      token.houseId = user?.houseId ?? token.houseId;
-      token.name = token.name ?? token.email ?? 'User';
+    async jwt({token, user}) {
+      if (user) {
+        // If we have a house, get the community ID
+        if (user.houseId) {
+          const houseData = await prisma.house.findUnique({
+            where: {
+              id: user.houseId
+            }
+          });
+
+          token.communityId = houseData?.communityId;
+        }
+
+        token.role = user?.role ?? token.role;
+        token.id = user?.id ?? token.id;
+        token.houseId = user?.houseId ?? token.houseId;
+      }
+      token.name = user?.name ?? token.name ?? token.email ?? 'User';
       return token;
     },
     session({ session, token }) {
-      session.user.id = token.id ?? session.user.id;
-      session.user.role = token.role ?? session.user.role;
-      session.user.houseId = token.houseId ?? session.user.houseId;
-      session.user.name = token.name ?? session.user.name ?? session.user.email ?? 'User';
+      session.user.id = token.id;
+      session.user.role = token.role;
+      session.user.houseId = token.houseId;
+      session.user.communityId = token.communityId;
+      session.user.name = token.name;
       return session;
     },
     async redirect({ url, baseUrl }) {

@@ -6,10 +6,12 @@ import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import AuthGuard from 'components/common/authGuard';
 import DashboardSection from 'components/dashboard/section';
 import Loader from 'components/sites/Loader';
 import Stat from 'components/dashboard/stat';
 import Stats from 'components/dashboard/stats';
+import Unauthenticated from 'components/common/unauthenticated';
 import VehiclesTable from 'components/dashboard/vehiclesTable';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
@@ -63,19 +65,21 @@ export default function Index(props: IndexProps) {
 
   return (
     <MainSiteDashboardLayout community={community}>
-      <DashboardSection
-        title='My Vehicles'
-        buttonText='Register New Vehicle'
-        href='/vehicles/new'
-      >
-        {/* Stats */}
-        <Stats>
-          <Stat header='Vehicles Registered' body={registeredStat} />
-        </Stats>
+      <AuthGuard community={community} communityGuard>
+        <DashboardSection
+          title='My Vehicles'
+          buttonText='Register New Vehicle'
+          href='/vehicles/new'
+        >
+          {/* Stats */}
+          <Stats>
+            <Stat header='Vehicles Registered' body={registeredStat} />
+          </Stats>
 
-        {/* Table */}
-        <VehiclesTable vehicles={data?.getVehicles} loading={loading} />
-      </DashboardSection>
+          {/* Table */}
+          <VehiclesTable vehicles={data?.getVehicles} loading={loading} />
+        </DashboardSection>
+      </AuthGuard>
     </MainSiteDashboardLayout>
   );
 }
