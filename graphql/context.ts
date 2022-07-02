@@ -1,17 +1,15 @@
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
-import { IncomingMessage, ServerResponse } from 'http';
+import { JWT, getToken } from 'next-auth/jwt';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
-import { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
 import { prisma } from 'db';
 
 export type Context = {
-  req: IncomingMessage;
-  res: ServerResponse;
+  req: NextApiRequest;
+  res: NextApiResponse;
   prisma: PrismaClient;
-  session?: Session
-  // token: UserToken | null;
+  token: JWT | null;
 }
 
 export type MockContext = {
@@ -36,8 +34,8 @@ export function getIpAddress(ctx: Context): string {
 export function userIdentifier(ctx: Context): string {
   const ip = getIpAddress(ctx);
 
-  console.log(`IP Address: ${ip} | user id: ${ctx.session?.user}`);
-  return ctx.session?.user ?? ip;
+  console.log(`IP Address: ${ip} | user id: ${ctx.token?.id}}`);
+  return ctx.token?.id ?? ip;
 }
 
 export interface Token {
@@ -59,15 +57,17 @@ export const createMockContext = (): MockContext => {
 };
 
 export const createContext = async (ctx: IncomingContext): Promise<Context> => {
-  console.log('Here 1');
-  const userSession = await getSession({ ctx });
+  // console.log('Here 1');
+  // const userSession = await getSession({ ctx });
+  const userToken = await getToken({req: ctx.req});
 
-  console.log('Creating context for:');
-  console.log(JSON.stringify(userSession));
+  // console.log('Creating context for:');
+  // console.log(userSession);
+  // console.log(userToken);
 
   return {
     ...ctx,
     prisma,
-    session: userSession ?? undefined
+    token: userToken
   };
 };

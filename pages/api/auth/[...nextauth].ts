@@ -12,6 +12,9 @@ console.log(`Hostnamne: ${hostName}`);
 export default NextAuth({
   debug: true,
   adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: 'jwt'
+  },
   cookies: {
     sessionToken: {
       name: `${cookiePrefix}next-auth.session-token`,
@@ -72,22 +75,21 @@ export default NextAuth({
     //     // return '/unauthorized'
     //   }
     // },
-    jwt({token, account, user, isNewUser, profile}) {
-      if (user?.role) {
-        token.role = user.role;
-      }
-
+    jwt({token, user}) {
+      token.role = user?.role ?? token.role;
+      token.id = user?.id ?? token.id;
+      token.houseId = user?.houseId ?? token.houseId;
+      token.name = token.name ?? token.email ?? 'User';
       return token;
     },
-    session({ session, token, user }) {
-      if (token?.role) {
-        session.user.
-          session.user.role = token.role;
-      }
-      return session; // The return type will match the one returned in `useSession()`
+    session({ session, token }) {
+      session.user.id = token.id ?? session.user.id;
+      session.user.role = token.role ?? session.user.role;
+      session.user.houseId = token.houseId ?? session.user.houseId;
+      session.user.name = token.name ?? session.user.name ?? session.user.email ?? 'User';
+      return session;
     },
     async redirect({ url, baseUrl }) {
-      console.log(`Redirect: URL: ${url}; Base URL: ${baseUrl}`);
       // Allows relative callback URLs
       if (url.startsWith('/')) return Promise.resolve(`${baseUrl}${url}`);
       return Promise.resolve(url);

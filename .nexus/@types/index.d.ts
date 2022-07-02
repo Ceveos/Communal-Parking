@@ -68,7 +68,10 @@ export interface NexusGenObjects {
     id: string; // ID!
     unit: string; // String!
   }
-  HousesOnVehicles: {};
+  HousesOnVehicles: { // root type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
+  }
   Query: {};
   Reservation: { // root type
     id: string; // ID!
@@ -81,6 +84,7 @@ export interface NexusGenObjects {
     name?: string | null; // String
   }
   Vehicle: { // root type
+    description?: string | null; // String
     id: string; // ID!
     licensePlate: string; // String!
     name: string; // String!
@@ -119,9 +123,12 @@ export interface NexusGenFieldTypes {
   HousesOnVehicles: { // field return type
     House: NexusGenRootTypes['House']; // House!
     Vehicle: NexusGenRootTypes['Vehicle']; // Vehicle!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   Query: { // field return type
     getCurrentReservations: Array<NexusGenRootTypes['Reservation'] | null> | null; // [Reservation]
+    getVehicles: Array<NexusGenRootTypes['HousesOnVehicles'] | null> | null; // [HousesOnVehicles]
     user: NexusGenRootTypes['User'] | null; // User
   }
   Reservation: { // field return type
@@ -143,6 +150,7 @@ export interface NexusGenFieldTypes {
   Vehicle: { // field return type
     Houses: NexusGenRootTypes['HousesOnVehicles'][]; // [HousesOnVehicles!]!
     Reservations: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
+    description: string | null; // String
     id: string; // ID!
     licensePlate: string; // String!
     name: string; // String!
@@ -171,9 +179,12 @@ export interface NexusGenFieldTypeNames {
   HousesOnVehicles: { // field return type name
     House: 'House'
     Vehicle: 'Vehicle'
+    createdAt: 'DateTime'
+    updatedAt: 'DateTime'
   }
   Query: { // field return type name
     getCurrentReservations: 'Reservation'
+    getVehicles: 'HousesOnVehicles'
     user: 'User'
   }
   Reservation: { // field return type name
@@ -195,6 +206,7 @@ export interface NexusGenFieldTypeNames {
   Vehicle: { // field return type name
     Houses: 'HousesOnVehicles'
     Reservations: 'Reservation'
+    description: 'String'
     id: 'ID'
     licensePlate: 'String'
     name: 'String'
@@ -205,6 +217,9 @@ export interface NexusGenArgTypes {
   Query: {
     getCurrentReservations: { // args
       communityId: string; // String!
+    }
+    getVehicles: { // args
+      houseId: string; // String!
     }
     user: { // args
       userId: string; // String!

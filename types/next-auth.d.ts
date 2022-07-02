@@ -1,5 +1,5 @@
 import { JWT } from 'next-auth/jwt';
-import NextAuth from 'next-auth';
+import NextAuth, { DefaultSession } from 'next-auth';
 
 declare module 'next-auth' {
   /**
@@ -7,18 +7,26 @@ declare module 'next-auth' {
    */
   interface Session {
     user: {
-      role?: string
+      id: string;
+      name: string;
+      role: string;
+      houseId: string;
     } & DefaultSession['user']
   }
 
   interface User {
-    role?: string
+    id: string;
+    role: string;
+    houseId: string;
   }
 }
 
 declare module 'next-auth/jwt' {
   /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
   interface JWT {
-    role?: string
+    id: string;
+    name: string;
+    role: string;
+    houseId: string;
   }
 }

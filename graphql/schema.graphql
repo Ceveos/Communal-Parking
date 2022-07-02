@@ -32,10 +32,13 @@ type House {
 type HousesOnVehicles {
   House: House!
   Vehicle: Vehicle!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Query {
   getCurrentReservations(communityId: String!): [Reservation]
+  getVehicles(houseId: String!): [HousesOnVehicles]
   user(userId: String!): User
 }
 
@@ -60,6 +63,7 @@ type User {
 type Vehicle {
   Houses: [HousesOnVehicles!]!
   Reservations: [Reservation!]!
+  description: String
   id: ID!
   licensePlate: String!
   name: String!
