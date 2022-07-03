@@ -67,6 +67,8 @@ model Vehicle {
   houseId      String?
   House        House?        @relation(fields: [houseId], references: [id])
   Reservations Reservation[]
+
+  @@unique([licensePlate, houseId])
 }
 
 model Reservation {

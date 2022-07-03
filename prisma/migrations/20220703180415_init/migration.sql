@@ -124,6 +124,9 @@ CREATE UNIQUE INDEX "Community_subdomain_key" ON "Community"("subdomain");
 CREATE UNIQUE INDEX "House_unit_key" ON "House"("unit");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Vehicle_licensePlate_houseId_key" ON "Vehicle"("licensePlate", "houseId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");
 
 -- CreateIndex
