@@ -2,7 +2,7 @@ import {
   ChevronDownIcon,
   MenuAlt2Icon,
 } from '@heroicons/react/outline';
-import { Fragment, useEffect } from 'react';
+import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { SearchIcon} from '@heroicons/react/solid';
 import { signIn, signOut, useSession } from 'next-auth/react';

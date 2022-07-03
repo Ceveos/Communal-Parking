@@ -57,13 +57,7 @@ export const createMockContext = (): MockContext => {
 };
 
 export const createContext = async (ctx: IncomingContext): Promise<Context> => {
-  // console.log('Here 1');
-  // const userSession = await getSession({ ctx });
   const userToken = await getToken({req: ctx.req});
-
-  // console.log('Creating context for:');
-  // console.log(userSession);
-  // console.log(userToken);
 
   return {
     ...ctx,

@@ -1,4 +1,3 @@
-import { MainSiteDashboardLayout } from 'layouts/dashboard';
 import { Prisma } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import Loader from 'components/sites/Loader';

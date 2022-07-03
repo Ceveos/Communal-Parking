@@ -10,10 +10,6 @@ interface Props {
 
 const VehiclesTable: React.FC<Props> = ({vehicles}) => {
 
-  useEffect(() => {
-    console.log('Vehicles: ', vehicles);
-  }, [vehicles]);
-
   return (
     <div className="mt-5 bg-th-foreground dark:bg-th-foreground-dark shadow overflow-hidden sm:rounded-md">
       <ul role="list" className="divide-y divide-gray-200 dark:divide-y dark:divide-primary-dark-700">
