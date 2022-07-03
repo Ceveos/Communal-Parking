@@ -68,10 +68,6 @@ export interface NexusGenObjects {
     id: string; // ID!
     unit: string; // String!
   }
-  HousesOnVehicles: { // root type
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    updatedAt: NexusGenScalars['DateTime']; // DateTime!
-  }
   Query: {};
   Reservation: { // root type
     id: string; // ID!
@@ -84,10 +80,14 @@ export interface NexusGenObjects {
     name?: string | null; // String
   }
   Vehicle: { // root type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     description?: string | null; // String
+    houseId?: string | null; // String
     id: string; // ID!
     licensePlate: string; // String!
     name: string; // String!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
+    userId?: string | null; // String
   }
 }
 
@@ -116,19 +116,13 @@ export interface NexusGenFieldTypes {
   House: { // field return type
     Community: NexusGenRootTypes['Community']; // Community!
     Users: NexusGenRootTypes['User'][]; // [User!]!
-    Vehicles: NexusGenRootTypes['HousesOnVehicles'][]; // [HousesOnVehicles!]!
+    Vehicles: NexusGenRootTypes['Vehicle'][]; // [Vehicle!]!
     id: string; // ID!
     unit: string; // String!
   }
-  HousesOnVehicles: { // field return type
-    House: NexusGenRootTypes['House']; // House!
-    Vehicle: NexusGenRootTypes['Vehicle']; // Vehicle!
-    createdAt: NexusGenScalars['DateTime']; // DateTime!
-    updatedAt: NexusGenScalars['DateTime']; // DateTime!
-  }
   Query: { // field return type
     getCurrentReservations: Array<NexusGenRootTypes['Reservation'] | null> | null; // [Reservation]
-    getVehicles: Array<NexusGenRootTypes['HousesOnVehicles'] | null> | null; // [HousesOnVehicles]
+    getVehicles: Array<NexusGenRootTypes['Vehicle'] | null> | null; // [Vehicle]
     user: NexusGenRootTypes['User'] | null; // User
   }
   Reservation: { // field return type
@@ -148,12 +142,17 @@ export interface NexusGenFieldTypes {
     name: string | null; // String
   }
   Vehicle: { // field return type
-    Houses: NexusGenRootTypes['HousesOnVehicles'][]; // [HousesOnVehicles!]!
+    House: NexusGenRootTypes['House'] | null; // House
     Reservations: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
+    User: NexusGenRootTypes['User'] | null; // User
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     description: string | null; // String
+    houseId: string | null; // String
     id: string; // ID!
     licensePlate: string; // String!
     name: string; // String!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
+    userId: string | null; // String
   }
 }
 
@@ -172,19 +171,13 @@ export interface NexusGenFieldTypeNames {
   House: { // field return type name
     Community: 'Community'
     Users: 'User'
-    Vehicles: 'HousesOnVehicles'
+    Vehicles: 'Vehicle'
     id: 'ID'
     unit: 'String'
   }
-  HousesOnVehicles: { // field return type name
-    House: 'House'
-    Vehicle: 'Vehicle'
-    createdAt: 'DateTime'
-    updatedAt: 'DateTime'
-  }
   Query: { // field return type name
     getCurrentReservations: 'Reservation'
-    getVehicles: 'HousesOnVehicles'
+    getVehicles: 'Vehicle'
     user: 'User'
   }
   Reservation: { // field return type name
@@ -204,12 +197,17 @@ export interface NexusGenFieldTypeNames {
     name: 'String'
   }
   Vehicle: { // field return type name
-    Houses: 'HousesOnVehicles'
+    House: 'House'
     Reservations: 'Reservation'
+    User: 'User'
+    createdAt: 'DateTime'
     description: 'String'
+    houseId: 'String'
     id: 'ID'
     licensePlate: 'String'
     name: 'String'
+    updatedAt: 'DateTime'
+    userId: 'String'
   }
 }
 

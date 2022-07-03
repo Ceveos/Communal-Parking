@@ -109,7 +109,7 @@ const NewVehicleForm: React.FC<Props> = () => {
                             component={FormikCheckbox}
                             disabled={isSubmitting}
                             title="Personal Vehicle"
-                            subtitle="HOA fines can occur if not stated truthfully"
+                            subtitle="All possessed vehicles must be registered"
                             required
                           />
                         </div>
