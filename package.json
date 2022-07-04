@@ -31,6 +31,7 @@
     "apollo-server-micro": "^3.5.0",
     "argon2": "^0.28.3",
     "cookie": "^0.4.1",
+    "formik": "^2.2.9",
     "graphql": "^16.5.0",
     "graphql-depth-limit": "^1.1.0",
     "graphql-middleware": "6.0.9",

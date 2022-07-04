@@ -1,38 +1,29 @@
-import { GET_VEHICLES_QUERY, GetVehiclesData, GetVehiclesVars } from 'lib/queries/housesOnVehicles';
 import { MainSiteDashboardLayout } from 'layouts/dashboard';
+import { Modify } from 'lib/FixType';
 import { Prisma } from '@prisma/client';
 import { prisma } from 'db';
 import { useEffect, useState } from 'react';
-import { useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
-import AuthGuard from 'components/common/authGuard';
 import DashboardSection from 'components/dashboard/section';
 import Loader from 'components/sites/Loader';
-import Stat from 'components/dashboard/stat';
-import Stats from 'components/dashboard/stats';
-import VehiclesTable from 'components/dashboard/vehiclesTable';
+import Table, { TableRow } from 'components/dashboard/table';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 
 interface PathProps extends ParsedUrlQuery {
   site: string;
+  id: string;
 }
 
 interface IndexProps {
   communityData: string;
+  vehicleData: string;
 }
 
 export default function Index(props: IndexProps) {
   const router = useRouter();
-  const { data: session, status } = useSession();
   const [community, setCommunity] = useState<Prisma.CommunityGetPayload<{}>>();
-  const [registeredStat, setRegisteredStat] = useState<string>();
-  const [getVehicles, { loading, error, data }] =
-    useLazyQuery<GetVehiclesData,GetVehiclesVars>(
-      GET_VEHICLES_QUERY, {
-        fetchPolicy: 'cache-and-network'
-      });
+  const [vehicle, setVehicle] = useState<VehicleModified>();
 
   useEffect(() => {
     if (props.communityData !== undefined && community === undefined) {
@@ -43,42 +34,30 @@ export default function Index(props: IndexProps) {
   }, [props.communityData, community]);
 
   useEffect(() => {
-    // We can only query for vehicles when session is loaded
-    if (session?.user.houseId) {
-      getVehicles({
-        variables: {
-          houseId: session.user.houseId
-        }
-      });
+    if (props.vehicleData !== undefined && vehicle === undefined) {
+      // Vehicle Data is passed in from the server.
+      // However, it is not always defined here due to SSR. So ensure it's defined before parsing.
+      setVehicle(JSON.parse(props.vehicleData));
     }
-  }, [session, getVehicles]);
-
-  useEffect(() => {
-    if (data?.getVehicles) {
-      setRegisteredStat(`${data.getVehicles.length}`);
-    }
-  }, [community, data]);
+  }, [props.vehicleData, vehicle]);
 
   // isFallback is true when page is not cached (thus no community data)
-  if (router.isFallback || community === undefined) return <Loader />;
+  if (router.isFallback || community === undefined || vehicle === undefined) return <Loader />;
 
   return (
     <MainSiteDashboardLayout community={community}>
-      <AuthGuard community={community} communityGuard>
-        <DashboardSection
-          title='My Vehicles'
-          buttonText='Register New Vehicle'
-          href='/vehicles/new'
-        >
-          {/* Stats */}
-          <Stats>
-            <Stat header='Vehicles Registered' body={registeredStat} />
-          </Stats>
-
-          {/* Table */}
-          <VehiclesTable vehicles={data?.getVehicles} loading={loading} />
-        </DashboardSection>
-      </AuthGuard>
+      <DashboardSection
+        title={vehicle.name}
+        buttonText='Edit'
+        href='#'
+      >
+        <Table>
+          <TableRow title='Description' content={vehicle.description} />
+          <TableRow title='License Plate' content={vehicle.licensePlate} />
+          <TableRow title='Added By' content={vehicle.User?.name ?? vehicle.User?.email} />
+          <TableRow title='Added On' content={new Date(vehicle.createdAt).toLocaleDateString('en-us', {year: 'numeric', month: 'long', day: '2-digit'})} />
+        </Table>
+      </DashboardSection>
     </MainSiteDashboardLayout>
   );
 }
@@ -86,7 +65,7 @@ export default function Index(props: IndexProps) {
 export const getStaticProps: GetStaticProps<IndexProps, PathProps> = async ({params}) => {
   if (!params) throw new Error('No path parameters found');
 
-  const { site } = params;
+  const { site, id } = params;
   let communityData;
 
   // If we have a period, it's a customized domain
@@ -112,9 +91,27 @@ export const getStaticProps: GetStaticProps<IndexProps, PathProps> = async ({par
 
   if (!communityData) return { notFound: true };
 
+  const vehicleData: Vehicle | null = await prisma.vehicle.findUnique({
+    where: {
+      id: id
+    },
+    include: {
+      House: {
+        include: {
+          Community: true
+        }
+      },
+      Reservations: true,
+      User: true
+    }
+  });
+
+  if (!vehicleData) return { notFound: true };
+
   return {
     props: {
       communityData: JSON.stringify(communityData),
+      vehicleData: JSON.stringify(vehicleData)
     },
     revalidate: 10,
   };
@@ -126,3 +123,21 @@ export const getStaticPaths: GetStaticPaths<PathProps> = async () => {
     fallback: true
   };
 };
+
+const vehicle = Prisma.validator<Prisma.VehicleArgs>()({
+  include: {
+    House: {
+      include: {
+        Community: true
+      }
+    },
+    Reservations: true,
+    User: true
+  }
+});
+
+type Vehicle = Prisma.VehicleGetPayload<typeof vehicle>
+type VehicleModified = Modify<
+    Prisma.VehicleGetPayload<typeof vehicle>,
+    { createdAt: string, updatedAt: string }
+  >

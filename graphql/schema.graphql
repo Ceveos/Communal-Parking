@@ -24,21 +24,18 @@ scalar DateTime
 type House {
   Community: Community!
   Users: [User!]!
-  Vehicles: [HousesOnVehicles!]!
+  Vehicles: [Vehicle!]!
   id: ID!
   unit: String!
 }
 
-type HousesOnVehicles {
-  House: House!
-  Vehicle: Vehicle!
-  createdAt: DateTime!
-  updatedAt: DateTime!
+type Mutation {
+  addVehicle(description: String, licensePlate: String!, name: String!, personal: Boolean!): Vehicle
 }
 
 type Query {
   getCurrentReservations(communityId: String!): [Reservation]
-  getVehicles(houseId: String!): [HousesOnVehicles]
+  getVehicles(houseId: String!): [Vehicle]
   user(userId: String!): User
 }
 
@@ -61,10 +58,15 @@ type User {
 }
 
 type Vehicle {
-  Houses: [HousesOnVehicles!]!
+  House: House
   Reservations: [Reservation!]!
+  User: User
+  createdAt: DateTime!
   description: String
+  houseId: String
   id: ID!
   licensePlate: String!
   name: String!
+  updatedAt: DateTime!
+  userId: String
 }

@@ -1,5 +1,4 @@
 import * as NexusPrisma from 'nexus-prisma';
-import * as Prisma from '@prisma/client';
 import { objectType } from 'nexus';
 
 export const Houses = objectType({

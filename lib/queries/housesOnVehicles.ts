@@ -13,14 +13,12 @@ export interface GetVehiclesVars {
 export const GET_VEHICLES_QUERY = gql`
   query GetVehicles($houseId: String!) {
     getVehicles(houseId: $houseId) {
+      id
+      licensePlate
+      name
+      description
       createdAt
       updatedAt
-      Vehicle {
-        id
-        licensePlate
-        name
-        description
-      }
       House {
         id
         unit
@@ -29,18 +27,15 @@ export const GET_VEHICLES_QUERY = gql`
   }
 `;
 
-const houseOnVehicle = Prisma.validator<Prisma.HousesOnVehiclesArgs>()({
+const houseOnVehicle = Prisma.validator<Prisma.VehicleArgs>()({
   select: {
+    id: true,
+    licensePlate: true,
+    name: true,
+    description: true,
+    personal: true,
     createdAt: true,
     updatedAt: true,
-    Vehicle: {
-      select: {
-        id: true,
-        licensePlate: true,
-        name: true,
-        description: true,
-      },
-    },
     House: {
       select: {
         id: true,
@@ -50,7 +45,7 @@ const houseOnVehicle = Prisma.validator<Prisma.HousesOnVehiclesArgs>()({
   }
 });
 
-export type HouseOnVehicle = Prisma.HousesOnVehiclesGetPayload<typeof houseOnVehicle>
+export type HouseOnVehicle = Prisma.VehicleGetPayload<typeof houseOnVehicle>
 
 export type HouseOnVehicleModified = Modify<
   HouseOnVehicle,

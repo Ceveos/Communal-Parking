@@ -42,38 +42,33 @@ model Community {
 }
 
 model House {
-  id           String             @id @default(cuid())
-  unit         String             @unique
+  id           String        @id @default(cuid())
+  unit         String        @unique
   description  String?
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   communityId  String
-  Community    Community          @relation(fields: [communityId], references: [id])
+  Community    Community     @relation(fields: [communityId], references: [id])
   Users        User[]
-  Vehicles     HousesOnVehicles[]
+  Vehicles     Vehicle[]
   Reservations Reservation[]
 }
 
 model Vehicle {
-  id           String             @id @default(cuid())
+  id           String        @id @default(cuid())
   name         String
   description  String?
-  licensePlate String             @unique
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
-  Houses       HousesOnVehicles[]
+  licensePlate String
+  personal     Boolean
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  userId       String?
+  User         User?         @relation(fields: [userId], references: [id])
+  houseId      String?
+  House        House?        @relation(fields: [houseId], references: [id])
   Reservations Reservation[]
-}
 
-model HousesOnVehicles {
-  houseId   String
-  House     House    @relation(fields: [houseId], references: [id])
-  vehicleId String
-  Vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@id([houseId, vehicleId])
+  @@unique([licensePlate, houseId])
 }
 
 model Reservation {
@@ -131,6 +126,7 @@ model User {
   houseId       String?
   House         House?        @relation(fields: [houseId], references: [id])
   Reservations  Reservation[]
+  Vehicles      Vehicle[]
   accounts      Account[]
   sessions      Session[]
 }

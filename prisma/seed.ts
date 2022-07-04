@@ -32,23 +32,20 @@ async function main() {
       }
     }
   });
+
   const vehicle = await prisma.vehicle.create({
     data: {
       licensePlate: 'BQV9911',
       name: 'Tesla Model 3',
-    }
-  });
-
-  await prisma.housesOnVehicles.create({
-    data: {
+      personal: true,
       House: {
         connect: {
           id: house.id
         }
       },
-      Vehicle: {
+      User: {
         connect: {
-          id: vehicle.id
+          id: user.id
         }
       }
     }

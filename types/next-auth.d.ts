@@ -10,14 +10,16 @@ declare module 'next-auth' {
       id: string;
       name: string;
       role: string;
-      houseId: string;
+      houseId?: string;
+      communityId?: string;
     } & DefaultSession['user']
   }
 
   interface User {
     id: string;
     role: string;
-    houseId: string;
+    houseId?: string;
+    communityId?: string;
   }
 }
 
@@ -27,6 +29,7 @@ declare module 'next-auth/jwt' {
     id: string;
     name: string;
     role: string;
-    houseId: string;
+    houseId?: string;
+    communityId?: string;
   }
 }
