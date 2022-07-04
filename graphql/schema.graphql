@@ -29,6 +29,10 @@ type House {
   unit: String!
 }
 
+type Mutation {
+  addVehicle(description: String, licensePlate: String!, name: String!, personal: Boolean!): Vehicle
+}
+
 type Query {
   getCurrentReservations(communityId: String!): [Reservation]
   getVehicles(houseId: String!): [Vehicle]

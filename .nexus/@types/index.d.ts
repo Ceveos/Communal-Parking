@@ -68,6 +68,7 @@ export interface NexusGenObjects {
     id: string; // ID!
     unit: string; // String!
   }
+  Mutation: {};
   Query: {};
   Reservation: { // root type
     id: string; // ID!
@@ -119,6 +120,9 @@ export interface NexusGenFieldTypes {
     Vehicles: NexusGenRootTypes['Vehicle'][]; // [Vehicle!]!
     id: string; // ID!
     unit: string; // String!
+  }
+  Mutation: { // field return type
+    addVehicle: NexusGenRootTypes['Vehicle'] | null; // Vehicle
   }
   Query: { // field return type
     getCurrentReservations: Array<NexusGenRootTypes['Reservation'] | null> | null; // [Reservation]
@@ -175,6 +179,9 @@ export interface NexusGenFieldTypeNames {
     id: 'ID'
     unit: 'String'
   }
+  Mutation: { // field return type name
+    addVehicle: 'Vehicle'
+  }
   Query: { // field return type name
     getCurrentReservations: 'Reservation'
     getVehicles: 'Vehicle'
@@ -212,6 +219,14 @@ export interface NexusGenFieldTypeNames {
 }
 
 export interface NexusGenArgTypes {
+  Mutation: {
+    addVehicle: { // args
+      description?: string | null; // String
+      licensePlate: string; // String!
+      name: string; // String!
+      personal: boolean; // Boolean!
+    }
+  }
   Query: {
     getCurrentReservations: { // args
       communityId: string; // String!

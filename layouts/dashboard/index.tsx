@@ -2,6 +2,7 @@ import * as Prisma from '@prisma/client';
 
 import { useState } from 'react';
 
+import { Toaster } from 'react-hot-toast';
 import MainSiteDashboardLayout from './mainSiteDashboard';
 import Navbar from 'components/dashboard/navbar';
 import Sidebar, { SidebarLink } from 'components/dashboard/sidebar';
@@ -18,6 +19,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ community, children, 
 
   return (
     <>
+      <Toaster/>
       <Sidebar
         header={community.name}
         menuItems={sidebarMenuItems}

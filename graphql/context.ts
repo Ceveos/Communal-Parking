@@ -2,7 +2,6 @@ import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 import { JWT, getToken } from 'next-auth/jwt';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
-import { getSession } from 'next-auth/react';
 import { prisma } from 'db';
 
 export type Context = {

@@ -1,37 +1,41 @@
 import * as Yup from 'yup';
-import { Field, Formik, FormikHelpers, FormikProps } from 'formik';
+import { ADD_VEHICLE_MUTATION, AddVehicleData, AddVehicleVars } from 'lib/mutations/vehicle';
+import { Field, Formik, FormikProps } from 'formik';
 import { Shape } from 'components/helpers/yup';
 import FormikCheckbox from 'components/formik/checkbox';
 import FormikTextbox from 'components/formik/textbox';
 import Loader from 'components/common/loader';
+import client from 'context/ApolloContext';
 import router from 'next/router';
-
-interface AddVehicleProps {
-  name: string;
-  description: string;
-  licensePlate: string;
-  personalVehicle: boolean;
-}
+import toast from 'react-hot-toast';
 
 interface Props {
 }
-const NewVehicleForm: React.FC<Props> = () => {
-  const onAddVehicle = async (values: AddVehicleProps, actions: FormikHelpers<AddVehicleProps>) => {
-    // const { data, errors } = await client.mutate<CreateGameData,CreateGameVars>({
-    //   mutation: CREATE_GAME_MUTATION,
-    //   variables: {
-    //     newDatabase,
-    //     database: newDatabase ? values.newDatabaseName : values.databaseId.id,
-    //     gameName: values.gameName
-    //   }
-    // });
 
-    // if (data) {
-    //   toast.success(`${values.gameName} was successfully created`, {
-    //     position: 'top-right'
-    //   });
-    //   router.push('/vehicles');
-    // }
+const NewVehicleForm: React.FC<Props> = () => {
+  const onAddVehicle = async (values: AddVehicleVars) => {
+    return client.mutate<AddVehicleData,AddVehicleVars>({
+      mutation: ADD_VEHICLE_MUTATION,
+      variables: values
+    })
+      .then(async ({data, errors}) => {
+        if (data) {
+          toast.success(`${values.name} was successfully added`, {
+            position: 'top-right'
+          });
+          await router.push('/vehicles');
+        }
+        if (errors) {
+          console.log('We got an error');
+          errors.forEach((error) => {
+            toast.error(error.message, {position: 'top-right'});
+          });
+        }
+      })
+      .catch((error) => {
+        toast.error(`${error}`, {position: 'top-right'});
+      });
+
   };
 
   return (
@@ -42,15 +46,15 @@ const NewVehicleForm: React.FC<Props> = () => {
         licensePlate: '',
         personalVehicle: false
       }}
-      onSubmit={(values: AddVehicleProps, actions) => {
+      onSubmit={(values: AddVehicleVars, actions) => {
         actions.setSubmitting(true);
-        onAddVehicle(values, actions)
+        onAddVehicle(values)
           .then(() => {
             actions.setSubmitting(false);
             actions.resetForm();
           });
       }}
-      validationSchema={Yup.object<Shape<AddVehicleProps>>({
+      validationSchema={Yup.object<Shape<AddVehicleVars>>({
         name: Yup.string()
           .required('Enter a valid name')
           .min(3, 'Name must have at least 3 characters'),
@@ -61,7 +65,7 @@ const NewVehicleForm: React.FC<Props> = () => {
         personalVehicle: Yup.bool().required()
       })}
     >
-      {(props: FormikProps<AddVehicleProps>) => {
+      {(props: FormikProps<AddVehicleVars>) => {
         const { handleSubmit, isSubmitting } = props;
 
         return (
@@ -110,7 +114,6 @@ const NewVehicleForm: React.FC<Props> = () => {
                             disabled={isSubmitting}
                             title="Personal Vehicle"
                             subtitle="All possessed vehicles must be registered"
-                            required
                           />
                         </div>
                       </div>
