@@ -17,6 +17,7 @@ export const GET_CURRENT_RESERVATIONS_QUERY = gql`
       reservedFrom
       reservedTo
       Vehicle {
+        id
         licensePlate
         name
       }
@@ -37,6 +38,7 @@ const reservation = Prisma.validator<Prisma.ReservationArgs>()({
     reservedTo: true,
     Vehicle: {
       select: {
+        id: true,
         licensePlate: true,
         name: true
       },
