@@ -38,3 +38,22 @@ export async function GetCurrentReservationsForCommunity(ctx: Context, community
     }
   });
 }
+
+export async function GetCurrentReservationsForHouse(ctx: Context, houseId: string): Promise<Prisma.Reservation[]> {
+  const date = new Date().toISOString();
+
+  return await ctx.prisma.reservation.findMany({
+    where: {
+      houseId,
+      reservedTo: {
+        gte: date
+      }
+    },
+    include: {
+      Vehicle: true,
+      Community: true,
+      House: true,
+      User: true
+    }
+  });
+}

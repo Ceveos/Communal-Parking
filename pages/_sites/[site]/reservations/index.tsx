@@ -1,15 +1,15 @@
-import { GET_CURRENT_COMMUNITY_RESERVATIONS_QUERY, GetCurrentCommunityReservationsVars, GetCurrentReservationsData } from 'lib/queries/reservation';
+import { GET_CURRENT_HOUSE_RESERVATIONS_QUERY, GetCurrentHouseReservationsVars, GetCurrentReservationsData } from 'lib/queries/reservation';
 import { MainSiteDashboardLayout } from 'layouts/dashboard';
 import { Prisma } from '@prisma/client';
 import { prisma } from 'db';
 import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
+import AuthGuard from 'components/common/authGuard';
 import DashboardSection from 'components/dashboard/section';
 import Loader from 'components/sites/Loader';
 import ReservationsTable from 'components/dashboard/reservationTable';
-import Stat from 'components/dashboard/stat';
-import Stats from 'components/dashboard/stats';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 
@@ -23,13 +23,12 @@ interface IndexProps {
 
 export default function Index(props: IndexProps) {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [community, setCommunity] = useState<Prisma.CommunityGetPayload<{}>>();
-  const [parkingStat, setParkingStat] = useState<string>();
-  const [getCurrentReservations, { loading, error, data }] =
-    useLazyQuery<GetCurrentReservationsData,GetCurrentCommunityReservationsVars>(
-      GET_CURRENT_COMMUNITY_RESERVATIONS_QUERY, {
-        fetchPolicy: 'network-only',
-        nextFetchPolicy: 'network-only'
+  const [getReservations, { loading, error, data }] =
+    useLazyQuery<GetCurrentReservationsData,GetCurrentHouseReservationsVars>(
+      GET_CURRENT_HOUSE_RESERVATIONS_QUERY, {
+        fetchPolicy: 'cache-and-network'
       });
 
   useEffect(() => {
@@ -41,41 +40,31 @@ export default function Index(props: IndexProps) {
   }, [props.communityData, community]);
 
   useEffect(() => {
-    // We can only query for reservations when community is defined
-    // (only on client, post-SSR)
-    if (community) {
-      getCurrentReservations({
+    // We can only query for vehicles when session is loaded
+    if (session?.user.houseId) {
+      getReservations({
         variables: {
-          communityId: community.id
+          houseId: session.user.houseId
         }
       });
     }
-  }, [community, getCurrentReservations]);
-
-  useEffect(() => {
-    if (community && data?.getCurrentReservations) {
-      setParkingStat(`${community.parkingSpaces - data.getCurrentReservations.length}/${community.parkingSpaces}`);
-    }
-  }, [community, data]);
+  }, [session, getReservations]);
 
   // isFallback is true when page is not cached (thus no community data)
   if (router.isFallback || community === undefined) return <Loader />;
 
   return (
     <MainSiteDashboardLayout community={community}>
-      <DashboardSection
-        title='Parking'
-        buttonText='Reserve a spot'
-        href='#'
-      >
-        {/* Stats */}
-        <Stats>
-          <Stat header='Availability' body={parkingStat} />
-        </Stats>
-
-        {/* Table */}
-        <ReservationsTable reservations={data?.getCurrentReservations} loading={loading} />
-      </DashboardSection>
+      <AuthGuard community={community} communityGuard>
+        <DashboardSection
+          title='My Reservations'
+          buttonText='New Reservation'
+          href='/reservations/new'
+        >
+          {/* Table */}
+          <ReservationsTable reservations={data?.getCurrentReservations} loading={loading} />
+        </DashboardSection>
+      </AuthGuard>
     </MainSiteDashboardLayout>
   );
 }

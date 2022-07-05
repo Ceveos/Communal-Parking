@@ -6,13 +6,37 @@ export interface GetCurrentReservationsData {
   getCurrentReservations: Reservation[];
 }
 
-export interface GetCurrentReservationsVars {
+export interface GetCurrentCommunityReservationsVars {
   communityId: String;
 }
+export interface GetCurrentHouseReservationsVars {
+  houseId: String;
+}
 
-export const GET_CURRENT_RESERVATIONS_QUERY = gql`
+export const GET_CURRENT_COMMUNITY_RESERVATIONS_QUERY = gql`
   query GetCurrentReservations($communityId: String!) {
-    getCurrentReservations(communityId: $communityId) {
+    getCurrentReservations(data: {communityId: $communityId}) {
+      id
+      reservedFrom
+      reservedTo
+      Vehicle {
+        id
+        licensePlate
+        name
+      }
+      House {
+        unit
+      }
+      User {
+        name
+      }
+    }
+  }
+`;
+
+export const GET_CURRENT_HOUSE_RESERVATIONS_QUERY = gql`
+  query GetCurrentReservations($houseId: String!) {
+    getCurrentReservations(data: {houseId: $houseId}) {
       id
       reservedFrom
       reservedTo

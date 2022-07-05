@@ -40,6 +40,10 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  ReservationInputType: { // input type
+    communityId?: string | null; // String
+    houseId?: string | null; // String
+  }
 }
 
 export interface NexusGenEnums {
@@ -229,7 +233,7 @@ export interface NexusGenArgTypes {
   }
   Query: {
     getCurrentReservations: { // args
-      communityId: string; // String!
+      data: NexusGenInputs['ReservationInputType']; // ReservationInputType!
     }
     getVehicles: { // args
       houseId: string; // String!
@@ -248,7 +252,7 @@ export interface NexusGenTypeInterfaces {
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
 
-export type NexusGenInputNames = never;
+export type NexusGenInputNames = keyof NexusGenInputs;
 
 export type NexusGenEnumNames = never;
 

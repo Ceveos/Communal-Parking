@@ -34,7 +34,7 @@ type Mutation {
 }
 
 type Query {
-  getCurrentReservations(communityId: String!): [Reservation]
+  getCurrentReservations(data: ReservationInputType!): [Reservation]
   getVehicles(houseId: String!): [Vehicle]
   user(userId: String!): User
 }
@@ -47,6 +47,11 @@ type Reservation {
   id: ID!
   reservedFrom: DateTime!
   reservedTo: DateTime!
+}
+
+input ReservationInputType {
+  communityId: String
+  houseId: String
 }
 
 type User {
