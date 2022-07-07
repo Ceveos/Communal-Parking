@@ -126,6 +126,7 @@ export interface NexusGenFieldTypes {
     unit: string; // String!
   }
   Mutation: { // field return type
+    addReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     addVehicle: NexusGenRootTypes['Vehicle'] | null; // Vehicle
   }
   Query: { // field return type
@@ -184,6 +185,7 @@ export interface NexusGenFieldTypeNames {
     unit: 'String'
   }
   Mutation: { // field return type name
+    addReservation: 'Reservation'
     addVehicle: 'Vehicle'
   }
   Query: { // field return type name
@@ -224,6 +226,10 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    addReservation: { // args
+      date: string; // String!
+      vehicleId: string; // String!
+    }
     addVehicle: { // args
       description?: string | null; // String
       licensePlate: string; // String!

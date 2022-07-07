@@ -6,4 +6,12 @@
   body {
     @apply bg-th-background dark:bg-th-background-dark;
   }
+
+  :root {
+    box-sizing: border-box
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+    }
+  }
 }

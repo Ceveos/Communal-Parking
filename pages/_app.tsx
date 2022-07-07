@@ -1,4 +1,7 @@
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
 import 'styles/tailwind.css';
+
 import { ApolloProvider } from '@apollo/client';
 import { Provider } from 'react-redux';
 import { SessionProvider } from 'next-auth/react';

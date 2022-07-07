@@ -1,7 +1,9 @@
 import * as NexusPrisma from 'nexus-prisma';
 import * as Prisma from '@prisma/client';
+import { AuthenticationError, UserInputError } from 'apollo-server-micro';
 import { Context } from 'graphql/context';
 import { objectType } from 'nexus';
+import moment from 'moment';
 
 export const Reservations = objectType({
   name: NexusPrisma.Reservation.$name,
@@ -54,6 +56,69 @@ export async function GetCurrentReservationsForHouse(ctx: Context, houseId: stri
       Community: true,
       House: true,
       User: true
+    }
+  });
+}
+
+export async function IsVehicleReservedAtDate(ctx: Context, date: Date, vehicleId: string): Promise<boolean> {
+  return await ctx.prisma.reservation.count({
+    where: {
+      reservedFrom: {
+        lte: date
+      },
+      reservedTo: {
+        gte: date
+      },
+      vehicleId: vehicleId
+    }
+  }) > 0;
+}
+
+export async function IsVehicleOwnedByUser(ctx: Context, vehicleId: string): Promise<boolean> {
+  const vehicle = await ctx.prisma.vehicle.findUnique({
+    where: {
+      id: vehicleId
+    },
+    include: {
+      House: true
+    }
+  });
+
+  return vehicle?.House?.id === ctx.token?.houseId;
+}
+
+export async function AddReservation(ctx: Context, communityId: string, houseId: string, userId: string, vehicleId: string, date: Date ): Promise<Prisma.Reservation> {
+
+  return await ctx.prisma.reservation.create({
+    data: {
+      reservedFrom: moment(date).startOf('day').toDate(),
+      reservedTo: moment(date).endOf('day').toDate(),
+      Community: {
+        connect: {
+          id: communityId
+        }
+      },
+      House: {
+        connect: {
+          id: houseId
+        }
+      },
+      User: {
+        connect: {
+          id: userId
+        }
+      },
+      Vehicle: {
+        connect: {
+          id: vehicleId
+        }
+      }
+    },
+    include: {
+      Community: true,
+      House: true,
+      User: true,
+      Vehicle: true
     }
   });
 }

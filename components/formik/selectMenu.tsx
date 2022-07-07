@@ -17,7 +17,6 @@ interface Props {
 
 const FormikSelectMenu: FC<FieldProps & Props> = ({ label, items, field, form, ...props }) => {
   const {
-    touched,
     errors,
     isSubmitting,
     setFieldTouched,
@@ -30,8 +29,8 @@ const FormikSelectMenu: FC<FieldProps & Props> = ({ label, items, field, form, .
         value={field.value}
         disabled={isSubmitting}
         onChange={(value) => {
+          setFieldTouched(field.name, true, false);
           setFieldValue(field.name, value, true);
-          setFieldTouched(field.name, true, true);
         }}
         {...props}
       >
@@ -41,25 +40,25 @@ const FormikSelectMenu: FC<FieldProps & Props> = ({ label, items, field, form, .
             <Listbox.Button
               className={
                 ClassNames(
-                  errors[field.name] && touched[field.name]
+                  errors[field.name]
                     ? 'border-red-500 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500'
-                    : 'border-gray-300 focus:ring-blue-400 focus:border-blue-400',
+                    : 'border-gray-300 focus:ring-accent-400 focus:border-accent-400',
                   'relative w-full bg-white border rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 sm:text-sm'
                 )
               }>
 
-              <span className="block truncate">{(field.value as SelectMenu).name}</span>
+              <span className="block truncate">{(field.value as SelectMenu | null)?.name ?? 'Select'}</span>
               <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                 <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </span>
             </Listbox.Button>
             <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-              {items.map((item) => (
+              {items && items.map((item) => (
                 <Listbox.Option
                   key={item.id}
                   className={({ active }) =>
                     ClassNames(
-                      active ? 'text-white bg-blue-600' : 'text-gray-900',
+                      active ? 'text-white bg-accent-600' : 'text-gray-900',
                       'cursor-default select-none relative py-2 pl-8 pr-4'
                     )
                   }
@@ -74,7 +73,7 @@ const FormikSelectMenu: FC<FieldProps & Props> = ({ label, items, field, form, .
                       {selected ? (
                         <span
                           className={ClassNames(
-                            active ? 'text-white' : 'text-blue-600',
+                            active ? 'text-white' : 'text-accent-600',
                             'absolute inset-y-0 left-0 flex items-center pl-1.5'
                           )}
                         >
@@ -87,7 +86,7 @@ const FormikSelectMenu: FC<FieldProps & Props> = ({ label, items, field, form, .
               ))}
             </Listbox.Options>
 
-            {touched[field.name] && errors[field.name] && (
+            {errors[field.name] && (
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                 <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
               </div>
@@ -95,7 +94,7 @@ const FormikSelectMenu: FC<FieldProps & Props> = ({ label, items, field, form, .
           </div>
         </>
       </Listbox>
-      {touched[field.name] && errors[field.name] && (errors[field.name] as any as SelectMenu).id && (
+      {errors[field.name] && (errors[field.name] as any as SelectMenu).id && (
         <>
           <p className="mt-2 text-sm text-red-600" id="email-error">
             {(errors[field.name] as any as SelectMenu).id}

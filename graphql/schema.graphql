@@ -30,6 +30,7 @@ type House {
 }
 
 type Mutation {
+  addReservation(date: String!, vehicleId: String!): Reservation
   addVehicle(description: String, licensePlate: String!, name: String!, personal: Boolean!): Vehicle
 }
 
