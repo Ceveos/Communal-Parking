@@ -18,6 +18,7 @@ interface Props {
 const FormikSelectMenu: FC<FieldProps & Props> = ({ label, items, field, form, ...props }) => {
   const {
     errors,
+    touched,
     isSubmitting,
     setFieldTouched,
     setFieldValue } = form;
@@ -40,14 +41,14 @@ const FormikSelectMenu: FC<FieldProps & Props> = ({ label, items, field, form, .
             <Listbox.Button
               className={
                 ClassNames(
-                  errors[field.name]
+                  touched[field.name] && errors[field.name]
                     ? 'border-red-500 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500'
                     : 'border-gray-300 focus:ring-accent-400 focus:border-accent-400',
                   'relative w-full bg-white border rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 sm:text-sm'
                 )
               }>
 
-              <span className="block truncate">{(field.value as SelectMenu | null)?.name ?? 'Select'}</span>
+              <span className="block truncate">{(field.value as SelectMenu).name.length > 0 ? (field.value as SelectMenu).name : 'Select'}</span>
               <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                 <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </span>
@@ -86,7 +87,7 @@ const FormikSelectMenu: FC<FieldProps & Props> = ({ label, items, field, form, .
               ))}
             </Listbox.Options>
 
-            {errors[field.name] && (
+            {touched[field.name] && errors[field.name] && (
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                 <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
               </div>
@@ -94,7 +95,7 @@ const FormikSelectMenu: FC<FieldProps & Props> = ({ label, items, field, form, .
           </div>
         </>
       </Listbox>
-      {errors[field.name] && (errors[field.name] as any as SelectMenu).id && (
+      {touched[field.name] &&errors[field.name] && (errors[field.name] as any as SelectMenu).id && (
         <>
           <p className="mt-2 text-sm text-red-600" id="email-error">
             {(errors[field.name] as any as SelectMenu).id}

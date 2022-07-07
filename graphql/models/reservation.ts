@@ -87,6 +87,22 @@ export async function IsVehicleOwnedByUser(ctx: Context, vehicleId: string): Pro
   return vehicle?.House?.id === ctx.token?.houseId;
 }
 
+export async function ReservationCapacityAvailableAtcommunity(ctx: Context, communityId: string): Promise<boolean> {
+  const community = await ctx.prisma.community.findUnique({
+    where: {
+      id: communityId
+    }
+  });
+
+  const currentReservations = await GetCurrentReservationsForCommunity(ctx, communityId);
+
+  if (!community || !currentReservations) {
+    return false;
+  }
+
+  return community.parkingSpaces > currentReservations.length;
+}
+
 export async function AddReservation(ctx: Context, communityId: string, houseId: string, userId: string, vehicleId: string, date: Date ): Promise<Prisma.Reservation> {
 
   return await ctx.prisma.reservation.create({
