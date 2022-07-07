@@ -91,6 +91,7 @@ export interface NexusGenObjects {
     id: string; // ID!
     licensePlate: string; // String!
     name: string; // String!
+    personal: boolean; // Boolean!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
     userId?: string | null; // String
   }
@@ -160,6 +161,7 @@ export interface NexusGenFieldTypes {
     id: string; // ID!
     licensePlate: string; // String!
     name: string; // String!
+    personal: boolean; // Boolean!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
     userId: string | null; // String
   }
@@ -219,6 +221,7 @@ export interface NexusGenFieldTypeNames {
     id: 'ID'
     licensePlate: 'String'
     name: 'String'
+    personal: 'Boolean'
     updatedAt: 'DateTime'
     userId: 'String'
   }

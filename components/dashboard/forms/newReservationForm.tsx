@@ -8,6 +8,7 @@ import { useLazyQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 import FormikSelectMenu, { SelectMenu } from 'components/formik/selectMenu';
 import FormikSingleDate from 'components/formik/singleDate';
+import Link from 'next/link';
 import Loader from 'components/common/loader';
 import client from 'context/ApolloContext';
 import moment from 'moment';
@@ -156,13 +157,15 @@ const NewReservationForm: React.FC<Props> = () => {
               </Loader>
 
               <div className="flex justify-end">
-                <button
-                  type="button"
-                  disabled={isSubmitting}
-                  className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500"
-                >
+                <Link href="/reservations" passHref>
+                  <button
+                    type="button"
+                    disabled={isSubmitting}
+                    className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500"
+                  >
                   Cancel
-                </button>
+                  </button>
+                </Link>
                 <button
                   type="submit"
                   disabled={isSubmitting}

@@ -4,6 +4,7 @@ import { Field, Formik, FormikProps } from 'formik';
 import { Shape } from 'components/helpers/yup';
 import FormikCheckbox from 'components/formik/checkbox';
 import FormikTextbox from 'components/formik/textbox';
+import Link from 'next/link';
 import Loader from 'components/common/loader';
 import client from 'context/ApolloContext';
 import router from 'next/router';
@@ -122,13 +123,15 @@ const NewVehicleForm: React.FC<Props> = () => {
               </Loader>
 
               <div className="flex justify-end">
-                <button
-                  type="button"
-                  disabled={isSubmitting}
-                  className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500"
-                >
+                <Link href="/vehicles" passHref>
+                  <button
+                    type="button"
+                    disabled={isSubmitting}
+                    className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500"
+                  >
                   Cancel
-                </button>
+                  </button>
+                </Link>
                 <button
                   type="submit"
                   disabled={isSubmitting}

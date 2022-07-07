@@ -9,7 +9,7 @@ import { useSession } from 'next-auth/react';
 import AuthGuard from 'components/common/authGuard';
 import DashboardSection from 'components/dashboard/section';
 import Loader from 'components/sites/Loader';
-import ReservationsTable from 'components/dashboard/reservationTable';
+import UserReservationsTable from 'components/dashboard/userReservationTable';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 
@@ -62,7 +62,7 @@ export default function Index(props: IndexProps) {
           href='/reservations/new'
         >
           {/* Table */}
-          <ReservationsTable reservations={data?.getCurrentReservations} loading={loading} />
+          <UserReservationsTable reservations={data?.getCurrentReservations} loading={loading} />
         </DashboardSection>
       </AuthGuard>
     </MainSiteDashboardLayout>
