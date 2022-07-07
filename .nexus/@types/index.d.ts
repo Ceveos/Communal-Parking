@@ -40,6 +40,10 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  ReservationInputType: { // input type
+    communityId?: string | null; // String
+    houseId?: string | null; // String
+  }
 }
 
 export interface NexusGenEnums {
@@ -122,6 +126,7 @@ export interface NexusGenFieldTypes {
     unit: string; // String!
   }
   Mutation: { // field return type
+    addReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     addVehicle: NexusGenRootTypes['Vehicle'] | null; // Vehicle
   }
   Query: { // field return type
@@ -180,6 +185,7 @@ export interface NexusGenFieldTypeNames {
     unit: 'String'
   }
   Mutation: { // field return type name
+    addReservation: 'Reservation'
     addVehicle: 'Vehicle'
   }
   Query: { // field return type name
@@ -220,6 +226,10 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    addReservation: { // args
+      date: string; // String!
+      vehicleId: string; // String!
+    }
     addVehicle: { // args
       description?: string | null; // String
       licensePlate: string; // String!
@@ -229,7 +239,7 @@ export interface NexusGenArgTypes {
   }
   Query: {
     getCurrentReservations: { // args
-      communityId: string; // String!
+      data: NexusGenInputs['ReservationInputType']; // ReservationInputType!
     }
     getVehicles: { // args
       houseId: string; // String!
@@ -248,7 +258,7 @@ export interface NexusGenTypeInterfaces {
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
 
-export type NexusGenInputNames = never;
+export type NexusGenInputNames = keyof NexusGenInputs;
 
 export type NexusGenEnumNames = never;
 
