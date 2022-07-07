@@ -17,6 +17,7 @@ export const Vehicles = objectType({
     t.field(NexusPrisma.Vehicle.userId);
     t.field(NexusPrisma.Vehicle.User);
     t.field(NexusPrisma.Vehicle.Reservations);
+    t.nonNull.field(NexusPrisma.Vehicle.personal);
     t.nonNull.field(NexusPrisma.Vehicle.createdAt);
     t.nonNull.field(NexusPrisma.Vehicle.updatedAt);
   },

@@ -66,7 +66,7 @@ export default function Index(props: IndexProps) {
       <DashboardSection
         title='Parking'
         buttonText='Reserve a spot'
-        href='#'
+        href='/reservations/new'
       >
         {/* Stats */}
         <Stats>

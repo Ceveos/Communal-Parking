@@ -8,6 +8,7 @@ import { useLazyQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 import FormikSelectMenu, { SelectMenu } from 'components/formik/selectMenu';
 import FormikSingleDate from 'components/formik/singleDate';
+import Link from 'next/link';
 import Loader from 'components/common/loader';
 import client from 'context/ApolloContext';
 import moment from 'moment';
@@ -16,7 +17,7 @@ import toast from 'react-hot-toast';
 
 interface AddReservationFormVars {
   date: moment.Moment
-  vehicle?: SelectMenu
+  vehicle: SelectMenu
 }
 
 interface Props {
@@ -55,7 +56,7 @@ const NewReservationForm: React.FC<Props> = () => {
 
   const onAddReservation = async (values: AddReservationFormVars) => {
     console.log('on add reservation');
-    if (!values.vehicle) {
+    if (!values.vehicle || Object.keys(values.vehicle).length === 0) {
       toast.error('No vehicle selected', {position: 'top-right'});
       return;
     }
@@ -91,6 +92,10 @@ const NewReservationForm: React.FC<Props> = () => {
     <Formik
       initialValues={{
         date: moment(),
+        vehicle: {
+          id: '',
+          name: 'Select Vehicle'
+        }
       }}
       onSubmit={(values: AddReservationFormVars, actions) => {
         console.log('submitting');
@@ -103,7 +108,7 @@ const NewReservationForm: React.FC<Props> = () => {
       validationSchema={Yup.object<Shape<AddReservationFormVars>>({
         date: Yup.object().required('Valid reservation required'),
         vehicle: Yup.object<Shape<SelectMenu>>({
-          id: Yup.string().required('Vehicle selection required')
+          id: Yup.string().required('Vehicle selection required').min(1, 'Vehicle selection required')
         }),
       })}
     >
@@ -152,13 +157,15 @@ const NewReservationForm: React.FC<Props> = () => {
               </Loader>
 
               <div className="flex justify-end">
-                <button
-                  type="button"
-                  disabled={isSubmitting}
-                  className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500"
-                >
+                <Link href="/reservations" passHref>
+                  <button
+                    type="button"
+                    disabled={isSubmitting}
+                    className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500"
+                  >
                   Cancel
-                </button>
+                  </button>
+                </Link>
                 <button
                   type="submit"
                   disabled={isSubmitting}

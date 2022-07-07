@@ -17,6 +17,7 @@ export const GET_VEHICLES_QUERY = gql`
       licensePlate
       name
       description
+      personal
       createdAt
       updatedAt
       House {
