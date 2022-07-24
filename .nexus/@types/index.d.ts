@@ -87,6 +87,7 @@ export interface NexusGenObjects {
   Vehicle: { // root type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     description?: string | null; // String
+    hidden: boolean; // Boolean!
     houseId?: string | null; // String
     id: string; // ID!
     licensePlate: string; // String!
@@ -157,6 +158,7 @@ export interface NexusGenFieldTypes {
     User: NexusGenRootTypes['User'] | null; // User
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     description: string | null; // String
+    hidden: boolean; // Boolean!
     houseId: string | null; // String
     id: string; // ID!
     licensePlate: string; // String!
@@ -217,6 +219,7 @@ export interface NexusGenFieldTypeNames {
     User: 'User'
     createdAt: 'DateTime'
     description: 'String'
+    hidden: 'Boolean'
     houseId: 'String'
     id: 'ID'
     licensePlate: 'String'

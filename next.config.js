@@ -6,5 +6,8 @@ module.exports = {
   },
   eslint: {
     dirs: ['graphql', 'pages', 'components', 'app', 'features', 'layouts', 'lib']
-  }
+  },
+  images: {
+    domains: ['tailwindui.com'],
+  },
 };

@@ -69,6 +69,7 @@ type Vehicle {
   User: User
   createdAt: DateTime!
   description: String
+  hidden: Boolean!
   houseId: String
   id: ID!
   licensePlate: String!
