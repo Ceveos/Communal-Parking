@@ -32,11 +32,12 @@ type House {
 type Mutation {
   addReservation(date: String!, vehicleId: String!): Reservation
   addVehicle(description: String, licensePlate: String!, name: String!, personal: Boolean!): Vehicle
+  editVehicle(description: String, hidden: Boolean!, id: String!, name: String!): Vehicle
 }
 
 type Query {
   getCurrentReservations(data: ReservationInputType!): [Reservation]
-  getVehicles(houseId: String!): [Vehicle]
+  getVehicles(houseId: String!, showHidden: Boolean): [Vehicle]
   user(userId: String!): User
 }
 
@@ -69,6 +70,7 @@ type Vehicle {
   User: User
   createdAt: DateTime!
   description: String
+  hidden: Boolean!
   houseId: String
   id: ID!
   licensePlate: String!

@@ -1,17 +1,13 @@
-import { GET_VEHICLES_QUERY, GetVehiclesData, GetVehiclesVars } from 'lib/queries/housesOnVehicles';
 import { MainSiteDashboardLayout } from 'layouts/dashboard';
 import { Prisma } from '@prisma/client';
 import { prisma } from 'db';
 import { useEffect, useState } from 'react';
-import { useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import AuthGuard from 'components/common/authGuard';
 import DashboardSection from 'components/dashboard/section';
+import EditVehicleForm from 'components/dashboard/forms/editVehicleForm';
 import Loader from 'components/sites/Loader';
-import Stat from 'components/dashboard/stat';
-import Stats from 'components/dashboard/stats';
-import VehiclesTable from 'components/dashboard/vehiclesTable';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 
@@ -21,19 +17,14 @@ interface PathProps extends ParsedUrlQuery {
 
 interface IndexProps {
   communityData: string;
+  vehicleData: string;
 }
 
 export default function Index(props: IndexProps) {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [community, setCommunity] = useState<Prisma.CommunityGetPayload<{}>>();
-  const [registeredStat, setRegisteredStat] = useState<string>();
-  const [showHidden, setShowHidden] = useState<boolean>(false);
-  const [getVehicles, { loading, error, data }] =
-    useLazyQuery<GetVehiclesData,GetVehiclesVars>(
-      GET_VEHICLES_QUERY, {
-        fetchPolicy: 'cache-and-network'
-      });
+  const [vehicle, setVehicle] = useState<Prisma.VehicleGetPayload<{}>>();
 
   useEffect(() => {
     if (props.communityData !== undefined && community === undefined) {
@@ -44,48 +35,23 @@ export default function Index(props: IndexProps) {
   }, [props.communityData, community]);
 
   useEffect(() => {
-    // We can only query for vehicles when session is loaded
-    if (session?.user.houseId) {
-      getVehicles({
-        variables: {
-          houseId: session.user.houseId,
-          showHidden: showHidden
-        }
-      });
+    if (props.vehicleData !== undefined && vehicle === undefined) {
+      // Community Data is passed in from the server.
+      // However, it is not always defined here due to SSR. So ensure it's defined before parsing.
+      setVehicle(JSON.parse(props.vehicleData));
     }
-  }, [session, getVehicles, showHidden]);
+  }, [props.vehicleData, vehicle]);
 
-  useEffect(() => {
-    if (data?.getVehicles) {
-      setRegisteredStat(`${data.getVehicles.length}`);
-    }
-  }, [community, data]);
-
-  // isFallback is true when page is not cached (thus no community data)
-  if (router.isFallback || community === undefined) return <Loader />;
+  // isFallback is true when page is not cached (thus no community/vehicle data)
+  if (router.isFallback || community === undefined || vehicle === undefined) return <Loader />;
 
   return (
     <MainSiteDashboardLayout community={community}>
       <AuthGuard community={community} communityGuard>
         <DashboardSection
-          title={showHidden ? 'My Hidden Vehicles' : 'My Vehicles'}
-          buttonText='Register New Vehicle'
-          href='/vehicles/new'
+          title={`Edit Vehicle (${vehicle.licensePlate})`}
         >
-          {/* Stats */}
-          <Stats>
-            <Stat header={showHidden ? 'Vehicles Hidden' : 'Vehicles Registered'} body={registeredStat} />
-          </Stats>
-
-          {/* Table */}
-          <VehiclesTable vehicles={data?.getVehicles} loading={loading} />
-
-          {/* Show hidden vehicles */}
-          <div className="flex justify-center py-4" >
-            <button disabled={loading} onClick={() => { setShowHidden(!showHidden); }}>
-              <p className="text-sm font-medium text-accent-600 hover:text-accent-700 dark:text-accent-dark-400 dark:hover:text-accent-dark-300 truncate">{showHidden ? 'Hide hidden' : 'Show hidden'}</p>
-            </button>
-          </div>
+          <EditVehicleForm vehicle={vehicle} />
         </DashboardSection>
       </AuthGuard>
     </MainSiteDashboardLayout>
@@ -95,8 +61,12 @@ export default function Index(props: IndexProps) {
 export const getStaticProps: GetStaticProps<IndexProps, PathProps> = async ({params}) => {
   if (!params) throw new Error('No path parameters found');
 
-  const { site } = params;
+  const { site, id } = params;
   let communityData;
+
+  if (!site || !id || typeof id !== 'string') {
+    return { notFound: true };
+  }
 
   // If we have a period, it's a customized domain
   if (site.indexOf('.') !== -1) {
@@ -121,9 +91,25 @@ export const getStaticProps: GetStaticProps<IndexProps, PathProps> = async ({par
 
   if (!communityData) return { notFound: true };
 
+  let vehicleData = await prisma.vehicle.findFirst({
+    where: {
+      id: id,
+      House: {
+        communityId: communityData.id
+      }
+    },
+    include: {
+      House: true,
+      User: true
+    }
+  });
+
+  if (!vehicleData) return { notFound: true };
+
   return {
     props: {
       communityData: JSON.stringify(communityData),
+      vehicleData: JSON.stringify(vehicleData)
     },
     revalidate: 10,
   };

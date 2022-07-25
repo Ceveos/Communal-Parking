@@ -1,13 +1,14 @@
 import { GetVehiclesByHouse } from 'graphql/models';
-import { list, nonNull, queryField, stringArg } from 'nexus';
+import { booleanArg, list, nonNull, queryField, stringArg } from 'nexus';
 
 export const getVehicles = queryField('getVehicles', {
   type: list('Vehicle'),
   args: {
-    houseId: nonNull(stringArg())
+    houseId: nonNull(stringArg()),
+    showHidden: booleanArg()
   },
   complexity: 10,
   resolve: async (_, args, ctx) => {
-    return GetVehiclesByHouse(ctx, args.houseId);
+    return GetVehiclesByHouse(ctx, args.houseId, args.showHidden === null ? undefined : args.showHidden);
   },
 });

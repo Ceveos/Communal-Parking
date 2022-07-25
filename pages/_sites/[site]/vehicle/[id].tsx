@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 import { prisma } from 'db';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import DashboardSection from 'components/dashboard/section';
 import Loader from 'components/sites/Loader';
 import Table, { TableRow } from 'components/dashboard/table';
@@ -22,6 +23,7 @@ interface IndexProps {
 
 export default function Index(props: IndexProps) {
   const router = useRouter();
+  const { data: session } = useSession();
   const [community, setCommunity] = useState<Prisma.CommunityGetPayload<{}>>();
   const [vehicle, setVehicle] = useState<VehicleModified>();
 
@@ -44,20 +46,36 @@ export default function Index(props: IndexProps) {
   // isFallback is true when page is not cached (thus no community data)
   if (router.isFallback || community === undefined || vehicle === undefined) return <Loader />;
 
+  const mainSectionForm = () => {
+    return (
+      <Table>
+        {vehicle.houseId === session?.user.houseId && (
+          <TableRow title='Description' content={vehicle.description} />
+        )}
+        <TableRow title='License Plate' content={vehicle.licensePlate} />
+        <TableRow title='Added By' content={vehicle.User?.name ?? vehicle.User?.email} />
+        <TableRow title='Added On' content={new Date(vehicle.createdAt).toLocaleDateString('en-us', {year: 'numeric', month: 'long', day: '2-digit'})} />
+      </Table>
+    );
+  };
+
   return (
     <MainSiteDashboardLayout community={community}>
-      <DashboardSection
-        title={vehicle.name}
-        buttonText='Edit'
-        href='#'
-      >
-        <Table>
-          <TableRow title='Description' content={vehicle.description} />
-          <TableRow title='License Plate' content={vehicle.licensePlate} />
-          <TableRow title='Added By' content={vehicle.User?.name ?? vehicle.User?.email} />
-          <TableRow title='Added On' content={new Date(vehicle.createdAt).toLocaleDateString('en-us', {year: 'numeric', month: 'long', day: '2-digit'})} />
-        </Table>
-      </DashboardSection>
+      {session?.user.houseId === vehicle.houseId ? (
+        <DashboardSection
+          title={vehicle.name}
+          buttonText='Edit'
+          href={`/vehicle/${vehicle.id}/edit`}
+        >
+          {mainSectionForm()}
+        </DashboardSection>
+      ) : (
+        <DashboardSection
+          title={vehicle.name}
+        >
+          {mainSectionForm()}
+        </DashboardSection>
+      )}
     </MainSiteDashboardLayout>
   );
 }
