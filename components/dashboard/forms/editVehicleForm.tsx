@@ -1,8 +1,8 @@
 import * as Yup from 'yup';
 import { EDIT_VEHICLE_MUTATION, EditVehicleData, EditVehicleVars } from 'lib/mutations/vehicle';
 import { Field, Formik, FormikProps } from 'formik';
-import { Prisma } from '@prisma/client';
 import { Shape } from 'components/helpers/yup';
+import { VehicleModified } from 'lib/queries/vehicle';
 import FormikCheckbox from 'components/formik/checkbox';
 import FormikTextbox from 'components/formik/textbox';
 import Link from 'next/link';
@@ -12,7 +12,7 @@ import router from 'next/router';
 import toast from 'react-hot-toast';
 
 interface Props {
-  vehicle: Prisma.VehicleGetPayload<{}>
+  vehicle: VehicleModified
 }
 
 const EditVehicleForm: React.FC<Props> = ({vehicle}) => {

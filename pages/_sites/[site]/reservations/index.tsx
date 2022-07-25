@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import AuthGuard from 'components/common/authGuard';
 import DashboardSection from 'components/dashboard/section';
+import Head from 'next/head';
 import Loader from 'components/sites/Loader';
 import UserReservationsTable from 'components/dashboard/userReservationTable';
 import type { GetStaticPaths, GetStaticProps } from 'next';
@@ -56,9 +57,9 @@ export default function Index(props: IndexProps) {
   return (
     <MainSiteDashboardLayout community={community}>
       <AuthGuard community={community} communityGuard>
-        <head>
+        <Head>
           <title>My Reservations</title>
-        </head>
+        </Head>
         <DashboardSection
           title='My Reservations'
           buttonText='New Reservation'

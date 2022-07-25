@@ -7,9 +7,10 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import AuthGuard from 'components/common/authGuard';
 import DashboardSection from 'components/dashboard/section';
+import Head from 'next/head';
 import Loader from 'components/sites/Loader';
-import NewReservationForm from 'components/dashboard/forms/newReservationForm';
-import moment from 'moment';import type { GetStaticPaths, GetStaticProps } from 'next';
+import NewReservationForm from 'components/dashboard/forms/newReservationForm';import moment from 'moment';
+import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 ;
 
@@ -49,9 +50,9 @@ export default function Index(props: IndexProps) {
   return (
     <MainSiteDashboardLayout community={community}>
       <AuthGuard community={community} communityGuard>
-        <head>
+        <Head>
           <title>New Reservation</title>
-        </head>
+        </Head>
         <DashboardSection
           title='New Reservation'
         >

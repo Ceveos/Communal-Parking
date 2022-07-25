@@ -37,6 +37,7 @@ type Mutation {
 
 type Query {
   getCurrentReservations(data: ReservationInputType!): [Reservation]
+  getVehicle(id: String!): Vehicle
   getVehicles(houseId: String!, showHidden: Boolean): [Vehicle]
   user(userId: String!): User
 }

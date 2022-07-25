@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import AuthGuard from 'components/common/authGuard';
 import DashboardSection from 'components/dashboard/section';
+import Head from 'next/head';
 import Loader from 'components/sites/Loader';
 import Stat from 'components/dashboard/stat';
 import Stats from 'components/dashboard/stats';
@@ -68,9 +69,9 @@ export default function Index(props: IndexProps) {
   return (
     <MainSiteDashboardLayout community={community}>
       <AuthGuard community={community} communityGuard>
-        <head>
+        <Head>
           <title>My Vehicles</title>
-        </head>
+        </Head>
         <DashboardSection
           title={showHidden ? 'My Hidden Vehicles' : 'My Vehicles'}
           buttonText='Register New Vehicle'
