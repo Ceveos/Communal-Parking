@@ -2,10 +2,10 @@
   "name": "fullstack-boilerplate",
   "private": true,
   "scripts": {
-    "dev": "yarn prisma && next dev --hostname communalparking.test",
-    "build": "yarn prisma && next build",
+    "dev": "yarn generate && next dev --hostname communalparking.test",
+    "build": "yarn generate && next build",
     "build:only": "yarn generate && next build",
-    "start": "yarn prisma && next start",
+    "start": "yarn generate && next start",
     "lint": "yarn generate && next lint --fix",
     "prepare": "husky install",
     "prisma": "yarn generate && npx prisma db push",

@@ -49,6 +49,9 @@ export default function Index(props: IndexProps) {
   const mainSectionForm = () => {
     return (
       <Table>
+        <head>
+          <title>Vehicle Details</title>
+        </head>
         {vehicle.houseId === session?.user.houseId && (
           <TableRow title='Description' content={vehicle.description} />
         )}

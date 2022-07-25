@@ -63,6 +63,9 @@ export default function Index(props: IndexProps) {
 
   return (
     <MainSiteDashboardLayout community={community}>
+      <head>
+        <title>{community.name} - Parking Overview</title>
+      </head>
       <DashboardSection
         title='Parking'
         buttonText='Reserve a spot'

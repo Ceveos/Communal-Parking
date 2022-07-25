@@ -56,6 +56,9 @@ export default function Index(props: IndexProps) {
   return (
     <MainSiteDashboardLayout community={community}>
       <AuthGuard community={community} communityGuard>
+        <head>
+          <title>My Reservations</title>
+        </head>
         <DashboardSection
           title='My Reservations'
           buttonText='New Reservation'

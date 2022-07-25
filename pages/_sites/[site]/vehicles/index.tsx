@@ -32,7 +32,8 @@ export default function Index(props: IndexProps) {
   const [getVehicles, { loading, error, data }] =
     useLazyQuery<GetVehiclesData,GetVehiclesVars>(
       GET_VEHICLES_QUERY, {
-        fetchPolicy: 'cache-and-network'
+        fetchPolicy: 'cache-and-network',
+        nextFetchPolicy: 'network-only'
       });
 
   useEffect(() => {
@@ -67,6 +68,9 @@ export default function Index(props: IndexProps) {
   return (
     <MainSiteDashboardLayout community={community}>
       <AuthGuard community={community} communityGuard>
+        <head>
+          <title>My Vehicles</title>
+        </head>
         <DashboardSection
           title={showHidden ? 'My Hidden Vehicles' : 'My Vehicles'}
           buttonText='Register New Vehicle'
