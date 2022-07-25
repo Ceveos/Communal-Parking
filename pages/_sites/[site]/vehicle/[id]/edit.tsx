@@ -61,7 +61,7 @@ export default function Index(props: IndexProps) {
   );
 }
 
-export const getStaticProps: GetStaticProps<IndexProps, PathProps> = async ({params}) => {
+export const getServerSideProps: GetStaticProps<IndexProps, PathProps> = async ({params}) => {
   if (!params) throw new Error('No path parameters found');
 
   const { site, id } = params;
@@ -113,14 +113,6 @@ export const getStaticProps: GetStaticProps<IndexProps, PathProps> = async ({par
     props: {
       communityData: JSON.stringify(communityData),
       vehicleData: JSON.stringify(vehicleData)
-    },
-    revalidate: 10,
-  };
-};
-
-export const getStaticPaths: GetStaticPaths<PathProps> = async () => {
-  return {
-    paths: [],
-    fallback: true
+    }
   };
 };
