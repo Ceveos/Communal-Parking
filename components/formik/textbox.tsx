@@ -21,7 +21,7 @@ const FormikTextbox: FC<FieldProps> = ({ field, form: {touched, errors, isSubmit
             )
           }
           aria-invalid={touched[field.name] && errors[field.name] ? 'true' : 'false'}
-          aria-describedby={touched[field.name] && errors[field.name] ? 'game-name-error' : ''}
+          aria-describedby={touched[field.name] && errors[field.name] ? `${field.name}-error` : ''}
         />
         {touched[field.name] && errors[field.name] && (
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -30,7 +30,7 @@ const FormikTextbox: FC<FieldProps> = ({ field, form: {touched, errors, isSubmit
         )}
       </div>
       {touched[field.name] && errors[field.name] && (
-        <p className="mt-2 text-sm text-red-600" id="email-error">
+        <p className="mt-2 text-sm text-red-600" id={`${field.name}-error`}>
           {errors[field.name] as string}
         </p>
       )}

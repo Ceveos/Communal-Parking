@@ -6,8 +6,8 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import AuthGuard from 'components/common/authGuard';
 import DashboardSection from 'components/dashboard/section';
+import EditVehicleForm from 'components/dashboard/forms/editVehicleForm';
 import Loader from 'components/sites/Loader';
-import NewVehicleForm from 'components/dashboard/forms/newVehicleForm';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 
@@ -43,15 +43,15 @@ export default function Index(props: IndexProps) {
   }, [props.vehicleData, vehicle]);
 
   // isFallback is true when page is not cached (thus no community/vehicle data)
-  if (router.isFallback || community === undefined) return <Loader />;
+  if (router.isFallback || community === undefined || vehicle === undefined) return <Loader />;
 
   return (
     <MainSiteDashboardLayout community={community}>
       <AuthGuard community={community} communityGuard>
         <DashboardSection
-          title='Edit Vehicle'
+          title={`Edit Vehicle (${vehicle.licensePlate})`}
         >
-          <NewVehicleForm />
+          <EditVehicleForm vehicle={vehicle} />
         </DashboardSection>
       </AuthGuard>
     </MainSiteDashboardLayout>

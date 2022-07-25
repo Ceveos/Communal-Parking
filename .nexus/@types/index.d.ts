@@ -130,6 +130,7 @@ export interface NexusGenFieldTypes {
   Mutation: { // field return type
     addReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     addVehicle: NexusGenRootTypes['Vehicle'] | null; // Vehicle
+    editVehicle: NexusGenRootTypes['Vehicle'] | null; // Vehicle
   }
   Query: { // field return type
     getCurrentReservations: Array<NexusGenRootTypes['Reservation'] | null> | null; // [Reservation]
@@ -191,6 +192,7 @@ export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
     addReservation: 'Reservation'
     addVehicle: 'Vehicle'
+    editVehicle: 'Vehicle'
   }
   Query: { // field return type name
     getCurrentReservations: 'Reservation'
@@ -242,6 +244,12 @@ export interface NexusGenArgTypes {
       name: string; // String!
       personal: boolean; // Boolean!
     }
+    editVehicle: { // args
+      description?: string | null; // String
+      hidden: boolean; // Boolean!
+      id: string; // String!
+      name: string; // String!
+    }
   }
   Query: {
     getCurrentReservations: { // args
@@ -249,6 +257,7 @@ export interface NexusGenArgTypes {
     }
     getVehicles: { // args
       houseId: string; // String!
+      showHidden?: boolean | null; // Boolean
     }
     user: { // args
       userId: string; // String!

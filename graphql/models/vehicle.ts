@@ -24,10 +24,11 @@ export const Vehicles = objectType({
   },
 });
 
-export async function GetVehiclesByHouse(ctx: Context, houseId: string): Promise<HouseOnVehicle[] | null> {
+export async function GetVehiclesByHouse(ctx: Context, houseId: string, showHidden?: boolean ): Promise<HouseOnVehicle[] | null> {
   return await ctx.prisma.vehicle.findMany({
     where: {
-      houseId: houseId
+      houseId: houseId,
+      hidden: showHidden
     },
     include: {
       House: true
@@ -51,6 +52,17 @@ export async function AddVehicle(ctx: Context, data: AddVehicleParam, houseId: s
           id: userId
         }
       }
+    }
+  });
+}
+
+export type EditVehicleParam = Pick<Prisma.VehicleGetPayload<{}>, 'name' | 'description' | 'hidden'>
+
+export async function EditVehicle(ctx: Context, vehicleId: string, data: EditVehicleParam): Promise<Prisma.VehicleGetPayload<{}> | null> {
+  return await ctx.prisma.vehicle.update({
+    data: data,
+    where: {
+      id: vehicleId
     }
   });
 }

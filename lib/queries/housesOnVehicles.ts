@@ -8,11 +8,12 @@ export interface GetVehiclesData {
 
 export interface GetVehiclesVars {
   houseId: String;
+  showHidden?: Boolean;
 }
 
 export const GET_VEHICLES_QUERY = gql`
-  query GetVehicles($houseId: String!) {
-    getVehicles(houseId: $houseId) {
+  query GetVehicles($houseId: String!, $showHidden: Boolean) {
+    getVehicles(houseId: $houseId, showHidden: $showHidden) {
       id
       licensePlate
       name
@@ -36,6 +37,7 @@ const houseOnVehicle = Prisma.validator<Prisma.VehicleArgs>()({
     description: true,
     personal: true,
     createdAt: true,
+    hidden: true,
     updatedAt: true,
     House: {
       select: {

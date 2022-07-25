@@ -28,6 +28,7 @@ export default function Index(props: IndexProps) {
   const { data: session, status } = useSession();
   const [community, setCommunity] = useState<Prisma.CommunityGetPayload<{}>>();
   const [registeredStat, setRegisteredStat] = useState<string>();
+  const [showHidden, setShowHidden] = useState<boolean>(false);
   const [getVehicles, { loading, error, data }] =
     useLazyQuery<GetVehiclesData,GetVehiclesVars>(
       GET_VEHICLES_QUERY, {
@@ -47,11 +48,12 @@ export default function Index(props: IndexProps) {
     if (session?.user.houseId) {
       getVehicles({
         variables: {
-          houseId: session.user.houseId
+          houseId: session.user.houseId,
+          showHidden: showHidden
         }
       });
     }
-  }, [session, getVehicles]);
+  }, [session, getVehicles, showHidden]);
 
   useEffect(() => {
     if (data?.getVehicles) {
@@ -66,17 +68,24 @@ export default function Index(props: IndexProps) {
     <MainSiteDashboardLayout community={community}>
       <AuthGuard community={community} communityGuard>
         <DashboardSection
-          title='My Vehicles'
+          title={showHidden ? 'My Hidden Vehicles' : 'My Vehicles'}
           buttonText='Register New Vehicle'
           href='/vehicles/new'
         >
           {/* Stats */}
           <Stats>
-            <Stat header='Vehicles Registered' body={registeredStat} />
+            <Stat header={showHidden ? 'Vehicles Hidden' : 'Vehicles Registered'} body={registeredStat} />
           </Stats>
 
           {/* Table */}
           <VehiclesTable vehicles={data?.getVehicles} loading={loading} />
+
+          {/* Show hidden vehicles */}
+          <div className="flex justify-center py-4" >
+            <button disabled={loading} onClick={() => { setShowHidden(!showHidden); }}>
+              <p className="text-sm font-medium text-accent-600 hover:text-accent-700 dark:text-accent-dark-400 dark:hover:text-accent-dark-300 truncate">{showHidden ? 'Hide hidden' : 'Show hidden'}</p>
+            </button>
+          </div>
         </DashboardSection>
       </AuthGuard>
     </MainSiteDashboardLayout>

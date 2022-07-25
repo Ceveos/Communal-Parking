@@ -1,9 +1,7 @@
-import { AddVehicle, AddVehicleParam } from 'graphql/models';
+import { AddVehicle, AddVehicleParam, EditVehicle, EditVehicleParam } from 'graphql/models';
 import { AuthenticationError, UserInputError } from 'apollo-server-micro';
 import { booleanArg, mutationField, nonNull, stringArg } from 'nexus';
 
-// Create a game and link to existing database
-// or creat a game and database in one go
 export const addVehicle = mutationField('addVehicle', {
   type: 'Vehicle',
   args: {
@@ -27,6 +25,43 @@ export const addVehicle = mutationField('addVehicle', {
 
     try {
       return await AddVehicle(ctx, addVehicleParam, token.houseId, token.id);
+    } catch (ex) {
+      throw new UserInputError('Vehicle already exists');
+    }
+  },
+});
+
+export const editVehicle = mutationField('editVehicle', {
+  type: 'Vehicle',
+  args: {
+    id: nonNull(stringArg()),
+    name: nonNull(stringArg()),
+    description: stringArg(),
+    hidden: nonNull(booleanArg()),
+  },
+  complexity: 50,
+  resolve: async (_, args, ctx) => {
+    const { token } = ctx;
+    let vehicle = await ctx.prisma.vehicle.findUnique({
+      where: {
+        id: args.id
+      }
+    });
+
+    if (!token || !token.houseId || !token.id) {
+      throw new AuthenticationError('Valid token required');
+    }
+
+    if (vehicle?.houseId !== token.houseId) {
+      throw new AuthenticationError('User does not have permission to edit vehicle');
+    }
+    const editVehicleParam: EditVehicleParam = {
+      ...args,
+      description: args.description ?? null
+    };
+
+    try {
+      return await EditVehicle(ctx, args.id, editVehicleParam);
     } catch (ex) {
       throw new UserInputError('Vehicle already exists');
     }

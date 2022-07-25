@@ -21,10 +21,6 @@ interface IndexProps {
   vehicleData: string;
 }
 
-const EditDashboardSection = () => {
-  return <></>;
-};
-
 export default function Index(props: IndexProps) {
   const router = useRouter();
   const { data: session } = useSession();
@@ -53,7 +49,9 @@ export default function Index(props: IndexProps) {
   const mainSectionForm = () => {
     return (
       <Table>
-        <TableRow title='Description' content={vehicle.description} />
+        {vehicle.houseId === session?.user.houseId && (
+          <TableRow title='Description' content={vehicle.description} />
+        )}
         <TableRow title='License Plate' content={vehicle.licensePlate} />
         <TableRow title='Added By' content={vehicle.User?.name ?? vehicle.User?.email} />
         <TableRow title='Added On' content={new Date(vehicle.createdAt).toLocaleDateString('en-us', {year: 'numeric', month: 'long', day: '2-digit'})} />

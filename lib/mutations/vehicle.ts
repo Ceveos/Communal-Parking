@@ -21,3 +21,24 @@ export const ADD_VEHICLE_MUTATION = gql`
     }
   }
 `;
+
+export interface EditVehicleData {
+  editVehicle: Prisma.VehicleGetPayload<{}>
+}
+
+export interface EditVehicleVars {
+  id: string;
+  name: string;
+  description: string | null;
+  hidden: boolean;
+}
+
+export const EDIT_VEHICLE_MUTATION = gql`
+  mutation AddVehicle($id: String!, $name: String!, $description: String, $hidden: Boolean!) {
+    editVehicle(id: $id, name: $name, description: $description, hidden: $hidden) {
+      id
+      name
+      licensePlate
+    }
+  }
+`;
