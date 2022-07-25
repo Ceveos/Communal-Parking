@@ -37,7 +37,8 @@ const NewReservationForm: React.FC<Props> = () => {
     if (session?.user.houseId) {
       getVehicles({
         variables: {
-          houseId: session.user.houseId
+          houseId: session.user.houseId,
+          showHidden: false
         }
       });
     }
