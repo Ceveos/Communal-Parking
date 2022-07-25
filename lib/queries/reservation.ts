@@ -44,6 +44,7 @@ export const GET_CURRENT_HOUSE_RESERVATIONS_QUERY = gql`
         id
         licensePlate
         name
+        description
       }
       House {
         unit
@@ -64,7 +65,8 @@ const reservation = Prisma.validator<Prisma.ReservationArgs>()({
       select: {
         id: true,
         licensePlate: true,
-        name: true
+        name: true,
+        description: true
       },
     },
     House: {
