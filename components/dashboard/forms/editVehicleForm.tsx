@@ -58,7 +58,7 @@ const EditVehicleForm: React.FC<Props> = ({vehicle}) => {
       }}
       validationSchema={Yup.object<Shape<EditVehicleVars>>({
         name: Yup.string()
-          .required('Enter a valid name')
+          .required('Enter a valid car make/model')
           .min(3, 'Name must have at least 3 characters'),
         description: Yup.string().nullable(),
         hidden: Yup.bool().required()
@@ -83,13 +83,25 @@ const EditVehicleForm: React.FC<Props> = ({vehicle}) => {
                           <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-primary-dark-300">
                             Private Vehicle Description
                           </label>
-                          <Field name="description" component={FormikTextbox} disabled={isSubmitting} list="autocompleteOff"/>
+                          <Field
+                            name="description"
+                            component={FormikTextbox}
+                            disabled={isSubmitting}
+                            list="autocompleteOff"
+                            placeholder="Joe's car"
+                          />
                         </div>
                         <div className="col-span-6 sm:col-span-4">
                           <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-primary-dark-300">
                             Vehicle Make/Model
                           </label>
-                          <Field name="name" component={FormikTextbox} disabled={isSubmitting} list="autocompleteOff" required/>
+                          <Field name="name"
+                            component={FormikTextbox}
+                            disabled={isSubmitting}
+                            list="autocompleteOff"
+                            placeholder="Honda Civic"
+                            required
+                          />
                         </div>
                       </div>
                     </div>
