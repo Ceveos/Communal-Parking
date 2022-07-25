@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import AuthGuard from 'components/common/authGuard';
 import DashboardSection from 'components/dashboard/section';
+import Head from 'next/head';
 import Loader from 'components/sites/Loader';
 import NewVehicleForm from 'components/dashboard/forms/newVehicleForm';
 import type { GetStaticPaths, GetStaticProps } from 'next';
@@ -38,9 +39,9 @@ export default function Index(props: IndexProps) {
   return (
     <MainSiteDashboardLayout community={community}>
       <AuthGuard community={community} communityGuard>
-        <head>
+        <Head>
           <title>New Vehicle</title>
-        </head>
+        </Head>
         <DashboardSection
           title='New Vehicle'
         >

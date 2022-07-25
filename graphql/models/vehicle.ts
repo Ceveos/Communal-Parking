@@ -2,6 +2,7 @@ import * as NexusPrisma from 'nexus-prisma';
 import { Context } from 'graphql/context';
 import { HouseOnVehicle } from 'lib/queries/housesOnVehicles';
 import { Prisma } from '@prisma/client';
+import { Vehicle } from 'lib/queries/vehicle';
 import { objectType } from 'nexus';
 
 export const Vehicles = objectType({
@@ -32,6 +33,18 @@ export async function GetVehiclesByHouse(ctx: Context, houseId: string, showHidd
     },
     include: {
       House: true
+    }
+  });
+}
+export async function GetVehicleById(ctx: Context, id: string ): Promise<Vehicle | null> {
+  return await ctx.prisma.vehicle.findUnique({
+    where: {
+      id
+    },
+    include: {
+      House: true,
+      User: true,
+      Reservations: true
     }
   });
 }

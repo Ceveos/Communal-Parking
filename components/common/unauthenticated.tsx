@@ -1,13 +1,14 @@
 import { signIn } from 'next-auth/react';
+import Head from 'next/head';
 
 interface Props {
 }
 const Unauthenticated: React.FC<Props> = () => {
   return (
     <div className="py-16">
-      <head>
+      <Head>
         <title>Unauthenticated error</title>
-      </head>
+      </Head>
       <div className="text-center">
         <p className="text-sm font-semibold text-accent-600 dark:text-accent-dark-600 uppercase tracking-wide">Unauthenticated</p>
         <h1 className="mt-2 text-4xl font-extrabold text-primary-900 dark:text-primary-dark-400 tracking-tight sm:text-5xl">Please sign in</h1>

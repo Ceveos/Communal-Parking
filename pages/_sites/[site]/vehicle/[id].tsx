@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import DashboardSection from 'components/dashboard/section';
+import Head from 'next/head';
 import Loader from 'components/sites/Loader';
 import Table, { TableRow } from 'components/dashboard/table';
 import type { GetStaticPaths, GetStaticProps } from 'next';
@@ -49,9 +50,9 @@ export default function Index(props: IndexProps) {
   const mainSectionForm = () => {
     return (
       <Table>
-        <head>
+        <Head>
           <title>Vehicle Details</title>
-        </head>
+        </Head>
         {vehicle.houseId === session?.user.houseId && (
           <TableRow title='Description' content={vehicle.description} />
         )}

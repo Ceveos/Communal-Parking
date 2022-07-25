@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import Link from 'next/link';
 
 interface Props {
@@ -5,9 +6,9 @@ interface Props {
 const Unauthenticated: React.FC<Props> = () => {
   return (
     <div className="py-16">
-      <head>
+      <Head>
         <title>Unauthorized error</title>
-      </head>
+      </Head>
       <div className="text-center">
         <p className="text-sm font-semibold text-accent-600 dark:text-accent-dark-600 uppercase tracking-wide">Unauthorized</p>
         <h1 className="mt-2 text-4xl font-extrabold text-primary-900 dark:text-primary-dark-400 tracking-tight sm:text-5xl">Access Denied</h1>

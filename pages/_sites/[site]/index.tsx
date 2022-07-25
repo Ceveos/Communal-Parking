@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import DashboardSection from 'components/dashboard/section';
+import Head from 'next/head';
 import Loader from 'components/sites/Loader';
 import ReservationsTable from 'components/dashboard/reservationTable';
 import Stat from 'components/dashboard/stat';
@@ -63,9 +64,9 @@ export default function Index(props: IndexProps) {
 
   return (
     <MainSiteDashboardLayout community={community}>
-      <head>
+      <Head>
         <title>Parking Overview</title>
-      </head>
+      </Head>
       <DashboardSection
         title='Parking'
         buttonText='Reserve a spot'

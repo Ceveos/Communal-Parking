@@ -134,6 +134,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     getCurrentReservations: Array<NexusGenRootTypes['Reservation'] | null> | null; // [Reservation]
+    getVehicle: NexusGenRootTypes['Vehicle'] | null; // Vehicle
     getVehicles: Array<NexusGenRootTypes['Vehicle'] | null> | null; // [Vehicle]
     user: NexusGenRootTypes['User'] | null; // User
   }
@@ -196,6 +197,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     getCurrentReservations: 'Reservation'
+    getVehicle: 'Vehicle'
     getVehicles: 'Vehicle'
     user: 'User'
   }
@@ -254,6 +256,9 @@ export interface NexusGenArgTypes {
   Query: {
     getCurrentReservations: { // args
       data: NexusGenInputs['ReservationInputType']; // ReservationInputType!
+    }
+    getVehicle: { // args
+      id: string; // String!
     }
     getVehicles: { // args
       houseId: string; // String!
