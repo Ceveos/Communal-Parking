@@ -1,7 +1,6 @@
 import { Fragment } from 'react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import { Popover, Transition } from '@headlessui/react';
-import { signIn, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import appPic from '../../public/hero.jpg';
 import type { NextPage } from 'next';;
@@ -15,7 +14,7 @@ const navigation: {name: string; href: string;}[] = [
 
 const Hero: NextPage = () => {
 
-  const { data: session, status } = useSession();
+  // const { data: session, status } = useSession();
 
   return (
     <div className="bg-gray-50">
@@ -98,14 +97,14 @@ const Hero: NextPage = () => {
                 </div>
                 <div className="hidden md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0">
                   <span className="inline-flex rounded-md shadow">
-                    {status === 'unauthenticated' && (
+                    {/* {status === 'unauthenticated' && (
                       <button
                         onClick={() => signIn()}
                         className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-accent-600 bg-white hover:text-accent-500"
                       >
                     Sign in
                       </button>
-                    )}
+                    )} */}
                   </span>
                 </div>
               </nav>
@@ -151,14 +150,14 @@ const Hero: NextPage = () => {
                       </a>
                     ))}
                   </div>
-                  {status === 'unauthenticated' && (
+                  {/* {status === 'unauthenticated' && (
                     <button
                       onClick={() => signIn()}
                       className="block w-full px-5 py-3 text-center font-medium text-accent-600 bg-gray-50 hover:bg-gray-100 hover:text-accent-700"
                     >
                 Sign in
                     </button>
-                  )}
+                  )} */}
                 </div>
               </Popover.Panel>
             </Transition>
