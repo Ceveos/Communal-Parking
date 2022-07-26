@@ -56,8 +56,9 @@ export default function Index(props: IndexProps) {
           <title>Vehicle Details</title>
         </Head>
         {vehicle.houseId === session?.user.houseId && (
-          <TableRow title='Description' content={vehicle.description} />
+          <TableRow title='Nickname' content={vehicle.description} />
         )}
+        <TableRow title='Make/Model' content={vehicle.name} />
         <TableRow title='License Plate' content={vehicle.licensePlate} />
         <TableRow title='Associated with' content={`Unit ${vehicle.House?.unit ?? 'N/A'}`} />
         <TableRow title='Added By' content={vehicle.User?.name ?? vehicle.User?.email} />

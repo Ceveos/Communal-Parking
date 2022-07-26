@@ -81,7 +81,7 @@ const EditVehicleForm: React.FC<Props> = ({vehicle}) => {
                       <div className="grid grid-cols-6 gap-6">
                         <div className="col-span-6 sm:col-span-4">
                           <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-primary-dark-300">
-                            Private Vehicle Description
+                            Nickname
                           </label>
                           <Field
                             name="description"
