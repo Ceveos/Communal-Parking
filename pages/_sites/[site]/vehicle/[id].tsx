@@ -1,6 +1,7 @@
 import { MainSiteDashboardLayout } from 'layouts/dashboard';
 import { Modify } from 'lib/FixType';
 import { Prisma } from '@prisma/client';
+import { Reservation } from 'lib/queries/reservation';
 import { prisma } from 'db';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -8,6 +9,7 @@ import { useSession } from 'next-auth/react';
 import DashboardSection from 'components/dashboard/section';
 import Head from 'next/head';
 import Loader from 'components/sites/Loader';
+import ReservationHistoryTable from 'components/dashboard/reservationHistoryTable';
 import Table, { TableRow } from 'components/dashboard/table';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
@@ -80,6 +82,10 @@ export default function Index(props: IndexProps) {
           {mainSectionForm()}
         </DashboardSection>
       )}
+
+      <DashboardSection title='Reservation Log'>
+        <ReservationHistoryTable reservations={vehicle.Reservations as unknown as Reservation[]}/>
+      </DashboardSection>
     </MainSiteDashboardLayout>
   );
 }
@@ -123,7 +129,16 @@ export const getStaticProps: GetStaticProps<IndexProps, PathProps> = async ({par
           Community: true
         }
       },
-      Reservations: true,
+      Reservations: {
+        orderBy: {
+          reservedFrom: 'desc'
+        },
+        take: 10,
+        include: {
+          House: true,
+          User: true
+        }
+      },
       User: true
     }
   });
@@ -153,7 +168,12 @@ const vehicle = Prisma.validator<Prisma.VehicleArgs>()({
         Community: true
       }
     },
-    Reservations: true,
+    Reservations: {
+      include: {
+        House: true,
+        User: true
+      }
+    },
     User: true
   }
 });

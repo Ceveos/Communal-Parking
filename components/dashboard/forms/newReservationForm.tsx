@@ -37,7 +37,8 @@ const NewReservationForm: React.FC<Props> = () => {
     if (session?.user.houseId) {
       getVehicles({
         variables: {
-          houseId: session.user.houseId
+          houseId: session.user.houseId,
+          showHidden: false
         }
       });
     }
@@ -48,7 +49,9 @@ const NewReservationForm: React.FC<Props> = () => {
       setVehicles(data.getVehicles.map((val) => {
         return {
           id: val.id,
-          name: `${val.name} (${val.licensePlate})`
+          name: val.description ?
+            `${val.description} (${val.name})` :
+            `${val.name} (${val.licensePlate})`
         };
       }));
     }

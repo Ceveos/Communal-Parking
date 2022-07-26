@@ -43,7 +43,7 @@ const ReservationsTable: React.FC<Props> = ({reservations}) => {
                     <div className="mt-2 flex items-center text-sm text-gray-500 dark:text-primary-dark-400 sm:mt-0">
                       <CalendarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400 dark:text-primary-dark-300" aria-hidden="true" />
                       <p>
-                      Valid until <time dateTime={reservation.reservedTo}>{new Date(reservation.reservedTo).toLocaleDateString('en-us', {weekday: 'long', hour: 'numeric', minute: 'numeric'})}</time>
+                        Through <time dateTime={reservation.reservedTo}>{new Date(reservation.reservedTo).toLocaleDateString('en-us', {weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric'})}</time>
                       </p>
                     </div>
                   </div>

@@ -21,7 +21,13 @@ const UserReservationsTable: React.FC<Props> = ({reservations}) => {
               <a className="block hover:bg-gray-50 dark:hover:bg-primary-dark-700">
                 <div className="px-4 py-4 sm:px-6">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-accent-600 dark:text-accent-dark-300 truncate">{reservation.Vehicle.name}</p>
+
+                    {reservation.Vehicle.description ? (
+                      <p className="text-sm font-medium text-accent-600 dark:text-accent-dark-300 truncate">{`${reservation.Vehicle.description} (${reservation.Vehicle.name})`}</p>
+                    ) : (
+                      <p className="text-sm font-medium text-accent-600 dark:text-accent-dark-300 truncate">{reservation.Vehicle.name}</p>
+                    )
+                    }
                     <div className="ml-2 flex-shrink-0 flex">
                       {moment(reservation.reservedFrom) < moment() && moment() < moment(reservation.reservedTo) && (
                         <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100"
