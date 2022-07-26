@@ -39,6 +39,7 @@ export const EDIT_VEHICLE_MUTATION = gql`
       id
       name
       licensePlate
+      hidden
     }
   }
 `;
