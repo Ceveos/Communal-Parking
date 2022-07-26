@@ -8,9 +8,9 @@ export const permissions = shield({
   Query: {
     '*': rateLimitRule({window: '1s', max: 5})
   },
-  // Mutation: {
-  //   '*': rateLimitRule({window: '1s', max: 5})
-  // }
+  Mutation: {
+    '*': rateLimitRule({window: '1s', max: 5})
+  }
 },
 {
   allowExternalErrors: true
