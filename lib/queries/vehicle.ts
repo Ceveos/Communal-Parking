@@ -16,6 +16,7 @@ export const GET_VEHICLE_QUERY = gql`
       id
       licensePlate
       name
+      hidden
       description
       personal
       createdAt
