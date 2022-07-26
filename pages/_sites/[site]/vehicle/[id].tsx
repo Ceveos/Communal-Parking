@@ -59,6 +59,7 @@ export default function Index(props: IndexProps) {
           <TableRow title='Description' content={vehicle.description} />
         )}
         <TableRow title='License Plate' content={vehicle.licensePlate} />
+        <TableRow title='Associated with' content={`Unit ${vehicle.House?.unit ?? 'N/A'}`} />
         <TableRow title='Added By' content={vehicle.User?.name ?? vehicle.User?.email} />
         <TableRow title='Added On' content={new Date(vehicle.createdAt).toLocaleDateString('en-us', {year: 'numeric', month: 'long', day: '2-digit'})} />
       </Table>
