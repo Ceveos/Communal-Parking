@@ -1,7 +1,9 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, SVGProps } from 'react';
+import { Fragment, SVGProps, useEffect, useState } from 'react';
+import { Role } from '@prisma/client';
 import { XIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import classNames from 'lib/classNames';
 
@@ -10,7 +12,8 @@ export interface SidebarLink {
   // eslint-disable-next-line no-unused-vars
   icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
   href: string;
-  route: string;
+  route: RegExp;
+  allowed?: Role[]
 }
 
 interface Props {
@@ -22,7 +25,18 @@ interface Props {
 }
 
 const Sidebar: React.FC<Props> = ({ header: name, menuItems, sidebarOpen, setSidebarOpen }) => {
+  const [filteredMenuItems, setFilteredMenuItems] = useState<SidebarLink[]>([]);
   const router = useRouter();
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    setFilteredMenuItems(menuItems.filter(item => {
+      if (item.allowed) {
+        return item.allowed.indexOf(session?.user.role as Role) !== -1;
+      }
+      return true;
+    }));
+  }, [menuItems, session]);
 
   return (
     <>
@@ -76,20 +90,20 @@ const Sidebar: React.FC<Props> = ({ header: name, menuItems, sidebarOpen, setSid
                 </div>
                 <div className="mt-5 flex-1 h-0 overflow-y-auto">
                   <nav className="px-2 space-y-1">
-                    {menuItems.map((item) => (
+                    {filteredMenuItems.map((item) => (
                       <Link
                         key={item.name}
                         href={item.href}
                       >
                         <a className={classNames(
-                          router.route === item.route
+                          item.route.test(router.route)
                             ? 'bg-primary-900 text-white dark:bg-primary-dark-800 dark:text-white'
                             : 'text-gray-300 hover:bg-primary-700 hover:text-white dark:hover:bg-primary-dark-700 dark:hover:text-white',
                           'group flex items-center px-2 py-2 text-base font-medium rounded-md'
                         )}>
                           <item.icon
                             className={classNames(
-                              router.route === item.route ?
+                              item.route.test(router.route) ?
                                 'text-gray-300 dark:text-gray-300' :
                                 'text-gray-400 group-hover:text-gray-300 dark:text-gray-400 dark:group-hover:text-gray-300',
                               'mr-4 flex-shrink-0 h-6 w-6'
@@ -120,20 +134,21 @@ const Sidebar: React.FC<Props> = ({ header: name, menuItems, sidebarOpen, setSid
           </div>
           <div className="flex-1 flex flex-col overflow-y-auto">
             <nav className="flex-1 px-2 py-4 space-y-1">
-              {menuItems.map((item) => (
+              {filteredMenuItems.map(item => (
                 <Link
                   key={item.name}
                   href={item.href}
+                  passHref
                 >
                   <a className={classNames(
-                    router.route === item.route ?
+                    item.route.test(router.route) ?
                       'bg-primary-900 dark:bg-primary-dark-800 text-white dark:text-white' :
                       'text-gray-300 hover:bg-primary-700 hover:text-white dark:text-gray-300 dark:hover:bg-primary-dark-700 dark:hover:text-white',
                     'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
                   )}>
                     <item.icon
                       className={classNames(
-                        router.route === item.route ?
+                        item.route.test(router.route) ?
                           'text-gray-300 dark:text-gray-300' :
                           'text-gray-400 group-hover:text-gray-300 dark:text-gray-400 dark:group-hover:text-gray-300',
                         'mr-3 flex-shrink-0 h-6 w-6'

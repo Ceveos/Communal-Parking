@@ -35,7 +35,7 @@ const DashboardSection: React.FC<Props> = ({ title, buttonText, href, children }
   return (
     <div className="py-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        <div className="pb-5 border-b border-primary-300 dark:border-primary-dark-800 sm:flex sm:items-center sm:justify-between">
+        <div className="pb-5 border-b border-primary-300 dark:border-primary-dark-700 sm:flex sm:items-center sm:justify-between">
           { title && <h1 className="text-lg leading-6 font-medium text-black dark:text-white">{title}</h1> }
           { buttonText && href && <DashboardSectionButton buttonText={buttonText} href={href} /> }
         </div>
