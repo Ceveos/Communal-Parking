@@ -69,8 +69,10 @@ export interface NexusGenObjects {
     subdomain: string; // String!
   }
   House: { // root type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: string; // ID!
     unit: string; // String!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   Mutation: {};
   Query: {};
@@ -124,8 +126,10 @@ export interface NexusGenFieldTypes {
     Community: NexusGenRootTypes['Community']; // Community!
     Users: NexusGenRootTypes['User'][]; // [User!]!
     Vehicles: NexusGenRootTypes['Vehicle'][]; // [Vehicle!]!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: string; // ID!
     unit: string; // String!
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   Mutation: { // field return type
     addReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
@@ -134,6 +138,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     getCurrentReservations: Array<NexusGenRootTypes['Reservation'] | null> | null; // [Reservation]
+    getHouses: Array<NexusGenRootTypes['House'] | null> | null; // [House]
     getVehicle: NexusGenRootTypes['Vehicle'] | null; // Vehicle
     getVehicles: Array<NexusGenRootTypes['Vehicle'] | null> | null; // [Vehicle]
     user: NexusGenRootTypes['User'] | null; // User
@@ -187,8 +192,10 @@ export interface NexusGenFieldTypeNames {
     Community: 'Community'
     Users: 'User'
     Vehicles: 'Vehicle'
+    createdAt: 'DateTime'
     id: 'ID'
     unit: 'String'
+    updatedAt: 'DateTime'
   }
   Mutation: { // field return type name
     addReservation: 'Reservation'
@@ -197,6 +204,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     getCurrentReservations: 'Reservation'
+    getHouses: 'House'
     getVehicle: 'Vehicle'
     getVehicles: 'Vehicle'
     user: 'User'
@@ -256,6 +264,9 @@ export interface NexusGenArgTypes {
   Query: {
     getCurrentReservations: { // args
       data: NexusGenInputs['ReservationInputType']; // ReservationInputType!
+    }
+    getHouses: { // args
+      communityId: string; // String!
     }
     getVehicle: { // args
       id: string; // String!

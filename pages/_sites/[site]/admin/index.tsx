@@ -3,6 +3,7 @@ import { prisma } from 'db';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import AdminDashboardLayout from 'layouts/dashboard/adminDashboard';
+import DashboardSection from 'components/dashboard/section';
 import DashboardTabbedSection from 'components/dashboard/tabbedSection';
 import Head from 'next/head';
 import Loader from 'components/sites/Loader';
@@ -37,7 +38,9 @@ export default function Index(props: IndexProps) {
       <Head>
         <title>Admin Dashboard</title>
       </Head>
-      <p>Main page text</p>
+      <DashboardSection title='Admin Dashboard'>
+        <p className='text-black dark:text-white pt-4'>To be created</p>
+      </DashboardSection>
     </AdminDashboardLayout>
   );
 }

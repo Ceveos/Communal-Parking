@@ -5,11 +5,11 @@ import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import MainSiteDashboardLayout from './mainSiteDashboard';
 import Navbar from 'components/dashboard/navbar';
-import Sidebar, { SidebarLink } from 'components/dashboard/sidebar';
+import Sidebar, { SidebarItem } from 'components/dashboard/sidebar';
 
 interface DashboardLayoutProps {
   community: Prisma.Community;
-  sidebarMenuItems: SidebarLink[];
+  sidebarMenuItems: SidebarItem[];
 
   children?: React.ReactNode;
 }

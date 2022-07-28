@@ -1,11 +1,16 @@
+import { GET_HOUSES_QUERY, GetHousesData, GetHousesVars } from 'lib/queries/house';
 import { Prisma } from '@prisma/client';
 import { prisma } from 'db';
 import { useEffect, useState } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import AdminDashboardLayout from 'layouts/dashboard/adminDashboard';
-import DashboardTabbedSection from 'components/dashboard/tabbedSection';
+import DashboardSection from 'components/dashboard/section';
 import Head from 'next/head';
+import HousesTable from 'components/dashboard/housesTable';
 import Loader from 'components/sites/Loader';
+import Stat from 'components/dashboard/stat';
+import Stats from 'components/dashboard/stats';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 
@@ -20,6 +25,14 @@ interface IndexProps {
 export default function Index(props: IndexProps) {
   const router = useRouter();
   const [community, setCommunity] = useState<Prisma.CommunityGetPayload<{}>>();
+  const [registeredStat, setRegisteredStat] = useState<string>();
+  const [vacantStat, setVacantStat] = useState<string>();
+  const [getHouses, { loading, error, data }] =
+    useLazyQuery<GetHousesData, GetHousesVars>(
+      GET_HOUSES_QUERY, {
+        fetchPolicy: 'cache-and-network',
+        nextFetchPolicy: 'network-only'
+      });
 
   useEffect(() => {
     if (props.communityData !== undefined && community === undefined) {
@@ -29,15 +42,46 @@ export default function Index(props: IndexProps) {
     }
   }, [props.communityData, community]);
 
+  useEffect(() => {
+    // We can only query for houses when session is loaded
+    if (community?.id) {
+      getHouses({
+        variables: {
+          communityId: community.id,
+        }
+      });
+    }
+  }, [community, getHouses]);
+
+  useEffect(() => {
+    if (data?.getHouses) {
+      setRegisteredStat(`${data.getHouses.length}`);
+      setVacantStat(`${data.getHouses.filter(house => house.Users.length === 0).length}`);
+    }
+  }, [data]);
+
   // isFallback is true when page is not cached (thus no community data)
   if (router.isFallback || community === undefined) return <Loader />;
 
   return (
     <AdminDashboardLayout community={community}>
       <Head>
-        <title>Admin Dashboard</title>
+        <title>{community.name} Units</title>
       </Head>
-      <p>Units page</p>
+      <DashboardSection
+        title={'Units'}
+        buttonText='Add Unit'
+        href='/admin/units/new'
+      >
+        {/* Stats */}
+        <Stats>
+          <Stat header={'Registered Units'} body={registeredStat} />
+          <Stat header={'Vacant Units'} body={vacantStat} />
+        </Stats>
+
+        {/* Table */}
+        <HousesTable houses={data?.getHouses} loading={loading} />
+      </DashboardSection>
     </AdminDashboardLayout>
   );
 }
