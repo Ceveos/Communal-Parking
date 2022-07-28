@@ -38,10 +38,7 @@ export const addReservation = mutationField('addReservation', {
     }
 
     try {
-      const res = await AddReservation(ctx, token.communityId, token.houseId, token.id, args.vehicleId, date);
-
-      await ctx.res.revalidate(`/_sites/${token.communityId}/vehicle/${args.vehicleId}`);
-      return res;
+      return await AddReservation(ctx, token.communityId, token.houseId, token.id, args.vehicleId, date);
     } catch (ex) {
       throw new ApolloError('Error adding reservation');
     }
