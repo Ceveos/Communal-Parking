@@ -137,6 +137,7 @@ export async function AddReservation(ctx: Context, communityId: string, houseId:
     }
   });
 
+  await ctx.res.revalidate(`/_sites/${communityId}`);
   await ctx.res.revalidate(`/_sites/${communityId}/vehicle/${vehicleId}`);
   return res;
 }
