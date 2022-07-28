@@ -27,17 +27,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ community, children, 
         setSidebarOpen={setSidebarOpen}
       />
       <div className='bg-th-background dark:bg-th-background-dark'>
-        <div className="min-h-screen">
-          <div>
-
-            <div className="md:pl-64 flex flex-col">
-              <Navbar
-                setSidebarOpen={setSidebarOpen}
-              />
-              <main className="flex-1">
-                {children}
-              </main>
-            </div>
+        <div>
+          <div className="md:pl-64 flex flex-col">
+            <Navbar
+              setSidebarOpen={setSidebarOpen}
+            />
+            <main className="flex-1">
+              {children}
+            </main>
           </div>
         </div>
       </div>
