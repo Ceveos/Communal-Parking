@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-
 import type { NextRequest } from 'next/server';
 
 // If a domain is custom, we need to look up what community they are.
@@ -12,6 +11,11 @@ const nonCustomizedDomains = [
 ];
 
 export default async function middleware(req: NextRequest) {
+  //Exclude pre-render
+  if (req.headers.has('x-prerender-revalidate')) {
+    return undefined;
+  }
+
   // Clone the request url
   const url = req.nextUrl.clone();
 
