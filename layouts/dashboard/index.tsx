@@ -8,20 +8,19 @@ import Navbar from 'components/dashboard/navbar';
 import Sidebar, { SidebarItem } from 'components/dashboard/sidebar';
 
 interface DashboardLayoutProps {
-  community: Prisma.Community;
+  community?: Prisma.Community;
   sidebarMenuItems: SidebarItem[];
 
   children?: React.ReactNode;
 }
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ community, children, sidebarMenuItems }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  // const { user } = useContext(UserContext);
 
   return (
     <>
       <Toaster/>
       <Sidebar
-        header={community.name}
+        header={community?.name}
         menuItems={sidebarMenuItems}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}

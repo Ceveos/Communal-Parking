@@ -30,7 +30,7 @@ const sidebar: SidebarItem[] = [
 ];
 
 interface MainSiteDashboardLayoutProps {
-  community: Prisma.CommunityGetPayload<{}>;
+  community?: Prisma.CommunityGetPayload<{}>;
   children?: React.ReactNode;
 }
 
