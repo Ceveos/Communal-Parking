@@ -10,3 +10,7 @@ export const isAdmin = rule({ cache: 'contextual' })(async (parent, args, ctx: C
 export const isModerator = rule({ cache: 'contextual' })(async (parent, args, ctx: Context, info) => {
   return ctx.token?.role as Role === 'MODERATOR';
 });
+
+export const isOwner = rule({ cache: 'contextual' })(async (parent, args, ctx: Context, info) => {
+  return ctx.token?.id === parent.id;
+});

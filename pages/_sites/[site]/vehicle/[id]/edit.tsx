@@ -30,7 +30,7 @@ export default function Index(props: IndexProps) {
   useLazyQuery<GetVehicleData,GetVehicleVars>(
     GET_VEHICLE_QUERY, {
       fetchPolicy: 'network-only',
-      nextFetchPolicy: 'network-only'
+      nextFetchPolicy: 'network-only',
     });
   const [vehicle, setVehicle] = useState<VehicleModified>();
 
