@@ -1,14 +1,26 @@
+import Link from 'next/link';
+
 interface TableRowProps {
   title: string;
   content: string | null | undefined;
+  href?: string;
 }
-export const TableRow: React.FC<TableRowProps> = ({ title, content }) => {
+export const TableRow: React.FC<TableRowProps> = ({ title, content, href }) => {
   if (!content) return null;
 
   return (
     <div className="px-4 py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
       <dt className="text-sm font-medium text-gray-500 dark:text-gray-300">{title}</dt>
-      <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{content}</dd>
+      <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+        {href ? (
+          <Link
+            href={href}
+            passHref
+          >
+            <a className="underline">{content}</a>
+          </Link>
+        ) : <>{content}</>}
+      </dd>
     </div>
   );
 };

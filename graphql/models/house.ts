@@ -1,4 +1,6 @@
 import * as NexusPrisma from 'nexus-prisma';
+import * as Prisma from '@prisma/client';
+import { Context } from 'graphql/context';
 import { objectType } from 'nexus';
 
 export const Houses = objectType({
@@ -14,3 +16,19 @@ export const Houses = objectType({
     t.field(NexusPrisma.House.updatedAt);
   },
 });
+
+export async function AddHouse(ctx: Context, unit: string, communityId: string): Promise<Prisma.House> {
+
+  const res = await ctx.prisma.house.create({
+    data: {
+      unit: unit,
+      Community: {
+        connect: {
+          id: communityId
+        }
+      }
+    }
+  });
+
+  return res;
+}

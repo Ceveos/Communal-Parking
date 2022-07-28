@@ -14,7 +14,7 @@ const FormikTextbox: FC<FieldProps> = ({ field, form: {touched, errors, isSubmit
           disabled={isSubmitting}
           className={
             ClassNames(
-              'mt-1 block w-full shadow-sm sm:text-sm rounded-md',
+              'mt-1 block w-full shadow-sm sm:text-sm rounded-md placeholder:text-gray-300',
               touched[field.name] && errors[field.name]
                 ? 'border-red-500 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500'
                 : 'focus:ring-accent-500 focus:border-accent-500 border-gray-300'

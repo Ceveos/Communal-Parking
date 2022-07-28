@@ -21,14 +21,14 @@ interface PathProps extends ParsedUrlQuery {
 
 interface IndexProps {
   communityData: string;
-  vehicleData: string;
+  houseData: string;
 }
 
 export default function Index(props: IndexProps) {
   const router = useRouter();
   const { data: session } = useSession();
   const [community, setCommunity] = useState<Prisma.CommunityGetPayload<{}>>();
-  const [vehicle, setVehicle] = useState<VehicleModified>();
+  const [house, setHouse] = useState<HouseModified>();
 
   useEffect(() => {
     if (props.communityData !== undefined && community === undefined) {
@@ -39,56 +39,23 @@ export default function Index(props: IndexProps) {
   }, [props.communityData, community]);
 
   useEffect(() => {
-    if (props.vehicleData !== undefined && vehicle === undefined) {
+    if (props.houseData !== undefined && house === undefined) {
       // Vehicle Data is passed in from the server.
       // However, it is not always defined here due to SSR. So ensure it's defined before parsing.
-      setVehicle(JSON.parse(props.vehicleData));
+      setHouse(JSON.parse(props.houseData));
     }
-  }, [props.vehicleData, vehicle]);
+  }, [props.houseData, house]);
 
   // isFallback is true when page is not cached (thus no community data)
-  if (router.isFallback || community === undefined || vehicle === undefined) return <Loader />;
-
-  const mainSectionForm = () => {
-    return (
-      <Table>
-        <Head>
-          <title>Vehicle Details</title>
-        </Head>
-        {vehicle.houseId === session?.user.houseId && (
-          <TableRow title='Nickname' content={vehicle.description} />
-        )}
-        <TableRow title='Make/Model' content={vehicle.name} />
-        <TableRow title='License Plate' content={vehicle.licensePlate} />
-        {vehicle.House && (
-          <TableRow title='Associated with' content={`Unit ${vehicle.House.unit}`} href={`/unit/${vehicle.House?.unit}`} />
-        )}
-        <TableRow title='Added By' content={vehicle.User?.name ?? vehicle.User?.email} />
-        <TableRow title='Added On' content={new Date(vehicle.createdAt).toLocaleDateString('en-us', {year: 'numeric', month: 'long', day: '2-digit'})} />
-      </Table>
-    );
-  };
+  if (router.isFallback || community === undefined || house === undefined) return <Loader />;
 
   return (
     <MainSiteDashboardLayout community={community}>
-      {session?.user.houseId === vehicle.houseId ? (
-        <DashboardSection
-          title={vehicle.name}
-          buttonText='Edit'
-          href={`/vehicle/${vehicle.id}/edit`}
-        >
-          {mainSectionForm()}
-        </DashboardSection>
-      ) : (
-        <DashboardSection
-          title={vehicle.name}
-        >
-          {mainSectionForm()}
-        </DashboardSection>
-      )}
-
-      <DashboardSection title='Reservation Log'>
-        <ReservationHistoryTable reservations={vehicle.Reservations as unknown as Reservation[]}/>
+      <DashboardSection title={`Unit ${house.unit} Reservation Log`}>
+        <ReservationHistoryTable
+          reservations={house.Reservations as unknown as Reservation[]}
+          showVehicle
+        />
       </DashboardSection>
     </MainSiteDashboardLayout>
   );
@@ -97,7 +64,10 @@ export default function Index(props: IndexProps) {
 export const getStaticProps: GetStaticProps<IndexProps, PathProps> = async ({params}) => {
   if (!params) throw new Error('No path parameters found');
 
-  const { site, id } = params;
+  const { site, unit } = params;
+
+  if (typeof unit !== 'string') return { notFound: true };
+
   let communityData;
 
   // If we have a period, it's a customized domain
@@ -123,36 +93,30 @@ export const getStaticProps: GetStaticProps<IndexProps, PathProps> = async ({par
 
   if (!communityData) return { notFound: true };
 
-  const vehicleData: Vehicle | null = await prisma.vehicle.findUnique({
+  const houseData: House | null = await prisma.house.findUnique({
     where: {
-      id: id
+      unit: unit
     },
     include: {
-      House: {
-        include: {
-          Community: true
-        }
-      },
       Reservations: {
         orderBy: {
           reservedFrom: 'desc'
         },
         take: 10,
         include: {
-          House: true,
+          Vehicle: true,
           User: true
         }
-      },
-      User: true
+      }
     }
   });
 
-  if (!vehicleData) return { notFound: true };
+  if (!houseData) return { notFound: true };
 
   return {
     props: {
       communityData: JSON.stringify(communityData),
-      vehicleData: JSON.stringify(vehicleData)
+      houseData: JSON.stringify(houseData)
     },
     revalidate: 10,
   };
@@ -165,25 +129,19 @@ export const getStaticPaths: GetStaticPaths<PathProps> = async () => {
   };
 };
 
-const vehicle = Prisma.validator<Prisma.VehicleArgs>()({
+const house = Prisma.validator<Prisma.HouseArgs>()({
   include: {
-    House: {
-      include: {
-        Community: true
-      }
-    },
     Reservations: {
       include: {
-        House: true,
+        Vehicle: true,
         User: true
       }
     },
-    User: true
   }
 });
 
-type Vehicle = Prisma.VehicleGetPayload<typeof vehicle>
-type VehicleModified = Modify<
-    Prisma.VehicleGetPayload<typeof vehicle>,
+type House = Prisma.HouseGetPayload<typeof house>
+type HouseModified = Modify<
+    Prisma.HouseGetPayload<typeof house>,
     { createdAt: string, updatedAt: string }
   >

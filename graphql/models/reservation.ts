@@ -1,6 +1,5 @@
 import * as NexusPrisma from 'nexus-prisma';
 import * as Prisma from '@prisma/client';
-import { AuthenticationError, UserInputError } from 'apollo-server-micro';
 import { Context } from 'graphql/context';
 import { objectType } from 'nexus';
 import moment from 'moment';
@@ -105,7 +104,7 @@ export async function ReservationCapacityAvailableAtcommunity(ctx: Context, comm
 
 export async function AddReservation(ctx: Context, communityId: string, houseId: string, userId: string, vehicleId: string, date: Date ): Promise<Prisma.Reservation> {
 
-  return await ctx.prisma.reservation.create({
+  const res = await ctx.prisma.reservation.create({
     data: {
       reservedFrom: moment(date).startOf('day').toDate(),
       reservedTo: moment(date).endOf('day').toDate(),
@@ -137,4 +136,8 @@ export async function AddReservation(ctx: Context, communityId: string, houseId:
       Vehicle: true
     }
   });
+
+  await ctx.res.revalidate(`/_sites/${communityId}`);
+  await ctx.res.revalidate(`/_sites/${communityId}/vehicle/${vehicleId}`);
+  return res;
 }
