@@ -49,7 +49,7 @@ const VehiclesTable: React.FC<Props> = ({vehicles}) => {
                     <div className="mt-2 flex items-center text-sm text-gray-500 dark:text-primary-dark-400 sm:mt-0">
                       <CalendarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400 dark:text-primary-dark-300" aria-hidden="true" />
                       <p>
-                      Added <time dateTime={houseOnVehicle.createdAt}>{new Date(houseOnVehicle.createdAt).toLocaleDateString('en-us', {month: 'long', day: 'numeric', year: 'numeric'})}</time>
+                      Added <time dateTime={houseOnVehicle.createdAt}>{new Date(houseOnVehicle.createdAt).toLocaleDateString('en-us', {month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'})}</time>
                       </p>
                     </div>
                   </div>
