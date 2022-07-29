@@ -64,7 +64,7 @@ export default function Index(props: IndexProps) {
           <TableRow title='Associated with' content={`Unit ${vehicle.House.unit}`} href={`/unit/${vehicle.House?.unit}`} />
         )}
         <TableRow title='Added By' content={vehicle.User?.name ?? vehicle.User?.email} />
-        <TableRow title='Added On' content={new Date(vehicle.createdAt).toLocaleDateString('en-us', {year: 'numeric', month: 'long', day: '2-digit'})} />
+        <TableRow title='Added On' content={new Date(vehicle.createdAt).toLocaleDateString('en-us', {year: 'numeric', month: 'long', day: '2-digit', timeZone: 'UTC'})} />
       </Table>
     );
   };

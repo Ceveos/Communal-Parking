@@ -57,7 +57,7 @@ const UserReservationsTable: React.FC<Props> = ({reservations}) => {
                     <div className="mt-2 flex items-center text-sm text-gray-500 dark:text-primary-dark-400 sm:mt-0">
                       <CalendarIcon className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400 dark:text-primary-dark-300" aria-hidden="true" />
                       <p>
-                        Reserved for <time dateTime={reservation.reservedTo}>{new Date(reservation.reservedTo).toLocaleDateString('en-us', {month: 'long', day: '2-digit', weekday: 'long'})}</time>
+                        Reserved for <time dateTime={reservation.reservedTo}>{new Date(reservation.reservedTo).toLocaleDateString('en-us', {month: 'long', day: '2-digit', weekday: 'long', timeZone: 'UTC'})}</time>
                       </p>
                     </div>
                   </div>

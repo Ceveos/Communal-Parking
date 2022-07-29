@@ -24,7 +24,7 @@ export const Reservations = objectType({
 
 export async function GetCurrentReservationsForCommunity(ctx: Context, communityId: string): Promise<Prisma.Reservation[]> {
   const timezone = await GetTimezoneFromCommunity(ctx, communityId);
-  const date = moment.tz(moment(), timezone).utc(true).toISOString(true);
+  const date = moment.tz(moment(), timezone).utc(true).toDate();
 
   return await ctx.prisma.reservation.findMany({
     where: {
@@ -54,7 +54,7 @@ export async function GetCurrentReservationsForHouse(ctx: Context, houseId: stri
   }
 
   const timezone = await GetTimezoneFromCommunity(ctx, house.communityId);
-  const date = moment.tz(moment(), timezone).utc(true).toISOString(true);
+  const date = moment.tz(moment(), timezone).utc(true).toDate();
 
   return await ctx.prisma.reservation.findMany({
     where: {

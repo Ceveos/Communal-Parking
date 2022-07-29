@@ -93,7 +93,7 @@ const NewReservationForm: React.FC<Props> = () => {
   return (
     <Formik
       initialValues={{
-        date: moment(),
+        date: moment().utc(true),
         vehicle: {
           id: '',
           name: 'Select Vehicle'

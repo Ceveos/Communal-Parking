@@ -20,7 +20,7 @@ const FormikSingleDate: FC<FieldProps & SingleDatePickerShape & Props> = ({ fiel
         <SingleDatePicker
           {...props}
           date={form.values[field.name]}
-          onDateChange={date => form.setFieldValue(field.name, date)}
+          onDateChange={date => {console.log(date?.toISOString()); form.setFieldValue(field.name, date);}}
           focused={dateFocused}
           onFocusChange={({ focused }) => setDateFocused(focused)}
           id={field.name}
