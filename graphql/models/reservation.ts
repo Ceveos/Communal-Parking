@@ -149,10 +149,9 @@ export async function AddReservation(ctx: Context, communityId: string, houseId:
     }
   });
 
-  const communityName = await GetCommunitySlugFromCommunityId(ctx, communityId);
+  const communitySlug = (await GetCommunitySlugFromCommunityId(ctx, communityId)).toLowerCase();
 
-  await ctx.res.revalidate(`/_sites/${communityName}`);
-  await ctx.res.revalidate(`/_sites/${communityName}/vehicle/${vehicleId}`);
-  await ctx.res.revalidate(`/_sites/${communityName}/unit/${res.House.unit}`);
+  await ctx.res.revalidate(`/_sites/${communitySlug}/vehicle/${vehicleId}`);
+  await ctx.res.revalidate(`/_sites/${communitySlug}/unit/${res.House.unit}`);
   return res;
 }
