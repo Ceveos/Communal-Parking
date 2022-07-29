@@ -17,7 +17,8 @@ const NewVehicleForm: React.FC<Props> = () => {
   const onAddVehicle = async (values: AddVehicleVars) => {
     return client.mutate<AddVehicleData,AddVehicleVars>({
       mutation: ADD_VEHICLE_MUTATION,
-      variables: values
+      variables: values,
+      errorPolicy: 'none'
     })
       .then(async ({data, errors}) => {
         if (data) {

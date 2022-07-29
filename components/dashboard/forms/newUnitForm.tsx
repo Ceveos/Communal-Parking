@@ -16,7 +16,8 @@ const NewUnitForm: React.FC<Props> = () => {
   const onAddUnit = async (values: AddHouseVars) => {
     return client.mutate<AddHouseData, AddHouseVars>({
       mutation: ADD_HOUSE_MUTATION,
-      variables: values
+      variables: values,
+      errorPolicy: 'none'
     })
       .then(async ({data, errors}) => {
         if (data) {
