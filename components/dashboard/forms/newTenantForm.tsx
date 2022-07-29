@@ -18,7 +18,8 @@ const NewTenantForm: React.FC<Props> = ({communityId, unit}) => {
   const onAddTenant = async (values: AddTenantVars) => {
     return client.mutate<AddTenantData, AddTenantVars>({
       mutation: ADD_TENANT_MUTATION,
-      variables: values
+      variables: values,
+      errorPolicy: 'none'
     })
       .then(async ({data, errors}) => {
         if (data) {

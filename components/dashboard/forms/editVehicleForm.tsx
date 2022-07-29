@@ -19,7 +19,8 @@ const EditVehicleForm: React.FC<Props> = ({vehicle}) => {
   const onEditVehicle = async (values: EditVehicleVars) => {
     return client.mutate<EditVehicleData,EditVehicleVars>({
       mutation: EDIT_VEHICLE_MUTATION,
-      variables: values
+      variables: values,
+      errorPolicy: 'none'
     })
       .then(async ({data, errors}) => {
         if (data) {

@@ -29,7 +29,8 @@ const NewReservationForm: React.FC<Props> = () => {
   const [getVehicles, { loading, error, data }] =
     useLazyQuery<GetVehiclesData,GetVehiclesVars>(
       GET_VEHICLES_QUERY, {
-        fetchPolicy: 'cache-and-network'
+        fetchPolicy: 'cache-and-network',
+        errorPolicy: 'none'
       });
 
   useEffect(() => {
