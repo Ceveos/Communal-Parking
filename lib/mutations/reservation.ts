@@ -11,7 +11,7 @@ export interface AddReservationVars {
 }
 
 export const ADD_RESERVATION_MUTATION = gql`
-  mutation AddVehicle($date: String!, $vehicleId: String!) {
+  mutation AddReservation($date: String!, $vehicleId: String!) {
     addReservation(date: $date, vehicleId: $vehicleId) {
       id
       reservedFrom
