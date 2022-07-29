@@ -15,6 +15,20 @@ export const Communities = objectType({
   },
 });
 
+export async function GetCommunitySlugFromCommunityId(ctx: Context, communityId: string): Promise<string> {
+  const community = await ctx.prisma.community.findUnique({
+    where: {
+      id: communityId
+    }
+  });
+
+  if (community?.name) {
+    return community.name;
+  } else {
+    throw new UserInputError('Community ID does not exist');
+  }
+}
+
 export async function GetTimezoneFromCommunity(ctx: Context, communityId: string): Promise<string> {
   const community = await ctx.prisma.community.findUnique({
     where: {
