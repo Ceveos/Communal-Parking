@@ -1,4 +1,4 @@
-import { GET_TENANTS_QUERY, GetTenantsData, GetTenantsVars, HouseTenantsModified } from 'lib/queries/house.tenants';
+import { GET_TENANTS_QUERY, GetTenantsData, GetTenantsVars, HouseTenants } from 'lib/queries/house.tenants';
 import { MainSiteDashboardLayout } from 'layouts/dashboard';
 import { Modify } from 'lib/FixType';
 import { Prisma } from '@prisma/client';
@@ -32,7 +32,7 @@ export default function Index(props: IndexProps) {
   const { data: session } = useSession();
   const [community, setCommunity] = useState<Prisma.CommunityGetPayload<{}>>();
   const [house, setHouse] = useState<HouseModified>();
-  const [tenants, setTenants] = useState<HouseTenantsModified[]>();
+  const [tenants, setTenants] = useState<HouseTenants[]>();
   const [getTenants, { loading, error, data }] =
   useLazyQuery<GetTenantsData,GetTenantsVars>(
     GET_TENANTS_QUERY, {
