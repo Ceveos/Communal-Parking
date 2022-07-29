@@ -118,8 +118,8 @@ export async function ReservationCapacityAvailableAtcommunity(ctx: Context, comm
 export async function AddReservation(ctx: Context, communityId: string, houseId: string, userId: string, vehicleId: string, date: Date ): Promise<Prisma.Reservation> {
   const res = await ctx.prisma.reservation.create({
     data: {
-      reservedFrom: moment(date).startOf('day').toDate(),
-      reservedTo: moment(date).endOf('day').toDate(),
+      reservedFrom: moment(date).utc().startOf('day').toDate(),
+      reservedTo: moment(date).utc().endOf('day').toDate(),
       Community: {
         connect: {
           id: communityId
