@@ -56,7 +56,7 @@ const NewUnitForm: React.FC<Props> = () => {
           .min(1, 'Units need to have at least length 1')
       })}
     >
-      {(props) => {
+      {props => {
         const { handleSubmit, isSubmitting } = props;
 
         return (

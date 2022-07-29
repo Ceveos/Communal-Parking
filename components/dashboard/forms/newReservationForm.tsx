@@ -115,7 +115,7 @@ const NewReservationForm: React.FC<Props> = () => {
         }),
       })}
     >
-      {(props: FormikProps<AddReservationFormVars>) => {
+      {props => {
         const { handleSubmit, isSubmitting } = props;
 
         return (

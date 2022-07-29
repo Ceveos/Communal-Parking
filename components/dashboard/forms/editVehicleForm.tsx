@@ -45,7 +45,7 @@ const EditVehicleForm: React.FC<Props> = ({vehicle}) => {
       initialValues={{
         id: vehicle.id,
         name: vehicle.name,
-        description: vehicle.description,
+        description: vehicle.description ?? '',
         hidden: vehicle.hidden,
       }}
       onSubmit={(values: EditVehicleVars, actions) => {
@@ -64,7 +64,7 @@ const EditVehicleForm: React.FC<Props> = ({vehicle}) => {
         hidden: Yup.bool().required()
       })}
     >
-      {(props: FormikProps<EditVehicleVars>) => {
+      {props => {
         const { handleSubmit, isSubmitting } = props;
 
         return (

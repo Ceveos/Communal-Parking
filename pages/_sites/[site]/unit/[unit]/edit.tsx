@@ -1,16 +1,18 @@
-import { GET_VEHICLE_QUERY, GetVehicleData, GetVehicleVars, VehicleModified } from 'lib/queries/vehicle';
-import { MainSiteDashboardLayout } from 'layouts/dashboard';
+import { FullHouseModified, GET_FULL_HOUSE_QUERY, GetFullHouseData, GetFullHouseVars } from 'lib/queries/house.full';
 import { Prisma } from '@prisma/client';
 import { prisma } from 'db';
 import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
+import AdminDashboardLayout from 'layouts/dashboard/adminDashboard';
 import AuthGuard from 'components/common/authGuard';
-import DashboardSection from 'components/dashboard/section';
-import EditVehicleForm from 'components/dashboard/forms/editVehicleForm';
+import DashboardTabbedSection from 'components/dashboard/tabbedSection';
 import Head from 'next/head';
 import Loader from 'components/sites/Loader';
+import ReservationHistoryTable from 'components/dashboard/reservationHistoryTable';
+import ReservationsTable from 'components/dashboard/reservationTable';
+import TenantsTable from 'components/dashboard/tenantsTable';
+import VehiclesTable from 'components/dashboard/vehiclesTable';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 
@@ -22,17 +24,21 @@ interface IndexProps {
   communityData: string;
 }
 
+type EditUnitTabs = 'Tenants' | 'Vehicles' | 'Reservations'
+
+const tabs: EditUnitTabs[] = ['Tenants', 'Vehicles', 'Reservations'];
+
 export default function Index(props: IndexProps) {
   const router = useRouter();
-  const { data: session } = useSession();
   const [community, setCommunity] = useState<Prisma.CommunityGetPayload<{}>>();
-  const [getVehicleData, { loading, error, data }] =
-  useLazyQuery<GetVehicleData,GetVehicleVars>(
-    GET_VEHICLE_QUERY, {
-      fetchPolicy: 'network-only',
-      nextFetchPolicy: 'network-only',
-    });
-  const [vehicle, setVehicle] = useState<VehicleModified>();
+  const [activeTab, setActiveTab] = useState<EditUnitTabs>(tabs[0]);
+  const [house, setHouse] = useState<FullHouseModified>();
+  const [getHouse, { loading, error, data }] =
+    useLazyQuery<GetFullHouseData, GetFullHouseVars>(
+      GET_FULL_HOUSE_QUERY, {
+        fetchPolicy: 'cache-and-network',
+        nextFetchPolicy: 'network-only'
+      });
 
   useEffect(() => {
     if (props.communityData !== undefined && community === undefined) {
@@ -43,47 +49,55 @@ export default function Index(props: IndexProps) {
   }, [props.communityData, community]);
 
   useEffect(() => {
-    if (vehicle === undefined) {
-      getVehicleData({
+    // We can only query for houses when session is loaded
+    if (community?.id && router.query.unit && typeof(router.query.unit) === 'string') {
+      getHouse({
         variables: {
-          id: router.query.id?.toString() ?? ''
+          communityId: community.id,
+          houseUnit: router.query.unit
         }
       });
     }
-  }, [getVehicleData, router.query.id, vehicle]);
+  }, [community, router.query.unit, getHouse]);
 
   useEffect(() => {
-    if (data?.getVehicle) {
-      setVehicle(data.getVehicle);
+    if (data?.getHouse && !house) {
+      setHouse(data.getHouse);
     }
-  }, [data]);
+  }, [data, setHouse, house]);
 
   // isFallback is true when page is not cached (thus no community/vehicle data)
-  if (router.isFallback || community === undefined || vehicle === undefined || loading) return <Loader />;
+  if (router.isFallback || community === undefined || tabs === undefined) return <Loader />;
 
   return (
-    <MainSiteDashboardLayout community={community}>
+    <AdminDashboardLayout community={community}>
       <AuthGuard community={community} communityGuard>
         <Head>
-          <title>Edit Vehicle</title>
+          <title>Edit Unit {router.query.unit}</title>
         </Head>
-        <DashboardSection
-          title={`Edit Vehicle (${vehicle.licensePlate})`}
-        >
-          <EditVehicleForm vehicle={vehicle} />
-        </DashboardSection>
+        <DashboardTabbedSection title={`Unit ${router.query.unit}`} tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab}>
+          {activeTab === 'Tenants' && (
+            <TenantsTable key='Tenants' loading={loading} tenants={house?.Users} />
+          )}
+          {activeTab === 'Vehicles' && (
+            <VehiclesTable key='Vehicles' loading={loading} vehicles={house?.Vehicles} />
+          )}
+          {activeTab === 'Reservations' && (
+            <ReservationHistoryTable key='Reservations' reservations={house?.Reservations}/>
+          )}
+        </DashboardTabbedSection>
       </AuthGuard>
-    </MainSiteDashboardLayout>
+    </AdminDashboardLayout>
   );
 }
 
 export const getStaticProps: GetStaticProps<IndexProps, PathProps> = async ({params}) => {
   if (!params) throw new Error('No path parameters found');
 
-  const { site, id } = params;
+  const { site } = params;
   let communityData;
 
-  if (!site || !id || typeof id !== 'string') {
+  if (!site) {
     return { notFound: true };
   }
 

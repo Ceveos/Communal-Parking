@@ -1,16 +1,19 @@
+import { GET_TENANTS_QUERY, GetTenantsData, GetTenantsVars, HouseTenants } from 'lib/queries/house.tenants';
 import { MainSiteDashboardLayout } from 'layouts/dashboard';
 import { Modify } from 'lib/FixType';
 import { Prisma } from '@prisma/client';
 import { Reservation } from 'lib/queries/reservation';
 import { prisma } from 'db';
 import { useEffect, useState } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import DashboardSection from 'components/dashboard/section';
 import Head from 'next/head';
 import Loader from 'components/sites/Loader';
+import ModSectionGuard from 'components/common/modSectionGuard';
 import ReservationHistoryTable from 'components/dashboard/reservationHistoryTable';
-import Table, { TableRow } from 'components/dashboard/table';
+import TenantsTable from 'components/dashboard/tenantsTable';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 
@@ -29,6 +32,13 @@ export default function Index(props: IndexProps) {
   const { data: session } = useSession();
   const [community, setCommunity] = useState<Prisma.CommunityGetPayload<{}>>();
   const [house, setHouse] = useState<HouseModified>();
+  const [tenants, setTenants] = useState<HouseTenants[]>();
+  const [getTenants, { loading, error, data }] =
+  useLazyQuery<GetTenantsData,GetTenantsVars>(
+    GET_TENANTS_QUERY, {
+      fetchPolicy: 'cache-and-network',
+      nextFetchPolicy: 'network-only'
+    });
 
   useEffect(() => {
     if (props.communityData !== undefined && community === undefined) {
@@ -46,11 +56,37 @@ export default function Index(props: IndexProps) {
     }
   }, [props.houseData, house]);
 
+  useEffect(() => {
+    // We can only query for vehicles when session is loaded
+    if (session?.user.communityId && typeof(router.query.unit) === 'string') {
+      getTenants({
+        variables: {
+          communityId: session?.user.communityId,
+          houseUnit: router.query.unit
+        }
+      });
+    }
+  }, [session, getTenants, router.query.unit]);
+
+  useEffect(() => {
+    if (data?.getTenants && !tenants) {
+      setTenants(data.getTenants);
+    }
+  }, [data, setTenants, tenants]);
+
   // isFallback is true when page is not cached (thus no community data)
   if (router.isFallback || community === undefined || house === undefined) return <Loader />;
 
   return (
     <MainSiteDashboardLayout community={community}>
+      <Head>
+        <title>Unit {house.unit}</title>
+      </Head>
+      <ModSectionGuard community={community}>
+        <DashboardSection title={`Unit ${house.unit} Tenants`} buttonText='Edit' href={`/unit/${house.unit}/edit`}>
+          <TenantsTable loading={loading} tenants={tenants} />
+        </DashboardSection>
+      </ModSectionGuard>
       <DashboardSection title={`Unit ${house.unit} Reservation Log`}>
         <ReservationHistoryTable
           reservations={house.Reservations as unknown as Reservation[]}
@@ -95,7 +131,10 @@ export const getStaticProps: GetStaticProps<IndexProps, PathProps> = async ({par
 
   const houseData: House | null = await prisma.house.findUnique({
     where: {
-      unit: unit
+      communityId_unit: {
+        communityId: communityData.id,
+        unit: unit
+      }
     },
     include: {
       Reservations: {

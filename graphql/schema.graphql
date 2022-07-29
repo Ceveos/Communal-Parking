@@ -23,6 +23,7 @@ scalar DateTime
 
 type House {
   Community: Community!
+  Reservations: [Reservation!]!
   Users: [User!]!
   Vehicles: [Vehicle!]!
   createdAt: DateTime!
@@ -40,7 +41,9 @@ type Mutation {
 
 type Query {
   getCurrentReservations(data: ReservationInputType!): [Reservation]
+  getHouse(communityId: String!, houseUnit: String!): House
   getHouses(communityId: String!): [House]
+  getTenants(communityId: String, houseId: String, houseUnit: String): [User]
   getVehicle(id: String!): Vehicle
   getVehicles(houseId: String!, showHidden: Boolean): [Vehicle]
   user(userId: String!): User

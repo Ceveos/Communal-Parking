@@ -43,7 +43,7 @@ model Community {
 
 model House {
   id           String        @id @default(cuid())
-  unit         String        @unique
+  unit         String
   description  String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -52,6 +52,8 @@ model House {
   Users        User[]
   Vehicles     Vehicle[]
   Reservations Reservation[]
+
+  @@unique([communityId, unit])
 }
 
 model Vehicle {

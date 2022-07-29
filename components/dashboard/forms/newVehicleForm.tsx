@@ -65,7 +65,7 @@ const NewVehicleForm: React.FC<Props> = () => {
         personalVehicle: Yup.bool().required()
       })}
     >
-      {(props: FormikProps<AddVehicleVars>) => {
+      {props => {
         const { handleSubmit, isSubmitting } = props;
 
         return (

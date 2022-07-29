@@ -2,7 +2,7 @@ import { Reservation } from 'lib/queries/reservation';
 import Link from 'next/link';
 
 interface Props {
-  reservations: Reservation[];
+  reservations?: Reservation[];
   showVehicle?: boolean;
 }
 
@@ -41,7 +41,7 @@ const ReservationHistoryTable: React.FC<Props> = ({reservations, showVehicle}) =
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 dark:divide-y dark:divide-primary-dark-700 bg-th-foreground dark:bg-th-foreground-dark">
-          {reservations.map((reservation) => (
+          {reservations && reservations.map((reservation) => (
             <tr key={reservation.id}>
               {showVehicle && (
                 <td className="table-cell px-3 py-4 text-sm text-gray-500 dark:text-primary-dark-300 underline">

@@ -6,7 +6,6 @@
 
 import type { Context } from "./../../graphql/context"
 import type { QueryComplexity } from "nexus/dist/plugins/queryComplexityPlugin"
-import type { FieldAuthorizeResolver } from "nexus/dist/plugins/fieldAuthorizePlugin"
 import type { core, connectionPluginCore } from "nexus"
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
@@ -124,6 +123,7 @@ export interface NexusGenFieldTypes {
   }
   House: { // field return type
     Community: NexusGenRootTypes['Community']; // Community!
+    Reservations: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
     Users: NexusGenRootTypes['User'][]; // [User!]!
     Vehicles: NexusGenRootTypes['Vehicle'][]; // [Vehicle!]!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
@@ -139,7 +139,9 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     getCurrentReservations: Array<NexusGenRootTypes['Reservation'] | null> | null; // [Reservation]
+    getHouse: NexusGenRootTypes['House'] | null; // House
     getHouses: Array<NexusGenRootTypes['House'] | null> | null; // [House]
+    getTenants: Array<NexusGenRootTypes['User'] | null> | null; // [User]
     getVehicle: NexusGenRootTypes['Vehicle'] | null; // Vehicle
     getVehicles: Array<NexusGenRootTypes['Vehicle'] | null> | null; // [Vehicle]
     user: NexusGenRootTypes['User'] | null; // User
@@ -191,6 +193,7 @@ export interface NexusGenFieldTypeNames {
   }
   House: { // field return type name
     Community: 'Community'
+    Reservations: 'Reservation'
     Users: 'User'
     Vehicles: 'Vehicle'
     createdAt: 'DateTime'
@@ -206,7 +209,9 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     getCurrentReservations: 'Reservation'
+    getHouse: 'House'
     getHouses: 'House'
+    getTenants: 'User'
     getVehicle: 'Vehicle'
     getVehicles: 'Vehicle'
     user: 'User'
@@ -270,8 +275,17 @@ export interface NexusGenArgTypes {
     getCurrentReservations: { // args
       data: NexusGenInputs['ReservationInputType']; // ReservationInputType!
     }
+    getHouse: { // args
+      communityId: string; // String!
+      houseUnit: string; // String!
+    }
     getHouses: { // args
       communityId: string; // String!
+    }
+    getTenants: { // args
+      communityId?: string | null; // String
+      houseId?: string | null; // String
+      houseUnit?: string | null; // String
     }
     getVehicle: { // args
       id: string; // String!
@@ -355,22 +369,7 @@ declare global {
      * complexity for this field.
      */
     complexity?: QueryComplexity<TypeName, FieldName>
-    /**
-     * Authorization for an individual field. Returning "true"
-     * or "Promise<true>" means the field can be accessed.
-     * Returning "false" or "Promise<false>" will respond
-     * with a "Not Authorized" error for the field.
-     * Returning or throwing an error will also prevent the
-     * resolver from executing.
-     */
-    authorize?: FieldAuthorizeResolver<TypeName, FieldName>
     
-    /**
-     * The nullability guard can be helpful, but is also a potentially expensive operation for lists.
-     * We need to iterate the entire list to check for null items to guard against. Set this to true
-     * to skip the null guard on a specific field if you know there's no potential for unsafe types.
-     */
-    skipNullGuard?: boolean
   }
   interface NexusGenPluginInputFieldConfig<TypeName extends string, FieldName extends string> {
   }
