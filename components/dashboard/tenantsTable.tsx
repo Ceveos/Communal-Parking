@@ -16,7 +16,7 @@ const TenantsTable: React.FC<Props> = ({tenants}) => {
           <div className="w-full flex items-center justify-between align-top p-6 space-x-6">
             <div className="flex-1 truncate">
               <div className="flex items-center space-x-3">
-                <h3 className="text-primary-900 dark:text-white text-sm font-medium truncate">{tenant.name}</h3>
+                <h3 className="text-primary-900 dark:text-white text-sm font-medium truncate">{tenant.name ?? '(no name)'}</h3>
                 {/* <span className="flex-shrink-0 inline-block px-2 py-0.5 text-green-800 text-xs font-medium bg-green-100 rounded-full">
                   {tenant.role}
                 </span> */}

@@ -134,6 +134,7 @@ export interface NexusGenFieldTypes {
   Mutation: { // field return type
     addHouse: NexusGenRootTypes['House'] | null; // House
     addReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
+    addTenant: NexusGenRootTypes['User'] | null; // User
     addVehicle: NexusGenRootTypes['Vehicle'] | null; // Vehicle
     editVehicle: NexusGenRootTypes['Vehicle'] | null; // Vehicle
   }
@@ -204,6 +205,7 @@ export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
     addHouse: 'House'
     addReservation: 'Reservation'
+    addTenant: 'User'
     addVehicle: 'Vehicle'
     editVehicle: 'Vehicle'
   }
@@ -257,6 +259,12 @@ export interface NexusGenArgTypes {
     addReservation: { // args
       date: string; // String!
       vehicleId: string; // String!
+    }
+    addTenant: { // args
+      communityId: string; // String!
+      email: string; // String!
+      name: string; // String!
+      unit: string; // String!
     }
     addVehicle: { // args
       description?: string | null; // String
