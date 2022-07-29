@@ -3,11 +3,13 @@ import { Prisma } from '@prisma/client';
 import { prisma } from 'db';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import AdminDashboardLayout from 'layouts/dashboard/adminDashboard';
 import AuthGuard from 'components/common/authGuard';
 import DashboardSection from 'components/dashboard/section';
 import Head from 'next/head';
 import Loader from 'components/sites/Loader';
 import NewReservationForm from 'components/dashboard/forms/newReservationForm';
+import NewTenantForm from 'components/dashboard/forms/newTenantForm';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 ;
@@ -35,19 +37,19 @@ export default function Index(props: IndexProps) {
   // isFallback is true when page is not cached (thus no community data)
   if (router.isFallback || community === undefined) return <Loader />;
 
+  if (!router.query.unit || typeof(router.query.unit) !== 'string') return null;
+
   return (
-    <MainSiteDashboardLayout community={community}>
-      <AuthGuard community={community} communityGuard>
-        <Head>
-          <title>New Reservation</title>
-        </Head>
-        <DashboardSection
-          title='New Reservation'
-        >
-          <NewReservationForm />
-        </DashboardSection>
-      </AuthGuard>
-    </MainSiteDashboardLayout>
+    <AdminDashboardLayout community={community}>
+      <Head>
+        <title>New Tenant</title>
+      </Head>
+      <DashboardSection
+        title={`New Tenant (Unit ${router.query.unit})`}
+      >
+        <NewTenantForm communityId={community.id} unit={router.query.unit} />
+      </DashboardSection>
+    </AdminDashboardLayout>
   );
 }
 

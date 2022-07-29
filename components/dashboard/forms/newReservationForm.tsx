@@ -58,7 +58,6 @@ const NewReservationForm: React.FC<Props> = () => {
   }, [data]);
 
   const onAddReservation = async (values: AddReservationFormVars) => {
-    console.log('on add reservation');
     if (!values.vehicle || Object.keys(values.vehicle).length === 0) {
       toast.error('No vehicle selected', {position: 'top-right'});
       return;
@@ -67,7 +66,7 @@ const NewReservationForm: React.FC<Props> = () => {
     return client.mutate<AddReservationData,AddReservationVars>({
       mutation: ADD_RESERVATION_MUTATION,
       variables: {
-        date: values.date,
+        date: values.date.utc().startOf('D'),
         vehicleId: values.vehicle.id
       }
     })
