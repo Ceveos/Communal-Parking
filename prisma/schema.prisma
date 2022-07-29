@@ -34,6 +34,7 @@ model Community {
   name          String
   subdomain     String         @unique
   parkingSpaces Int
+  timezone      String         @default("America/Los_Angeles")
   CustomDomains CustomDomain[]
   Houses        House[]
   Reservations  Reservation[]
