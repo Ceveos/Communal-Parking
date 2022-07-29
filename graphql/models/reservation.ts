@@ -1,6 +1,10 @@
+import 'moment-timezone';
 import * as NexusPrisma from 'nexus-prisma';
 import * as Prisma from '@prisma/client';
 import { Context } from 'graphql/context';
+import { GetHouseByHouseId } from './house';
+import { GetTimezoneFromCommunity } from './community';
+import { UserInputError } from 'apollo-server-micro';
 import { objectType } from 'nexus';
 import moment from 'moment';
 
@@ -19,7 +23,8 @@ export const Reservations = objectType({
 });
 
 export async function GetCurrentReservationsForCommunity(ctx: Context, communityId: string): Promise<Prisma.Reservation[]> {
-  const date = new Date().toISOString();
+  const timezone = await GetTimezoneFromCommunity(ctx, communityId);
+  const date = moment.tz(moment(), timezone).toISOString(true);
 
   return await ctx.prisma.reservation.findMany({
     where: {
@@ -41,7 +46,15 @@ export async function GetCurrentReservationsForCommunity(ctx: Context, community
 }
 
 export async function GetCurrentReservationsForHouse(ctx: Context, houseId: string): Promise<Prisma.Reservation[]> {
-  const date = new Date().toISOString();
+
+  const house = await GetHouseByHouseId(ctx, houseId);
+
+  if (!house) {
+    throw new UserInputError('House ID does not exist');
+  }
+
+  const timezone = await GetTimezoneFromCommunity(ctx, house.communityId);
+  const date = moment.tz(moment(), timezone).toISOString(true);
 
   return await ctx.prisma.reservation.findMany({
     where: {
