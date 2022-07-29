@@ -77,7 +77,7 @@ export default function Index(props: IndexProps) {
         </Head>
         <DashboardTabbedSection title={`Unit ${router.query.unit}`} tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab}>
           {activeTab === 'Tenants' && (
-            <TenantsTable key='Tenants' loading={loading} tenants={house?.Users} />
+            <TenantsTable key='Tenants' loading={loading} tenants={house?.Users} unit={house?.unit} />
           )}
           {activeTab === 'Vehicles' && (
             <VehiclesTable key='Vehicles' loading={loading} vehicles={house?.Vehicles} />

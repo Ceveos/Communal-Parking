@@ -84,7 +84,7 @@ export default function Index(props: IndexProps) {
       </Head>
       <ModSectionGuard community={community}>
         <DashboardSection title={`Unit ${house.unit} Tenants`} buttonText='Edit' href={`/unit/${house.unit}/edit`}>
-          <TenantsTable loading={loading} tenants={tenants} />
+          <TenantsTable loading={loading} tenants={tenants} unit={house.unit} />
         </DashboardSection>
       </ModSectionGuard>
       <DashboardSection title={`Unit ${house.unit} Reservation Log`}>

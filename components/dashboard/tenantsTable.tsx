@@ -5,9 +5,10 @@ import AddTenantCard from './addTenantCard';
 interface Props {
   tenants?: HouseTenants[];
   loading: boolean
+  unit?: string;
 }
 
-const TenantsTable: React.FC<Props> = ({tenants}) => {
+const TenantsTable: React.FC<Props> = ({tenants, unit}) => {
 
   return (
     <ul role="list" className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 pt-4">
@@ -39,7 +40,9 @@ const TenantsTable: React.FC<Props> = ({tenants}) => {
           </div>
         </li>
       ))}
-      <AddTenantCard />
+      {unit && (
+        <AddTenantCard unit={unit} />
+      )}
     </ul>
   );
 };
