@@ -64,7 +64,7 @@ const EditVehicleForm: React.FC<Props> = ({vehicle}) => {
         hidden: Yup.bool().required()
       })}
     >
-      {(props: FormikProps<EditVehicleVars>) => {
+      {props => {
         const { handleSubmit, isSubmitting } = props;
 
         return (

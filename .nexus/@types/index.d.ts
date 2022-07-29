@@ -139,6 +139,7 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     getCurrentReservations: Array<NexusGenRootTypes['Reservation'] | null> | null; // [Reservation]
     getHouses: Array<NexusGenRootTypes['House'] | null> | null; // [House]
+    getTenants: Array<NexusGenRootTypes['User'] | null> | null; // [User]
     getVehicle: NexusGenRootTypes['Vehicle'] | null; // Vehicle
     getVehicles: Array<NexusGenRootTypes['Vehicle'] | null> | null; // [Vehicle]
     user: NexusGenRootTypes['User'] | null; // User
@@ -206,6 +207,7 @@ export interface NexusGenFieldTypeNames {
   Query: { // field return type name
     getCurrentReservations: 'Reservation'
     getHouses: 'House'
+    getTenants: 'User'
     getVehicle: 'Vehicle'
     getVehicles: 'Vehicle'
     user: 'User'
@@ -271,6 +273,11 @@ export interface NexusGenArgTypes {
     }
     getHouses: { // args
       communityId: string; // String!
+    }
+    getTenants: { // args
+      communityId?: string | null; // String
+      houseId?: string | null; // String
+      houseUnit?: string | null; // String
     }
     getVehicle: { // args
       id: string; // String!

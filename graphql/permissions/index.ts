@@ -7,7 +7,8 @@ const rateLimitRule = createRateLimitRule({ identifyContext: (ctx: Context) => u
 
 export const permissions = shield({
   Query: {
-    '*': rateLimitRule({window: '1s', max: 5})
+    '*': rateLimitRule({window: '1s', max: 5}),
+    getTenants: and(or(isModerator, isAdmin, isOwner), rateLimitRule({window: '1s', max: 5}))
   },
   Mutation: {
     '*': rateLimitRule({window: '1s', max: 5}),
@@ -15,7 +16,7 @@ export const permissions = shield({
   },
   User: {
     email: or(isModerator, isAdmin, isOwner)
-  }
+  },
 },
 {
   allowExternalErrors: true,

@@ -18,7 +18,6 @@ export const Houses = objectType({
 });
 
 export async function AddHouse(ctx: Context, unit: string, communityId: string): Promise<Prisma.House> {
-
   const res = await ctx.prisma.house.create({
     data: {
       unit: unit,
@@ -31,4 +30,33 @@ export async function AddHouse(ctx: Context, unit: string, communityId: string):
   });
 
   return res;
+}
+
+export async function GetTenantsByHouseId(ctx: Context, communityId: string, houseId: string): Promise<Prisma.User[] | null> {
+  const res = await ctx.prisma.house.findUnique({
+    where: {
+      id: houseId
+    },
+    include: {
+      Users: true
+    }
+  });
+
+  return res?.Users ?? null;
+}
+
+export async function GetTenantsByUnit(ctx: Context, communityId: string, unit: string): Promise<Prisma.User[] | null> {
+  const res = await ctx.prisma.house.findUnique({
+    where: {
+      communityId_unit: {
+        communityId: communityId,
+        unit: unit
+      }
+    },
+    include: {
+      Users: true
+    }
+  });
+
+  return res?.Users ?? null;
 }
