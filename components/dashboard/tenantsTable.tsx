@@ -1,18 +1,19 @@
-import { HouseTenantsModified } from 'lib/queries/house.tenants';
+import { HouseTenants} from 'lib/queries/house.tenants';
 import { MailIcon } from '@heroicons/react/solid';
+import AddTenantCard from './addTenantCard';
 
 interface Props {
-  tenants?: HouseTenantsModified[];
+  tenants?: HouseTenants[];
   loading: boolean
 }
 
 const TenantsTable: React.FC<Props> = ({tenants}) => {
 
   return (
-    <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-4 pt-4">
+    <ul role="list" className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 pt-4">
       {tenants && tenants.map((tenant) => (
         <li key={tenant.email} className="col-span-1 bg-th-foreground dark:bg-th-foreground-dark rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-600">
-          <div className="w-full flex items-center justify-between p-6 space-x-6">
+          <div className="w-full flex items-center justify-between align-top p-6 space-x-6">
             <div className="flex-1 truncate">
               <div className="flex items-center space-x-3">
                 <h3 className="text-primary-900 dark:text-white text-sm font-medium truncate">{tenant.name}</h3>
@@ -38,6 +39,7 @@ const TenantsTable: React.FC<Props> = ({tenants}) => {
           </div>
         </li>
       ))}
+      <AddTenantCard />
     </ul>
   );
 };

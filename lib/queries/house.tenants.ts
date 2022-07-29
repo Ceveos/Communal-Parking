@@ -1,9 +1,8 @@
-import { Modify } from 'lib/FixType';
 import { Prisma } from '@prisma/client';
 import { gql } from '@apollo/client';
 
 export interface GetTenantsData {
-  getTenants: HouseTenantsModified[];
+  getTenants: HouseTenants[];
 }
 
 interface GetTenantByHouseId {
@@ -33,13 +32,7 @@ const user = Prisma.validator<Prisma.UserArgs>()({
     id: true,
     name: true,
     email: true,
-    role: true
   }
 });
 
 export type HouseTenants = Prisma.UserGetPayload<typeof user>
-
-export type HouseTenantsModified = Modify<
-  HouseTenants,
-  { createdAt: string, updatedAt: string }
->;

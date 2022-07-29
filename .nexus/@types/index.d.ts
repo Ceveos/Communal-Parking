@@ -123,6 +123,7 @@ export interface NexusGenFieldTypes {
   }
   House: { // field return type
     Community: NexusGenRootTypes['Community']; // Community!
+    Reservations: NexusGenRootTypes['Reservation'][]; // [Reservation!]!
     Users: NexusGenRootTypes['User'][]; // [User!]!
     Vehicles: NexusGenRootTypes['Vehicle'][]; // [Vehicle!]!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
@@ -138,6 +139,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     getCurrentReservations: Array<NexusGenRootTypes['Reservation'] | null> | null; // [Reservation]
+    getHouse: NexusGenRootTypes['House'] | null; // House
     getHouses: Array<NexusGenRootTypes['House'] | null> | null; // [House]
     getTenants: Array<NexusGenRootTypes['User'] | null> | null; // [User]
     getVehicle: NexusGenRootTypes['Vehicle'] | null; // Vehicle
@@ -191,6 +193,7 @@ export interface NexusGenFieldTypeNames {
   }
   House: { // field return type name
     Community: 'Community'
+    Reservations: 'Reservation'
     Users: 'User'
     Vehicles: 'Vehicle'
     createdAt: 'DateTime'
@@ -206,6 +209,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     getCurrentReservations: 'Reservation'
+    getHouse: 'House'
     getHouses: 'House'
     getTenants: 'User'
     getVehicle: 'Vehicle'
@@ -270,6 +274,10 @@ export interface NexusGenArgTypes {
   Query: {
     getCurrentReservations: { // args
       data: NexusGenInputs['ReservationInputType']; // ReservationInputType!
+    }
+    getHouse: { // args
+      communityId: string; // String!
+      houseUnit: string; // String!
     }
     getHouses: { // args
       communityId: string; // String!

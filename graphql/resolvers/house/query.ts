@@ -18,6 +18,42 @@ export const getHouses = queryField('getHouses', {
   },
 });
 
+export const getHouse = queryField('getHouse', {
+  type: 'House',
+  args: {
+    communityId: nonNull(stringArg()),
+    houseUnit: nonNull(stringArg()),
+  },
+  complexity: 10,
+  resolve: async (_, args, ctx) => {
+    return await ctx.prisma.house.findUnique({
+      where: {
+        communityId_unit: {
+          communityId: args.communityId,
+          unit: args.houseUnit
+        },
+      },
+      include: {
+        Community: true,
+        Users: true,
+        Vehicles: {
+          include: {
+            House: true,
+            User: true
+          }
+        },
+        Reservations: {
+          include: {
+            Vehicle: true,
+            House: true,
+            User: true
+          }
+        },
+      }
+    });
+  },
+});
+
 export const getTenants = queryField('getTenants', {
   type: list('User'),
   args: {

@@ -11,6 +11,7 @@ export const Houses = objectType({
     t.field(NexusPrisma.House.Community);
     t.field(NexusPrisma.House.Users);
     t.field(NexusPrisma.House.Vehicles);
+    t.field(NexusPrisma.House.Reservations);
     t.field(NexusPrisma.House.unit);
     t.field(NexusPrisma.House.createdAt);
     t.field(NexusPrisma.House.updatedAt);
