@@ -69,7 +69,8 @@ const NewReservationForm: React.FC<Props> = () => {
       variables: {
         date: values.date.utc().startOf('D'),
         vehicleId: values.vehicle.id
-      }
+      },
+      errorPolicy: 'none'
     })
       .then(async ({data, errors}) => {
         if (data) {
