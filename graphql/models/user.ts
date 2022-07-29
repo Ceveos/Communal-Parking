@@ -44,7 +44,7 @@ export async function ConnectUserToHouse(ctx: Context, userId: string, community
 export async function CreateUserToHouse(ctx: Context, email: string, name: string, communityId: string, houseUnit: string): Promise<Prisma.User | null> {
   return await ctx.prisma.user.create({
     data: {
-      email: email,
+      email: email.toLowerCase(),
       name: name,
       House: {
         connect: {
