@@ -55,7 +55,7 @@ const NewUnitForm: React.FC<Props> = () => {
           .required('Enter a valid unit')
           .min(1, 'Units need to have at least length 1')
       })}
-    > 
+    >
       {props => {
         const { handleSubmit, isSubmitting } = props;
 
