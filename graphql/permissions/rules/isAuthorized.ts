@@ -16,5 +16,7 @@ export const isOwner = rule({ cache: 'contextual' })(async (parent, args, ctx: C
 });
 
 export const isOwnCommunity = rule({ cache: 'contextual' })(async (_parent, args, ctx: Context, info) => {
+  console.log('ctx:', JSON.stringify(ctx));
+  console.log('args:', JSON.stringify(args));
   return (ctx.token?.communityId === args.communityId);
 });
