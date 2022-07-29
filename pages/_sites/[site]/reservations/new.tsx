@@ -1,15 +1,13 @@
-import { DateRangePicker, DayPickerRangeController, FocusedInputShape, SingleDatePicker } from 'react-dates';
 import { MainSiteDashboardLayout } from 'layouts/dashboard';
 import { Prisma } from '@prisma/client';
 import { prisma } from 'db';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
 import AuthGuard from 'components/common/authGuard';
 import DashboardSection from 'components/dashboard/section';
 import Head from 'next/head';
 import Loader from 'components/sites/Loader';
-import NewReservationForm from 'components/dashboard/forms/newReservationForm';import moment from 'moment';
+import NewReservationForm from 'components/dashboard/forms/newReservationForm';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { ParsedUrlQuery } from 'querystring';
 ;
@@ -22,19 +20,9 @@ interface IndexProps {
   communityData: string;
 }
 
-function addDays(date: Date, days: number) {
-  const result = new Date(date);
-
-  result.setDate(result.getDate() + days);
-  return result;
-}
-
 export default function Index(props: IndexProps) {
   const router = useRouter();
-  const { data: session } = useSession();
   const [community, setCommunity] = useState<Prisma.CommunityGetPayload<{}>>();
-  const [date, setDate] = useState<moment.Moment | null>(moment());
-  const [dateFocused, setDateFocused] = useState<boolean>(false);
 
   useEffect(() => {
     if (props.communityData !== undefined && community === undefined) {

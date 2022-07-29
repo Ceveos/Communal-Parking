@@ -6,7 +6,7 @@ interface Props {
 
 const AddTenantCard: React.FC<Props> = () => {
   return (<>
-    <Link href="/unit/J5/add/tenant" passHref>
+    <Link href="/unit/J5/new/tenant" passHref>
       <a
         className="relative block w-full h-full border-2 border-primary-300 dark:border-primary-dark-700 border-dashed rounded-lg p-6 text-center hover:border-primary-400 dark:hover:border-primary-dark-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-500"
       >
