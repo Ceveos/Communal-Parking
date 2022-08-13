@@ -22,9 +22,11 @@ export const Reservations = objectType({
   },
 });
 
-export async function GetCurrentReservationsForCommunity(ctx: Context, communityId: string): Promise<Prisma.Reservation[]> {
+export async function GetCurrentReservationsForCommunity(ctx: Context, communityId: string, forDate: Date | null = null): Promise<Prisma.Reservation[]> {
   const timezone = await GetTimezoneFromCommunity(ctx, communityId);
-  const date = moment.tz(moment(), timezone).utc(true).toDate();
+  const date = forDate ?
+    moment(forDate).utc().startOf('day').toDate() :
+    moment.tz( moment(), timezone).utc(true).startOf('day').toDate();
 
   return await ctx.prisma.reservation.findMany({
     where: {
@@ -42,6 +44,9 @@ export async function GetCurrentReservationsForCommunity(ctx: Context, community
       Community: true,
       House: true,
       User: true
+    },
+    orderBy: {
+      reservedTo: 'asc'
     }
   });
 }
@@ -70,6 +75,9 @@ export async function GetCurrentReservationsForHouse(ctx: Context, houseId: stri
       Community: true,
       House: true,
       User: true
+    },
+    orderBy: {
+      reservedFrom: 'asc'
     }
   });
 }
@@ -102,20 +110,42 @@ export async function IsVehicleOwnedByUser(ctx: Context, vehicleId: string): Pro
   return vehicle?.House?.id === ctx.token?.houseId;
 }
 
-export async function ReservationCapacityAvailableAtcommunity(ctx: Context, communityId: string): Promise<boolean> {
+export async function ReservationCapacityAvailableAtcommunity(ctx: Context, date: Date, communityId: string): Promise<boolean> {
   const community = await ctx.prisma.community.findUnique({
     where: {
       id: communityId
     }
   });
 
-  const currentReservations = await GetCurrentReservationsForCommunity(ctx, communityId);
+  const currentReservations = await GetCurrentReservationsForCommunity(ctx, communityId, date);
 
   if (!community || !currentReservations) {
     return false;
   }
 
   return community.parkingSpaces > currentReservations.length;
+}
+
+export async function ReservationCapacityAvailableAtHouse(ctx: Context, communityId: string, houseId: string, date: Date): Promise<boolean> {
+  const timezone = await GetTimezoneFromCommunity(ctx, communityId);
+  const today = moment.tz(moment(), timezone).utc(true).startOf('D');
+
+  if (moment(date).utc().isSame(today, 'D')) {
+    return true;
+  }
+
+  const tomorrow = moment.tz(moment(), timezone).utc(true).startOf('D').add(1, 'day').toDate();
+  const futureReservationCount = await ctx.prisma.reservation.count({
+    where: {
+      houseId: houseId,
+      reservedFrom: {
+        gte: tomorrow
+      },
+      cancelledAt: null
+    }
+  });
+
+  return futureReservationCount < 2;
 }
 
 export async function AddReservation(ctx: Context, communityId: string, houseId: string, userId: string, vehicleId: string, date: Date ): Promise<Prisma.Reservation> {
