@@ -1,4 +1,4 @@
-import { AddReservation, CancelReservation, IsVehicleOwnedByUser, IsVehicleReservedAtDate, ReservationCapacityAvailableAtcommunity } from 'graphql/models';
+import { AddReservation, CancelReservation, IsVehicleOwnedByUser, IsVehicleReservedAtDate, ReservationCapacityAvailableAtHouse, ReservationCapacityAvailableAtcommunity } from 'graphql/models';
 import { ApolloError, AuthenticationError, UserInputError } from 'apollo-server-micro';
 import { mutationField, nonNull, stringArg } from 'nexus';
 
@@ -30,7 +30,13 @@ export const addReservation = mutationField('addReservation', {
       throw new UserInputError('Reservation conflicting with pre-existing reservation');
     }
 
-    const reservationAvailable = await ReservationCapacityAvailableAtcommunity(ctx, token.communityId);
+    const houseReservationCapacity = await ReservationCapacityAvailableAtHouse(ctx, token.communityId, token.houseId, date);
+
+    if (!houseReservationCapacity) {
+      throw new UserInputError('No future reservation slots available');
+    }
+
+    const reservationAvailable = await ReservationCapacityAvailableAtcommunity(ctx, date, token.communityId);
 
     if (!reservationAvailable) {
       throw new UserInputError('No parking spaces available for selected date');
