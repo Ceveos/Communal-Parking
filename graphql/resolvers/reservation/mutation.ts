@@ -1,9 +1,7 @@
-import { AddReservation, IsVehicleOwnedByUser, IsVehicleReservedAtDate, ReservationCapacityAvailableAtcommunity } from 'graphql/models';
+import { AddReservation, CancelReservation, IsVehicleOwnedByUser, IsVehicleReservedAtDate, ReservationCapacityAvailableAtcommunity } from 'graphql/models';
 import { ApolloError, AuthenticationError, UserInputError } from 'apollo-server-micro';
 import { mutationField, nonNull, stringArg } from 'nexus';
 
-// Create a game and link to existing database
-// or creat a game and database in one go
 export const addReservation = mutationField('addReservation', {
   type: 'Reservation',
   args: {
@@ -13,6 +11,7 @@ export const addReservation = mutationField('addReservation', {
   complexity: 50,
   resolve: async (_, args, ctx) => {
     const { token } = ctx;
+
     const date = new Date(args.date);
 
     if (!token || !token.communityId || !token.houseId) {
@@ -39,6 +38,27 @@ export const addReservation = mutationField('addReservation', {
 
     try {
       return await AddReservation(ctx, token.communityId, token.houseId, token.id, args.vehicleId, date);
+    } catch (ex) {
+      throw new ApolloError('Error adding reservation');
+    }
+  },
+});
+
+export const cancelReservation = mutationField('cancelReservation', {
+  type: 'Reservation',
+  args: {
+    reservationId: nonNull(stringArg()),
+  },
+  complexity: 50,
+  resolve: async (_, args, ctx) => {
+    const { token } = ctx;
+
+    if (!token || !token.communityId || !token.houseId) {
+      throw new AuthenticationError('Invalid token');
+    }
+
+    try {
+      return await CancelReservation(ctx, token.communityId, args.reservationId);
     } catch (ex) {
       throw new ApolloError('Error adding reservation');
     }

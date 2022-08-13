@@ -34,7 +34,8 @@ export async function GetCurrentReservationsForCommunity(ctx: Context, community
       },
       reservedTo: {
         gte: date
-      }
+      },
+      cancelledAt: null
     },
     include: {
       Vehicle: true,
@@ -61,7 +62,8 @@ export async function GetCurrentReservationsForHouse(ctx: Context, houseId: stri
       houseId,
       reservedTo: {
         gte: date
-      }
+      },
+      cancelledAt: null
     },
     include: {
       Vehicle: true,
@@ -81,6 +83,7 @@ export async function IsVehicleReservedAtDate(ctx: Context, date: Date, vehicleI
       reservedTo: {
         gte: date
       },
+      cancelledAt: null,
       vehicleId: vehicleId
     }
   }) > 0;
@@ -152,6 +155,29 @@ export async function AddReservation(ctx: Context, communityId: string, houseId:
   const communitySlug = (await GetCommunitySlugFromCommunityId(ctx, communityId)).toLowerCase();
 
   await ctx.res.revalidate(`/_sites/${communitySlug}/vehicle/${vehicleId}`);
+  await ctx.res.revalidate(`/_sites/${communitySlug}/unit/${res.House.unit}`);
+  return res;
+}
+
+export async function CancelReservation(ctx: Context, communityId: string, reservationId: string): Promise<Prisma.Reservation> {
+  const res = await ctx.prisma.reservation.update({
+    where: {
+      id: reservationId
+    },
+    data: {
+      cancelledAt: moment().toDate(),
+    },
+    include: {
+      Community: true,
+      House: true,
+      User: true,
+      Vehicle: true
+    }
+  });
+
+  const communitySlug = (await GetCommunitySlugFromCommunityId(ctx, communityId)).toLowerCase();
+
+  await ctx.res.revalidate(`/_sites/${communitySlug}/vehicle/${res.Vehicle.id}`);
   await ctx.res.revalidate(`/_sites/${communitySlug}/unit/${res.House.unit}`);
   return res;
 }

@@ -29,7 +29,8 @@ export default function Index(props: IndexProps) {
   const [getReservations, { loading, error, data }] =
     useLazyQuery<GetCurrentReservationsData,GetCurrentHouseReservationsVars>(
       GET_CURRENT_HOUSE_RESERVATIONS_QUERY, {
-        fetchPolicy: 'cache-and-network'
+        fetchPolicy: 'cache-and-network',
+        nextFetchPolicy: 'network-only'
       });
 
   useEffect(() => {
@@ -51,6 +52,17 @@ export default function Index(props: IndexProps) {
     }
   }, [session, getReservations]);
 
+  const refreshVehicles = () => {
+    // We can only query for vehicles when session is loaded
+    if (session?.user.houseId) {
+      getReservations({
+        variables: {
+          houseId: session.user.houseId
+        }
+      });
+    }
+  };
+
   // isFallback is true when page is not cached (thus no community data)
   if (router.isFallback || community === undefined) return <Loader />;
 
@@ -66,7 +78,11 @@ export default function Index(props: IndexProps) {
           href='/reservations/new'
         >
           {/* Table */}
-          <UserReservationsTable reservations={data?.getCurrentReservations} loading={loading} />
+          <UserReservationsTable
+            reservations={data?.getCurrentReservations}
+            loading={loading}
+            refresh={refreshVehicles}
+          />
         </DashboardSection>
       </AuthGuard>
     </MainSiteDashboardLayout>

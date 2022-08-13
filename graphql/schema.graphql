@@ -37,6 +37,7 @@ type Mutation {
   addReservation(date: String!, vehicleId: String!): Reservation
   addTenant(communityId: String!, email: String!, name: String!, unit: String!): User
   addVehicle(description: String, licensePlate: String!, name: String!, personal: Boolean!): Vehicle
+  cancelReservation(reservationId: String!): Reservation
   editVehicle(description: String, hidden: Boolean!, id: String!, name: String!): Vehicle
 }
 

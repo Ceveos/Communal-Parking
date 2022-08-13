@@ -89,6 +89,7 @@ model Reservation {
   Vehicle      Vehicle   @relation(fields: [vehicleId], references: [id])
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+  cancelledAt  DateTime?
 }
 
 // Next-Auth stuff
