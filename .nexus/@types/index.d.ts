@@ -136,6 +136,7 @@ export interface NexusGenFieldTypes {
     addReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     addTenant: NexusGenRootTypes['User'] | null; // User
     addVehicle: NexusGenRootTypes['Vehicle'] | null; // Vehicle
+    cancelReservation: NexusGenRootTypes['Reservation'] | null; // Reservation
     editVehicle: NexusGenRootTypes['Vehicle'] | null; // Vehicle
   }
   Query: { // field return type
@@ -207,6 +208,7 @@ export interface NexusGenFieldTypeNames {
     addReservation: 'Reservation'
     addTenant: 'User'
     addVehicle: 'Vehicle'
+    cancelReservation: 'Reservation'
     editVehicle: 'Vehicle'
   }
   Query: { // field return type name
@@ -271,6 +273,9 @@ export interface NexusGenArgTypes {
       licensePlate: string; // String!
       name: string; // String!
       personal: boolean; // Boolean!
+    }
+    cancelReservation: { // args
+      reservationId: string; // String!
     }
     editVehicle: { // args
       description?: string | null; // String
