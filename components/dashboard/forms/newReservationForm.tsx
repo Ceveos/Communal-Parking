@@ -1,9 +1,9 @@
 import * as Yup from 'yup';
 import { ADD_RESERVATION_MUTATION, AddReservationData, AddReservationVars } from 'lib/mutations/reservation';
-import { Field, Formik, FormikProps } from 'formik';
+import { Field, Formik, FormikProps, useFormikContext } from 'formik';
+import { FormEvent, useEffect, useState } from 'react';
 import { GET_VEHICLES_QUERY, GetVehiclesData, GetVehiclesVars } from 'lib/queries/housesOnVehicles';
 import { Shape } from 'components/helpers/yup';
-import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 import FormikSelectMenu, { SelectMenu } from 'components/formik/selectMenu';
@@ -57,6 +57,30 @@ const NewReservationForm: React.FC<Props> = () => {
       }));
     }
   }, [data]);
+
+  useEffect(() => {
+    if (!vehicles || !vehicles.some(x => x.id === 'NEW')) {
+      setVehicles([
+        ...(vehicles ?? []),
+        {
+          id: 'NEW',
+          name: 'New Vehicle'
+        }
+      ]);
+    }
+  }, [vehicles, setVehicles]);
+
+  const VehicleChangeListener = () => {
+    const { values } = useFormikContext<AddReservationFormVars>();
+
+    useEffect(() => {
+      // Submit the form imperatively as an effect as soon as form values.token are 6 digits long
+      if (values.vehicle.id === 'NEW') {
+        router.push('/vehicles/new');
+      }
+    }, [values]);
+    return null;
+  };
 
   const onAddReservation = async (values: AddReservationFormVars) => {
     if (!values.vehicle || Object.keys(values.vehicle).length === 0) {
@@ -121,6 +145,7 @@ const NewReservationForm: React.FC<Props> = () => {
 
         return (
           <form onSubmit={handleSubmit} autoComplete='off'>
+            <VehicleChangeListener />
             <div className="space-y-6 pt-6">
               <Loader loading={isSubmitting}>
                 <div className="bg-th-foreground dark:bg-th-foreground-dark shadow px-4 py-5 sm:rounded-lg sm:p-6">
